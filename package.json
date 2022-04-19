@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:all": "npm run build:infra",
+    "test:schema": "npm run play -w schemas",
     "build:infra": "npm run build -w infrastructure",
     "deploy": "npm run deploy -w infrastructure"
   },
@@ -14,5 +15,8 @@
   "workspaces": [
     "packages/schemas",
     "packages/infrastructure"
-  ]
+  ],
+  "dependencies": {
+    "typescript": "^4.6.3"
+  }
 }

@@ -1,0 +1,8 @@
+type Test {
+  hello: String!
+}
+
+type Query {
+  test: Test
+  helloName(name: String!): Test
+}
