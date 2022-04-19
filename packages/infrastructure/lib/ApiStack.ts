@@ -169,7 +169,7 @@ export class ApiStack extends Stack {
       ...defaults,
       role: this.iam.roles.testApiRole,
       timeout: Duration.seconds(360),
-      entry: resolve("../../../", "python-microservices/testApi"),
+      entry: resolve(__dirname, "../../../", "python-microservices/testApi"),
     }).addPaths({
       "/api/hello": ["GET"],
       "/api/hello/{name}": ["GET"],
