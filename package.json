@@ -8,6 +8,7 @@
     "build:all": "npm run build:infra",
     "test:schema": "npm run play -w schemas",
     "build:infra": "npm run build -w infrastructure",
+    "build:schemas": "npm run build -w schemas",
     "deploy": "npm run deploy -w infrastructure"
   },
   "author": "Merging Futures LLC.",

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "play": "ts-node index.ts"
+    "build": "npm run merge-schemas",
+    "merge-schemas": "ts-node index.ts"
   },
   "author": "Merging Futures LLC.",
   "license": "ISC",
