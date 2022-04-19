@@ -1,0 +1,33 @@
+*.js
+!jest.config.js
+*.d.ts
+node_modules
+
+*.swp
+package-lock.json
+.pytest_cache
+*.egg-info
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+*/.env
+*/venv
+*/.venv
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# CDK Context & Staging files
+.cdk.staging/
+cdk.out/
+*.zip
+
+.DS_Store
