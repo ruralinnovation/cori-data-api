@@ -6,3 +6,7 @@ type Comment {
 type NewStuff {
   god: Boolean
 }
+
+type One {
+  two: Boolean
+}
