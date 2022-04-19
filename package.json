@@ -9,7 +9,9 @@
     "test:schema": "npm run play -w schemas",
     "build:infra": "npm run build -w infrastructure",
     "build:schemas": "npm run build -w schemas",
-    "deploy": "npm run deploy -w infrastructure"
+    "buid:all": "npm run build:schemas && npm run build:infra",
+    "deploy": "npm run build:all && npm run deploy -w infrastructure",
+    "publish:schemas": "npm run build:schemas && npm run hive-publish -w schemas"
   },
   "author": "Merging Futures LLC.",
   "license": "ISC",

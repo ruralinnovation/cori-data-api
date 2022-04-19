@@ -2,3 +2,7 @@ type Comment {
   id: ID!
   text: String!
 }
+
+type NewStuff {
+  god: Boolean
+}

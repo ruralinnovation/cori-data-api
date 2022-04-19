@@ -100,7 +100,9 @@ export class ApiStack extends Stack {
         fieldLogLevel: FieldLogLevel.ALL,
       },
       xrayEnabled: true,
-      schema: Schema.fromAsset("graphql/schema.graphql"),
+      schema: Schema.fromAsset(
+        resolve(__dirname, "../../", "schemas/dist/schema.graphql")
+      ),
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: AuthorizationType.API_KEY,
