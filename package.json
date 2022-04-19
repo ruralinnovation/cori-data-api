@@ -4,7 +4,10 @@
   "description": "CORI Data API Project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:all": "npm run build:infra",
+    "build:infra": "npm run build -w infrastructure",
+    "deploy": "npm run deploy -w infrastructure"
   },
   "author": "Merging Futures LLC.",
   "license": "ISC",
