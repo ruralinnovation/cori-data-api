@@ -6,7 +6,9 @@ node >16
 
 npm >8
 
-###
+> This project uses NPM Workspaces to managing multiple packages from your local file system from within a singular top-level, root package.
+
+> For more information please [READ THE DOCS](https://docs.npmjs.com/cli/v8/using-npm/workspaces)
 
 ### Resources
 
