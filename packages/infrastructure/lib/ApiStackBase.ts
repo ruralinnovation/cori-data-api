@@ -189,7 +189,7 @@ export class ApiBaseStack extends Stack {
     const defaults = {
       api: this.api,
       runtime: Runtime.PYTHON_3_8,
-      layers: [pythonDependencyLayer] as LayerVersion[],
+      layers: [powerToolsLayer] as LayerVersion[],
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: this.props.stage,
