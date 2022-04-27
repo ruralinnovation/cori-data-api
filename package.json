@@ -15,7 +15,8 @@
     "synth": "npm run build:all && npm run synth -w infrastructure",
     "publish:schemas": "npm run build:schemas && npm run hive-publish -w schemas",
     "diff": "npm run diff --w packages/infrastructure",
-    "ts": "npm run node -- -r ts-node/register"
+    "ts": "npm run node -- -r ts-node/register",
+    "build:python-layer": "bash ./buildPythonDependencyLayer.sh"
   },
   "author": "Merging Futures LLC.",
   "license": "ISC",
