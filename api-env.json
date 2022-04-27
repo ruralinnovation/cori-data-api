@@ -1,0 +1,9 @@
+{
+  "Parameters": {
+    "DB_HOST": "cori-testing-db.c0no2rvbbm4n.us-east-1.rds.amazonaws.com",
+    "DB_NAME": "postgres",
+    "DB_USER": "read_only_user",
+    "REGION": "us-east-1",
+    "SECRET": "Brs0EpCGidinyCQSSRL*Y2Ag%77MV&"
+  }
+}

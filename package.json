@@ -5,13 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:all": "npm run build:infra",
     "test:schema": "npm run play -w schemas",
+    "start:api": "npm run start --w infrastructure",
+    "build": "npm run build --ws",
     "build:infra": "npm run build -w infrastructure",
     "build:schemas": "npm run build -w schemas",
-    "buid:all": "npm run build:schemas && npm run build:infra",
+    "build:all": "npm run build:schemas && npm run build:infra",
     "deploy": "npm run build:all && npm run deploy -w infrastructure",
-    "publish:schemas": "npm run build:schemas && npm run hive-publish -w schemas"
+    "synth": "npm run build:all && npm run synth -w infrastructure",
+    "publish:schemas": "npm run build:schemas && npm run hive-publish -w schemas",
+    "diff": "npm run diff --w packages/infrastructure",
+    "ts": "npm run node -- -r ts-node/register"
   },
   "author": "Merging Futures LLC.",
   "license": "ISC",
@@ -20,6 +24,7 @@
     "packages/infrastructure"
   ],
   "dependencies": {
+    "cdk": "^2.20.0",
     "typescript": "^4.6.3"
   }
 }

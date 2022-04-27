@@ -1,0 +1,727 @@
+Parameters:
+  SECRET:
+    Type: String
+    Default: FILLMEIN
+    Description: DB Password
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment,
+      automatically retrieved from SSM Parameter Store. [cdk:skip]
+Resources:
+  OutboundLambdaSecurityGroup886D720A:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for RDS access
+      GroupName: cori-data-api-dev-lambda-sg
+      VpcId: vpc-0499b35a2f5231aae
+    Metadata:
+      aws:cdk:path: ApiStack/OutboundLambdaSecurityGroup/Resource
+  OutboundLambdaSecurityGrouptoApiStackRDSSecurityGroupE13290045432B8AB678A:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      GroupId:
+        Fn::GetAtt:
+          - OutboundLambdaSecurityGroup886D720A
+          - GroupId
+      IpProtocol: tcp
+      Description: Allow Egress to DB
+      DestinationSecurityGroupId: sg-0cdb6d6c66b8e6a4a
+      FromPort: 5432
+      ToPort: 5432
+    Metadata:
+      aws:cdk:path: ApiStack/OutboundLambdaSecurityGroup/to
+        ApiStackRDSSecurityGroupE1329004:5432
+  RDSSecurityGroupfromApiStackOutboundLambdaSecurityGroup3F73E01A543201E74814:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      Description: Allow Ingress from Lambda
+      FromPort: 5432
+      GroupId: sg-0cdb6d6c66b8e6a4a
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - OutboundLambdaSecurityGroup886D720A
+          - GroupId
+      ToPort: 5432
+    Metadata:
+      aws:cdk:path: ApiStack/RDSSecurityGroup/from
+        ApiStackOutboundLambdaSecurityGroup3F73E01A:5432
+  AppSyncApiApiLogsRole6E293C70:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: appsync.amazonaws.com
+        Version: 2012-10-17
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSAppSyncPushToCloudWatchLogs
+    Metadata:
+      aws:cdk:path: ApiStack/AppSyncApi/ApiLogsRole/Resource
+  AppSyncApiC06E4485:
+    Type: AWS::AppSync::GraphQLApi
+    Properties:
+      AuthenticationType: API_KEY
+      Name: cori-graphql-api-dev
+      LogConfig:
+        CloudWatchLogsRoleArn:
+          Fn::GetAtt:
+            - AppSyncApiApiLogsRole6E293C70
+            - Arn
+        FieldLogLevel: ALL
+      XrayEnabled: true
+    Metadata:
+      aws:cdk:path: ApiStack/AppSyncApi/Resource
+  AppSyncApiSchema17220FEA:
+    Type: AWS::AppSync::GraphQLSchema
+    Properties:
+      ApiId:
+        Fn::GetAtt:
+          - AppSyncApiC06E4485
+          - ApiId
+      Definition: |-
+        type Test {
+          hello: String!
+        }
+
+        type Query {
+          test: Test
+          helloName(name: String!): Test
+        }
+
+        type Comment {
+          id: ID!
+          text: String!
+        }
+
+        type NewStuff {
+          god: Boolean
+        }
+
+        type One {
+          two: Boolean
+        }
+
+        type Lee {
+          jedi: Boolean
+        }
+    Metadata:
+      aws:cdk:path: ApiStack/AppSyncApi/Schema
+  AppSyncApiDefaultApiKeyBC092C95:
+    Type: AWS::AppSync::ApiKey
+    Properties:
+      ApiId:
+        Fn::GetAtt:
+          - AppSyncApiC06E4485
+          - ApiId
+      Expires: 1682333656
+    DependsOn:
+      - AppSyncApiSchema17220FEA
+    Metadata:
+      aws:cdk:path: ApiStack/AppSyncApi/DefaultApiKey
+  AppSyncApipythonApiDatasourceServiceRoleEDA82ACF:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: appsync.amazonaws.com
+        Version: 2012-10-17
+    Metadata:
+      aws:cdk:path: ApiStack/AppSyncApi/pythonApiDatasource/ServiceRole/Resource
+  AppSyncApipythonApiDatasource12507E81:
+    Type: AWS::AppSync::DataSource
+    Properties:
+      ApiId:
+        Fn::GetAtt:
+          - AppSyncApiC06E4485
+          - ApiId
+      Name: httpPythonRESTApi
+      Type: HTTP
+      Description: AppSync to HTTP API
+      HttpConfig:
+        Endpoint:
+          Fn::Join:
+            - ""
+            - - https://
+              - Ref: ApiRestApiE35FEAFE
+              - .execute-api.us-east-1.
+              - Ref: AWS::URLSuffix
+              - /
+              - Ref: ApiRestApiDeploymentStageprodE828476C
+              - /
+      ServiceRoleArn:
+        Fn::GetAtt:
+          - AppSyncApipythonApiDatasourceServiceRoleEDA82ACF
+          - Arn
+    Metadata:
+      aws:cdk:path: ApiStack/AppSyncApi/pythonApiDatasource/Resource
+  AppSyncApipythonApiDatasourceQuerytestResolver7D67BF19:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId:
+        Fn::GetAtt:
+          - AppSyncApiC06E4485
+          - ApiId
+      FieldName: test
+      TypeName: Query
+      DataSourceName: httpPythonRESTApi
+      Kind: UNIT
+      RequestMappingTemplate: '{"version":"2018-05-29","method":"GET","resourcePath":"/prod/api/hello","params":{"headers":{"Content-Type":"application/json"}}}'
+      ResponseMappingTemplate: $ctx.result.body
+    DependsOn:
+      - AppSyncApipythonApiDatasource12507E81
+      - AppSyncApiSchema17220FEA
+    Metadata:
+      aws:cdk:path: ApiStack/AppSyncApi/pythonApiDatasource/QuerytestResolver/Resource
+  AppSyncApipythonApiDatasourceQueryhelloNameResolver5B677BEC:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId:
+        Fn::GetAtt:
+          - AppSyncApiC06E4485
+          - ApiId
+      FieldName: helloName
+      TypeName: Query
+      DataSourceName: httpPythonRESTApi
+      Kind: UNIT
+      RequestMappingTemplate: '{"version":"2018-05-29","method":"GET","resourcePath":"/prod/api/hello/$context.arguments.name","params":{"headers":{"Content-Type":"application/json"}}}'
+      ResponseMappingTemplate: $ctx.result.body
+    DependsOn:
+      - AppSyncApipythonApiDatasource12507E81
+      - AppSyncApiSchema17220FEA
+    Metadata:
+      aws:cdk:path: ApiStack/AppSyncApi/pythonApiDatasource/QueryhelloNameResolver/Resource
+  RolesPythonApiRole0B8F1C22:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: 2012-10-17
+      Policies:
+        - PolicyDocument:
+            Statement:
+              - Action:
+                  - ec2:CreateNetworkInterface
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:DeleteNetworkInterface
+                  - ec2:AssignPrivateIpAddresses
+                  - ec2:UnassignPrivateIpAddresses
+                Effect: Allow
+                Resource: "*"
+              - Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Effect: Allow
+                Resource: arn:aws:logs:us-east-1:190686435752:log-group:/aws/lambda/*:*
+              - Action:
+                  - secretsmanager:GetSecretValue
+                  - secretsmanager:DescribeSecret
+                  - secretsmanager:ListSecretVersionIds
+                Effect: Allow
+                Resource: arn:aws:secretsmanager:us-east-1:190686435752:secret:read_only_user_creds-mmaTe4
+            Version: 2012-10-17
+          PolicyName: policy
+      RoleName: cori-data-api-dev-PythonApiRole
+    Metadata:
+      aws:cdk:path: ApiStack/Roles/PythonApiRole/Resource
+  ApiRestApiE35FEAFE:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: cori-data-api-dev
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/Resource
+  ApiRestApiDeploymentDC05A82Dbe004b4bb90f4f46a57d8472acb9d9d4:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId:
+        Ref: ApiRestApiE35FEAFE
+      Description: Automatically created by the RestApi construct
+    DependsOn:
+      - ApiRestApiapihellonameGETDBFD6903
+      - ApiRestApiapihellonameAC4FA71E
+      - ApiRestApiapihelloGET7C0A96BF
+      - ApiRestApiapihelloC10476C9
+      - ApiRestApiapi772EBA1E
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/Deployment/Resource
+  ApiRestApiDeploymentStageprodE828476C:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId:
+        Ref: ApiRestApiE35FEAFE
+      DeploymentId:
+        Ref: ApiRestApiDeploymentDC05A82Dbe004b4bb90f4f46a57d8472acb9d9d4
+      StageName: prod
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/DeploymentStage.prod/Resource
+  ApiRestApiapi772EBA1E:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - ApiRestApiE35FEAFE
+          - RootResourceId
+      PathPart: api
+      RestApiId:
+        Ref: ApiRestApiE35FEAFE
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/Default/api/Resource
+  ApiRestApiapihelloC10476C9:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: ApiRestApiapi772EBA1E
+      PathPart: hello
+      RestApiId:
+        Ref: ApiRestApiE35FEAFE
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/Default/api/hello/Resource
+  ApiRestApiapihelloGET7C0A96BF:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Ref: ApiRestApiapihelloC10476C9
+      RestApiId:
+        Ref: ApiRestApiE35FEAFE
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - TestApiFunction7B5ABB5C
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/Default/api/hello/GET/Resource
+  ApiRestApiapihellonameAC4FA71E:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: ApiRestApiapihelloC10476C9
+      PathPart: "{name}"
+      RestApiId:
+        Ref: ApiRestApiE35FEAFE
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/Default/api/hello/{name}/Resource
+  ApiRestApiapihellonameGETDBFD6903:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Ref: ApiRestApiapihellonameAC4FA71E
+      RestApiId:
+        Ref: ApiRestApiE35FEAFE
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - TestApiFunction7B5ABB5C
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/Default/api/hello/{name}/GET/Resource
+  ApiRestApicoridataapidevapikeyD525D93B:
+    Type: AWS::ApiGateway::ApiKey
+    Properties:
+      Enabled: true
+      StageKeys:
+        - RestApiId:
+            Ref: ApiRestApiE35FEAFE
+          StageName:
+            Ref: ApiRestApiDeploymentStageprodE828476C
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/cori-data-api-dev-api-key/Resource
+  ApiRestApiUsagePlan2A40902F:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      Throttle:
+        BurstLimit: 2
+        RateLimit: 10
+      UsagePlanName: Easy
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/UsagePlan/Resource
+  ApiRestApiUsagePlanUsagePlanKeyResourceApiStackApiRestApicoridataapidevapikey9ED179CEE61E70D7:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId:
+        Ref: ApiRestApicoridataapidevapikeyD525D93B
+      KeyType: API_KEY
+      UsagePlanId:
+        Ref: ApiRestApiUsagePlan2A40902F
+    Metadata:
+      aws:cdk:path: ApiStack/Api/RestApi/UsagePlan/UsagePlanKeyResource:ApiStackApiRestApicoridataapidevapikey9ED179CE
+  HostingBucketDB108620:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: cori-data-api-dev
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: ApiStack/Hosting/Bucket/Resource
+  HostingBucketPolicyED370C32:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: HostingBucketDB108620
+      PolicyDocument:
+        Statement:
+          - Action: s3:GetObject
+            Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt:
+                  - HostingOriginAccessIdentityDEE81F7A
+                  - S3CanonicalUserId
+            Resource:
+              Fn::Join:
+                - ""
+                - - Fn::GetAtt:
+                      - HostingBucketDB108620
+                      - Arn
+                  - /*
+        Version: 2012-10-17
+    Metadata:
+      aws:cdk:path: ApiStack/Hosting/Bucket/Policy/Resource
+  HostingOriginAccessIdentityDEE81F7A:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: cori-data-api-dev
+    Metadata:
+      aws:cdk:path: ApiStack/Hosting/OriginAccessIdentity/Resource
+  ClientCloudFrontDistro:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        CacheBehaviors:
+          - AllowedMethods:
+              - DELETE
+              - GET
+              - HEAD
+              - OPTIONS
+              - PATCH
+              - POST
+              - PUT
+            CachedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+            Compress: true
+            DefaultTTL: 0
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+                - Authorization
+              QueryString: true
+            MaxTTL: 0
+            MinTTL: 0
+            PathPattern: /api/*
+            TargetOriginId: origin2
+            ViewerProtocolPolicy: redirect-to-https
+        Comment: cori-data-api-dev
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 0
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+          - ErrorCachingMinTTL: 0
+            ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          DefaultTTL: 60
+          ForwardedValues:
+            QueryString: true
+          MaxTTL: 300
+          MinTTL: 0
+          TargetOriginId: origin1
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Origins:
+          - ConnectionAttempts: 3
+            ConnectionTimeout: 10
+            DomainName:
+              Fn::GetAtt:
+                - HostingBucketDB108620
+                - RegionalDomainName
+            Id: origin1
+            S3OriginConfig:
+              OriginAccessIdentity:
+                Fn::Join:
+                  - ""
+                  - - origin-access-identity/cloudfront/
+                    - Ref: HostingOriginAccessIdentityDEE81F7A
+          - ConnectionAttempts: 3
+            ConnectionTimeout: 10
+            CustomOriginConfig:
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginKeepaliveTimeout: 5
+              OriginProtocolPolicy: https-only
+              OriginReadTimeout: 30
+              OriginSSLProtocols:
+                - TLSv1.2
+            DomainName:
+              Fn::Join:
+                - ""
+                - - Ref: ApiRestApiE35FEAFE
+                  - .execute-api.us-east-1.amazonaws.com
+            Id: origin2
+            OriginPath: /prod
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+    Metadata:
+      aws:cdk:path: ApiStack/Hosting/Distribution/CFDistribution
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_phone_number
+            Priority: 1
+          - Name: verified_email
+            Priority: 2
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+        InviteMessageTemplate:
+          EmailMessage:
+            Fn::Join:
+              - ""
+              - - "Your username is {username} and temporary password is {####}.
+                  The CORI API address is: https://"
+                - Fn::GetAtt:
+                    - ClientCloudFrontDistro
+                    - DomainName
+          EmailSubject: Your CORI API temporary password
+          SMSMessage: Your username is {username} and temporary password is {####}.
+      AutoVerifiedAttributes:
+        - email
+      EmailVerificationMessage: The verification code to your new account is {####}
+      EmailVerificationSubject: Verify your new account
+      SmsVerificationMessage: The verification code to your new account is {####}
+      UserPoolName: cori-data-api-dev
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+        EmailMessage: The verification code to your new account is {####}
+        EmailSubject: Verify your new account
+        SmsMessage: The verification code to your new account is {####}
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: ApiStack/Cognito/UserPool/Resource
+  CognitoDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: cori-data-api-dev
+      UserPoolId:
+        Ref: CognitoUserPool
+    Metadata:
+      aws:cdk:path: ApiStack/Cognito/CognitoDomain
+  AdminUserPoolGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId:
+        Ref: CognitoUserPool
+      Description: Administrator Group
+      GroupName: admin
+      Precedence: 0
+    Metadata:
+      aws:cdk:path: ApiStack/Cognito/AdminGroup
+  CognitoUserPoolClientEF2538C4:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId:
+        Ref: CognitoUserPool
+      AllowedOAuthFlows:
+        - implicit
+        - code
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes:
+        - email
+        - openid
+        - profile
+      CallbackURLs:
+        - Fn::Join:
+            - ""
+            - - https://
+              - Fn::GetAtt:
+                  - ClientCloudFrontDistro
+                  - DomainName
+      ClientName: cori-data-api-dev
+      GenerateSecret: false
+      LogoutURLs:
+        - Fn::Join:
+            - ""
+            - - https://
+              - Fn::GetAtt:
+                  - ClientCloudFrontDistro
+                  - DomainName
+              - /logout/
+      SupportedIdentityProviders:
+        - COGNITO
+    Metadata:
+      aws:cdk:path: ApiStack/Cognito/UserPoolClient/Resource
+  TestApiFunction7B5ABB5C:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-190686435752-us-east-1
+        S3Key: 4829e74a7898b2ff52c6593709c47bdda41d6b4af25fb96ee323de28ce6630ab.zip
+      Role:
+        Fn::GetAtt:
+          - RolesPythonApiRole0B8F1C22
+          - Arn
+      Environment:
+        Variables:
+          LOGGING_LEVEL: info
+          STAGE: dev
+          ALLOWED_ORIGINS_CSV: ""
+          SECRET:
+            Ref: SECRET
+          DB_USER: read_only_user
+          REGION: us-east-1
+          DB_HOST: cori-testing-db.c0no2rvbbm4n.us-east-1.rds.amazonaws.com
+          DB_NAME: postgres
+      Handler: index.handler
+      Layers:
+        - Fn::Join:
+            - ""
+            - - "arn:aws:lambda:"
+              - Ref: AWS::Region
+              - :017000801446:layer:AWSLambdaPowertoolsPython:17
+      Runtime: python3.8
+      Timeout: 360
+      VpcConfig:
+        SecurityGroupIds:
+          - Fn::GetAtt:
+              - OutboundLambdaSecurityGroup886D720A
+              - GroupId
+        SubnetIds:
+          - subnet-0393a8b0773ca8a0f
+          - subnet-0bbab33c82d76a172
+          - subnet-0dace3a73232a4775
+          - subnet-0bd24964a5136ae29
+          - subnet-04cfcfd314652bd05
+          - subnet-0fb3a93a17d9b5d61
+    DependsOn:
+      - RolesPythonApiRole0B8F1C22
+    Metadata:
+      aws:cdk:path: ApiStack/TestApi/Function/Resource
+      aws:asset:path: asset.4829e74a7898b2ff52c6593709c47bdda41d6b4af25fb96ee323de28ce6630ab
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  TestApiFunctionInvokeServicePrincipalapigatewayamazonawscomEC4C40D1:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - TestApiFunction7B5ABB5C
+          - Arn
+      Principal: apigateway.amazonaws.com
+    Metadata:
+      aws:cdk:path: ApiStack/TestApi/Function/InvokeServicePrincipal(apigateway.amazonaws.com)
+  TestApiLogGroupA1044CDA:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName:
+        Fn::Join:
+          - ""
+          - - /aws/lambda/
+            - Ref: TestApiFunction7B5ABB5C
+      RetentionInDays: 14
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: ApiStack/TestApi/LogGroup/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/31TUW/bIBD+LXnHNEmnaY9Lk7ar1qleomqP1QVfHRoMDHArC/m/DzCOM7Xb033fx+fjuDsvqV/OqZ/P4M0WrDoWgu+p3zlgR7J+liUYaNChIVu0qjUMSTA+eWTL4ELWGu66W6NaHd3/F65rg9a+k+9k0nvCoaF+qwRGS4w9Aa1tJxn1Qbk1oA8/71eak4nt2AEbiELQv2MX0QYc7IZaY6JQt3hFE5PxGhy+QReuQetyphFuUAvVNShdSjKx0Iw6pRrA2IgrsBMZb0r4B7qDqqKU0VRbRo82ZCoFyKh9TIKtJ/aS+quWHTHVlNEQSiU46yY584HE2nrChGqrZ6Oko/7B8JrLFWOh1XdVeFZof/x4HT030fOx43T8C/cbbp3h+9ZxlWo95+E2VUvuFPWPFk2plBie8x5vVANcnivDvoxsLXgewt9KbMcTWIvO0lUMRECzryBtx00r2VhXiabh1qaqhKot9feqPu3kiPs+sofW6daRlC/Ol8v6fJY9mRcg9AHofPY1/yIXMQ5XF7oLA5bZUiYyVtKTxRf6j6/zXudDn5b5t4hb+M05fbbAp+3tiVQV0hd78br4TBef6HL2YjkvTBsG1SDdDvEPzpHsh88DAAA=
+    Metadata:
+      aws:cdk:path: ApiStack/CDKMetadata/Default
+Outputs:
+  ApiRestApiEndpoint4DEFB5CC:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: ApiRestApiE35FEAFE
+          - .execute-api.us-east-1.
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: ApiRestApiDeploymentStageprodE828476C
+          - /
+  CognitoDomainOutputD79424E6:
+    Value: cori-data-api-dev
+  CognitoUserPoolOutput22AB3953:
+    Value:
+      Ref: CognitoUserPool
+  CognitoUserPoolClientOutput99958908:
+    Value:
+      Ref: CognitoUserPoolClientEF2538C4
+Rules:
+  CheckBootstrapVersion:
+    Assertions:
+      - Assert:
+          Fn::Not:
+            - Fn::Contains:
+                - - "1"
+                  - "2"
+                  - "3"
+                  - "4"
+                  - "5"
+                - Ref: BootstrapVersion
+        AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk
+          bootstrap' with a recent version of the CDK CLI.

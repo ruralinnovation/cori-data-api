@@ -1,18 +1,14 @@
 #!/usr/bin/env node
-import "source-map-support/register";
-import * as cdk from "aws-cdk-lib";
-import { ApiStack, ApiStackProps } from "../lib/ApiStack";
 
-const app = new cdk.App();
+import 'source-map-support/register';
+import { App, DefaultStackSynthesizer } from 'aws-cdk-lib';
+import { ApiStack, ApiBaseStack } from '../lib';
+import { getConfig } from '../config/config';
 
-const apiParams: ApiStackProps = {
-  client: "cori",
-  stage: "dev",
-  loggingLevel: "info",
-  retain: false,
-  env: {
-    account: "190686435752",
-    region: "us-east-1",
-  },
-};
-new ApiStack(app, "ApiStack", apiParams);
+const app = new App();
+
+const config = getConfig(app.node.tryGetContext('config'));
+
+new ApiBaseStack(app, `${config.client}-data-api-${config.stage}`, {
+  ...config,
+});

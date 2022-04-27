@@ -6,3 +6,8 @@ type Query {
   test: Test
   helloName(name: String!): Test
 }
+
+type Comment {
+  id: ID!
+  text: String!
+}

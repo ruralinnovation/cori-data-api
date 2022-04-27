@@ -1,14 +1,8 @@
-import { Construct } from "constructs";
-import {
-  IManagedPolicy,
-  IPrincipal,
-  IRole,
-  PolicyDocument,
-  Role,
-  ServicePrincipal,
-} from "aws-cdk-lib/aws-iam";
-import { Stack } from "aws-cdk-lib";
-import { LambdaPolicyBuilder } from "./lambda/LambdaPolicyBuilder";
+import { Construct } from 'constructs';
+import { IManagedPolicy, IPrincipal, IRole, PolicyDocument, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { Stack } from 'aws-cdk-lib';
+import { LambdaPolicyBuilder } from './lambda/LambdaPolicyBuilder';
+import { InterfaceVpcEndpoint } from 'aws-cdk-lib/aws-ec2';
 
 export interface ApiIAMProps {
   prefix: string;
@@ -16,7 +10,7 @@ export interface ApiIAMProps {
 }
 
 export interface ApiRoles {
-  testApiRole: IRole;
+  pythonLambdaRole: IRole;
 }
 
 export const injectableRole = (
@@ -36,20 +30,8 @@ export const injectableRole = (
     managedPolicies: managedPolicies,
   });
 };
-export const injectableLambdaRole = (
-  scope: Construct,
-  id: string,
-  prefix: string,
-  policy: PolicyDocument
-): IRole => {
-  return injectableRole(
-    scope,
-    id,
-    new ServicePrincipal("lambda.amazonaws.com"),
-    prefix,
-    undefined,
-    policy
-  );
+export const injectableLambdaRole = (scope: Construct, id: string, prefix: string, policy: PolicyDocument): IRole => {
+  return injectableRole(scope, id, new ServicePrincipal('lambda.amazonaws.com'), prefix, undefined, policy);
 };
 
 /**
@@ -66,11 +48,11 @@ export class ApiIAM extends Construct {
     const { prefix } = props;
     const stack = Stack.of(this);
 
-    this.roles.testApiRole = injectableLambdaRole(
+    this.roles.pythonLambdaRole = injectableLambdaRole(
       this,
-      "TestApiRole",
+      'PythonApiRole',
       prefix,
-      new LambdaPolicyBuilder(this, props.vpc).addLogging("*")
+      new LambdaPolicyBuilder(this, props.vpc).addLogging('*')
     );
   }
 }

@@ -12,15 +12,29 @@
   "author": "Merging Futures LLC.",
   "homepage": "https://bitbucket.org/mergingfuturesprojects/cori-api#readme",
   "scripts": {
+    "clean": "rimraf dist",
+    "clean:modules": "rimraf node_modules",
     "build": "tsc",
+    "build:orig": "tsc && npm run build:assets",
+    "build:assets": "ts-node ./bin/prepAssets.ts",
+    "synth": "tsc && npx cdk -c config=mf-dev synth --profile mf-dev",
+    "start": "tsc && npx cdk -c config=mf-dev --app 'npx ts-node --prefer-ts-exts bin/start-api.ts' synth && cd cdk.out && sam local start-api -p 2000 --profile mf-dev -n env.json",
+    "deploy": "cdk -c config=mf-dev deploy --all --require-approval never --profile mf-dev",
+    "diff": "tsc && npx cdk -c config=mf-dev diff",
+    "ts": "npm run node -- -r ts-node/register",
+    "node": "node",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "npx cdk deploy"
+    "odeploy": "npx cdk deploy",
+    "osynth": "npx cdk synth -c config=mf-dev"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.0",
     "@types/jest": "^26.0.10",
+    "@types/ncp": "^2.0.5",
     "@types/node": "^10.17.27",
+    "@types/rimraf": "^3.0.2",
     "aws-cdk": "2.20.0",
     "jest": "^26.4.2",
     "ts-jest": "^26.2.0",
@@ -30,8 +44,13 @@
   "dependencies": {
     "@aws-cdk/aws-appsync-alpha": "^2.18.0-alpha.0",
     "@aws-cdk/aws-lambda-python-alpha": "^2.20.0-alpha.0",
+    "adm-zip": "^0.5.9",
     "aws-cdk-lib": "2.20.0",
     "constructs": "^10.0.0",
-    "source-map-support": "^0.5.16"
+    "dotenv": "^16.0.0",
+    "ncp": "^2.0.0",
+    "rimraf": "^3.0.2",
+    "source-map-support": "^0.5.16",
+    "yaml": "^2.0.1"
   }
 }

@@ -65,8 +65,8 @@ from aws_lambda_powertools.event_handler import APIGatewayRestResolver
     
 #     return credential
 
-logger = Logger(service="testApi")
-tracer = Tracer(service="testApi")
+logger = Logger(service="APP")
+tracer = Tracer(service="APP")
 app = APIGatewayRestResolver(strip_prefixes=["/api"])
 
 
@@ -77,7 +77,6 @@ def get_hello_you(name):
 @app.get("/hello")
 def get_hello():
   
-    logger.info(os.environ)
     conn = psycopg.connect(
         user = os.environ['DB_USER'],
         password = os.environ['SECRET'],

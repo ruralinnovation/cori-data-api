@@ -2,6 +2,56 @@
 !jest.config.js
 *.d.ts
 node_modules
+.env.*.json
+**.env.*.json
+swagger/dist*
+
+  
+**/*.tgz
+
+.DS_Store
+node_modules
+dist
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+nextgen-cti/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+*.pyc
+__pycache__
+
+.aws-sam
+
+todo.txt
+
+# Client/environment specific config files
+environment.*.ts
+
+packaged-template.yaml
+.pytest_cache
+vf-holidays-env
+
+package/**
+
+.scannerwork
+
+**/*.tgz
+
+# CDK asset staging directory
+**/.cdk.staging
+**/cdk.out
 
 *.swp
 package-lock.json

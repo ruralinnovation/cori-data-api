@@ -1,0 +1,19 @@
+{
+  "type": "aws-sam",
+  "request": "direct-invoke",
+  "name": "myConfig",
+  "invokeTarget": {
+    "target": "api",
+    "templatePath": "./ApiStack.template.yaml",
+    "logicalId": "ApiRestApiE35FEAFE"
+  },
+  "api": {
+    "path": "/api/hello",
+    "httpMethod": "get",
+    "payload": {
+      "json": {}
+    }
+  },
+  "sam": {},
+  "aws": {}
+}

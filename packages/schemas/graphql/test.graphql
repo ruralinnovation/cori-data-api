@@ -10,3 +10,7 @@ type NewStuff {
 type One {
   two: Boolean
 }
+
+type Lee {
+  jedi: Boolean
+}
