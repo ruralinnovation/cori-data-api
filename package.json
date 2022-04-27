@@ -24,7 +24,7 @@
     "packages/infrastructure"
   ],
   "dependencies": {
-    "cdk": "^2.20.0",
+    "cdk": "2.20.0",
     "typescript": "^4.6.3"
   }
 }
