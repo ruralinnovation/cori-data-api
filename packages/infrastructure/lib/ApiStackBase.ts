@@ -182,16 +182,19 @@ export class ApiBaseStack extends Stack {
 
     const pythonDependencyLayer = new LayerVersion(this, 'DependencyLayer', {
       removalPolicy: RemovalPolicy.RETAIN,
-      code: Code.fromAsset(
-        join(__dirname, '../../../python-microservices/lambda-dependency-layer/lambda-dependency-layer.zip')
-      ),
+      code: Code.fromAsset(join(__dirname, '../../../python-microservices/dependency-layer/dependency-layer.zip')),
       compatibleRuntimes: [Runtime.PYTHON_3_8],
     });
+    // const pythonDependencyLayerTest = new LayerVersion(this, 'DependencyLayer2', {
+    //   removalPolicy: RemovalPolicy.RETAIN,
+    //   code: Code.fromAsset(join(__dirname, '../../../python-microservices/testing-layer/testing-layer-final.zip')),
+    //   compatibleRuntimes: [Runtime.PYTHON_3_8],
+    // });
 
     const defaults = {
       api: this.api,
       runtime: Runtime.PYTHON_3_8,
-      layers: [powerToolsLayer, pythonDependencyLayer] as LayerVersion[],
+      layers: [pythonDependencyLayer] as LayerVersion[],
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: this.props.stage,

@@ -9,6 +9,6 @@ const app = new App();
 
 const config = getConfig(app.node.tryGetContext('config'));
 
-new ApiBaseStack(app, `${config.client}-data-api-${config.stage}`, {
+new ApiStack(app, `${config.client}-data-api-${config.stage}`, {
   ...config,
 });

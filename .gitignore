@@ -6,7 +6,6 @@ node_modules
 **.env.*.json
 swagger/dist*
 
-  
 **/*.tgz
 
 .DS_Store

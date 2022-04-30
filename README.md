@@ -6,6 +6,13 @@ node >16
 
 npm >8
 
+### Directory Structure
+
+packages
+infrastructure
+schemas
+python-microservices
+
 > This project uses NPM Workspaces to managing multiple packages from your local file system from within a singular top-level, root package.
 
 > For more information please [READ THE DOCS](https://docs.npmjs.com/cli/v8/using-npm/workspaces)
@@ -21,3 +28,5 @@ npm >8
 [AWS CDK V2](https://docs.aws.amazon.com/cdk/api/v2/)
 
 [AppSync CDK V2](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-appsync-alpha-readme.html)
+
+[Github Actions](https://docs.github.com/en/actions)
