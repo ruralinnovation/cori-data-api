@@ -1,7 +1,7 @@
 import { Stack, StackProps, Stage, StageProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-const getConfig = require('infrastructure').config;
-const ApiStack = require('infrastructure');
+import { getConfig } from '../../infrastructure/config/config';
+import { ApiStack } from '../../infrastructure/lib';
 
 export interface CICDAppStageProps extends StageProps {
   stage: string;

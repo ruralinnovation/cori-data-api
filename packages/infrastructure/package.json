@@ -9,6 +9,9 @@
     "type": "git",
     "url": "git+ssh://git@bitbucket.org/mergingfuturesprojects/cori-api.git"
   },
+  "files": [
+    "dist"
+  ],
   "author": "Merging Futures LLC.",
   "homepage": "https://bitbucket.org/mergingfuturesprojects/cori-api#readme",
   "scripts": {
