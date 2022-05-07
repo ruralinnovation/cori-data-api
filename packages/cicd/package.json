@@ -22,7 +22,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "npx cdk deploy --all"
+    "deploy": "npx cdk deploy --all",
+    "synth": "npx cdk synth"
   },
   "repository": {
     "type": "git",
