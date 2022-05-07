@@ -22,7 +22,7 @@ export class CICDPipelineStack extends Stack {
       pipelineName: `${props.client}-${props.project}-cicdpipeline-${props.stage}`,
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(props.repo, props.branch),
-        commands: ['npm ci', 'npm run build', 'npx cdk synth'],
+        commands: ['npm i'],
       }),
     });
   }
