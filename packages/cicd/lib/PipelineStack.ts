@@ -23,6 +23,7 @@ export class CICDPipelineStack extends Stack {
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(props.repo, props.branch),
         commands: ['npm i'],
+        primaryOutputDirectory: 'packages/infrastructure/cdk.out',
       }),
     });
   }
