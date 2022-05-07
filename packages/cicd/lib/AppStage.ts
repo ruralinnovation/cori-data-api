@@ -9,7 +9,7 @@ export interface CICDAppStageProps extends StageProps {
 export class AppStage extends Stage {
   constructor(scope: Construct, id: string, props: CICDAppStageProps) {
     super(scope, id, props);
-    const config = getConfig(this.node.tryGetContext(props.stage));
+    const config = getConfig(props.stage);
     const apiStack = new ApiStack(this, `${config.client}-data-api-${config.stage}`, {
       ...config,
     });
