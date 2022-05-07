@@ -1,7 +1,7 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
-import { CICDAppStage } from './AppStage';
+import { AppStage } from './AppStage';
 import { CICDPipelineProps } from './PipelineStack';
 
 export interface CICDProps extends StackProps {
@@ -35,6 +35,13 @@ export class CICDStack extends Stack {
           primaryOutputDirectory: 'packages/cicd/cdk.out',
         }),
       });
+
+      pipeline.addStage(
+        new AppStage(this, 'DeployApiResources', {
+          env: { account: accountNumber, region: region },
+          stage: env.stage,
+        })
+      );
     });
   }
 }
