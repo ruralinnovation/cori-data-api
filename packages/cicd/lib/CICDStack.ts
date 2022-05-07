@@ -39,12 +39,12 @@ export class CICDStack extends Stack {
         }),
       });
 
-      // pipeline.addStage(
-      //   new AppStage(this, `${env.stage}_DeployApiResources`, {
-      //     env: { account: accountNumber, region: region },
-      //     stage: env.stage,
-      //   })
-      // );
+      pipeline.addStage(
+        new AppStage(this, `${env.stage}_DeployApiResources`, {
+          env: { account: accountNumber, region: region },
+          stage: env.stage,
+        })
+      );
     });
   }
 }
