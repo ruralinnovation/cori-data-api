@@ -185,11 +185,6 @@ export class ApiBaseStack extends Stack {
       code: Code.fromAsset(join(__dirname, '../../../python-microservices/dependency-layer/dependency-layer.zip')),
       compatibleRuntimes: [Runtime.PYTHON_3_8],
     });
-    // const pythonDependencyLayerTest = new LayerVersion(this, 'DependencyLayer2', {
-    //   removalPolicy: RemovalPolicy.RETAIN,
-    //   code: Code.fromAsset(join(__dirname, '../../../python-microservices/testing-layer/testing-layer-final.zip')),
-    //   compatibleRuntimes: [Runtime.PYTHON_3_8],
-    // });
 
     const defaults = {
       api: this.api,
