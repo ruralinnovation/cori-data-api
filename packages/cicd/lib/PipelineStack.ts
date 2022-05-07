@@ -22,8 +22,8 @@ export class CICDPipelineStack extends Stack {
       pipelineName: `${props.client}-${props.project}-cicdpipeline-${props.stage}`,
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(props.repo, props.branch),
-        commands: ['npm ci', 'npm run build:cicd', 'npm run synth:cicd'],
-        primaryOutputDirectory: 'packages/cicd/cdk.out',
+        commands: ['cd ./packages/cicd', 'npm i', 'npm ci', 'npm run build:cicd', 'npm run synth:cicd'],
+        primaryOutputDirectory: './packages/cicd/cdk.out',
       }),
     });
   }
