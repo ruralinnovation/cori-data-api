@@ -25,4 +25,4 @@ const cicdProps: CICDProps = {
 };
 const app = new cdk.App();
 
-new CICDStack(app, 'CICDStack', cicdProps);
+new CICDStack(app, 'CoriDataApiCICDStack', cicdProps);

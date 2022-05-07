@@ -24,7 +24,15 @@ export class CICDStack extends Stack {
         pipelineName: `${env.client}-${env.project}-cicdpipeline-${env.stage}`,
         synth: new ShellStep('Synth', {
           input: CodePipelineSource.gitHub(env.repo, env.branch),
-          commands: ['npm ci', 'npm run build:all', 'npm run synth'],
+          commands: [
+            'npm install -g npm@latest',
+            'npm --version',
+            'npm install',
+            'npm ci',
+            'npm run build:all',
+            'npm run synth:cicd',
+          ],
+          primaryOutputDirectory: 'packages/cicd/cdk.out',
         }),
       });
     });

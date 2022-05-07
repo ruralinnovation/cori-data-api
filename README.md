@@ -30,3 +30,11 @@ python-microservices
 [AppSync CDK V2](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-appsync-alpha-readme.html)
 
 [Github Actions](https://docs.github.com/en/actions)
+
+# CICD Setup
+
+### Github Setup
+
+1. Create a new user in Github for CICD
+2. Create a Personal Access Token for this user
+3. Store the Personal Access Token in AWS Secrets Manager with the name `github-token`
