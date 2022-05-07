@@ -1,1 +1,0 @@
-sam local start-api -t ./packages/infrastructure/cdk.out/ApiStack.template.json  -n env.json

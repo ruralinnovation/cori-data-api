@@ -1,7 +1,7 @@
 {
   "name": "infrastructure",
   "version": "0.0.1",
-  "description": "Infrastructure code for CORI data api",
+  "description": "Infrastructure code for CORI data apis",
   "bin": {
     "infrastructure": "bin/infrastructure.js"
   },
@@ -17,9 +17,9 @@
     "build": "tsc",
     "build:orig": "tsc && npm run build:assets",
     "build:assets": "ts-node ./bin/prepAssets.ts",
-    "synth": "tsc && npx cdk -c config=mf-dev synth --profile mf-dev",
+    "synth": "tsc && npx cdk -c config=mf-dev synth --profile mf-cori",
     "start": "tsc && npx cdk -c config=mf-dev --app 'npx ts-node --prefer-ts-exts bin/start-api.ts' synth && cd cdk.out && sam local start-api -p 2000 --profile mf-dev -n env.json",
-    "deploy": "cdk -c config=mf-dev deploy --all --require-approval never --profile mf-dev",
+    "deploy": "npx cdk -c config=mf-dev deploy --all --require-approval never --profile mf-cori",
     "diff": "tsc && npx cdk -c config=mf-dev diff",
     "ts": "npm run node -- -r ts-node/register",
     "node": "node",
