@@ -9,8 +9,10 @@
     "start:api": "npm run start --w infrastructure",
     "build": "npm run build --ws",
     "build:infra": "npm run build -w infrastructure",
+    "build:cicd": "npm run build -w cicd",
     "build:schemas": "npm run build -w schemas",
     "build:all": "npm run build:schemas && npm run build:infra",
+    "deploy:cicd": "npm run build -w cicd && npm run deploy -w cicd",
     "deploy": "npm run build:all && npm run deploy -w infrastructure",
     "synth": "npm run build:all && npm run synth -w infrastructure",
     "publish:schemas": "npm run build:schemas && npm run hive-publish -w schemas",
@@ -22,7 +24,8 @@
   "license": "ISC",
   "workspaces": [
     "packages/schemas",
-    "packages/infrastructure"
+    "packages/infrastructure",
+    "packages/cicd"
   ],
   "dependencies": {
     "cdk": "2.20.0",
