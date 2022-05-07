@@ -33,15 +33,18 @@ export class CICDStack extends Stack {
             'npm run synth:cicd',
           ],
           primaryOutputDirectory: 'packages/cicd/cdk.out',
+          env: {
+            privileged: 'True',
+          },
         }),
       });
 
-      pipeline.addStage(
-        new AppStage(this, 'DeployApiResources', {
-          env: { account: accountNumber, region: region },
-          stage: env.stage,
-        })
-      );
+      // pipeline.addStage(
+      //   new AppStage(this, `${env.stage}_DeployApiResources`, {
+      //     env: { account: accountNumber, region: region },
+      //     stage: env.stage,
+      //   })
+      // );
     });
   }
 }
