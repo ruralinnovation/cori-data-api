@@ -77,6 +77,6 @@ venv.bak/
 # CDK Context & Staging files
 .cdk.staging/
 cdk.out/
-*.zip
+# *.zip
 
 .DS_Store
