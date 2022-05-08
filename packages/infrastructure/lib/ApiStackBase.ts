@@ -156,7 +156,7 @@ export class ApiBaseStack extends Stack {
       userPoolId: this.props.userPoolId,
       existingUserPoolDomain: this.props.userPoolDomain,
       prefix: this.prefix,
-      userPoolName: `${this.prefix}-users`,
+      userPoolName: `${this.prefix}`,
       userPoolDomainName: this.prefix,
       adminUserEmail: this.props.adminUserEmail,
       appUrl: this.hosting.url,
