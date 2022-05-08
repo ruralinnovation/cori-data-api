@@ -5,6 +5,10 @@ import { ApiStack } from '../../infrastructure/lib';
 
 export interface CICDAppStageProps extends StageProps {
   stage: string;
+  env: {
+    account: string;
+    region: string;
+  };
 }
 export class AppStage extends Stage {
   constructor(scope: Construct, id: string, props: CICDAppStageProps) {
@@ -12,6 +16,7 @@ export class AppStage extends Stage {
     const config = getConfig(props.stage);
     const apiStack = new ApiStack(this, `${config.client}-data-api-${config.stage}`, {
       ...config,
+      env: props.env,
     });
   }
 }
