@@ -6,7 +6,7 @@ import { CICDProps, CICDStack } from '../lib/CICDStack';
 const cicdProps: CICDProps = {
   environments: [
     {
-      env: { account: '123456789012', region: 'us-east-1' },
+      env: { account: '190686435752', region: 'us-east-1' },
       client: 'cori',
       stage: 'dev',
       branch: 'dev',
@@ -14,7 +14,7 @@ const cicdProps: CICDProps = {
       project: 'data-api',
     },
     {
-      env: { account: '123456789012', region: 'us-east-1' },
+      env: { account: '190686435752', region: 'us-east-1' },
       client: 'cori',
       stage: 'qa',
       branch: 'qa',

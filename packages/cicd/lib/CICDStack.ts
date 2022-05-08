@@ -13,6 +13,7 @@ export class CICDStack extends Stack {
     super(scope, id, props);
 
     props.environments.forEach((env, i) => {
+      console.log('deploying ', env);
       const pipeline = new CodePipeline(this, `Pipeline_${env.stage}`, {
         pipelineName: `${env.client}-${env.project}-cicdpipeline-${env.stage}`,
         dockerEnabledForSynth: true,
