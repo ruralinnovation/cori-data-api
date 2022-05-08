@@ -5,10 +5,6 @@ import { AppStage } from './AppStage';
 import { CICDPipelineProps } from './PipelineStack';
 
 export interface CICDProps extends StackProps {
-  env: {
-    account: string;
-    region: string;
-  };
   environments: CICDPipelineProps[];
 }
 
