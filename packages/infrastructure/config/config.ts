@@ -28,6 +28,7 @@ export const Config: IConfigs = {
   'mf-dev': {
     client: 'cori',
     stage: 'dev',
+    project: 'data-api',
     loggingLevel: 'info',
     retain: false,
     env: {
@@ -46,6 +47,7 @@ export const Config: IConfigs = {
   'dev': {
     client: 'cori',
     stage: 'dev',
+    project: 'data-api',
     loggingLevel: 'info',
     retain: false,
     env: {
@@ -64,6 +66,7 @@ export const Config: IConfigs = {
   'qa': {
     client: 'cori',
     stage: 'qa',
+    project: 'data-api',
     loggingLevel: 'info',
     retain: false,
     env: {

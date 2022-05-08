@@ -40,6 +40,7 @@ export interface ApiStackBaseProps extends StackProps {
   };
   client: string;
   stage: string;
+  project: string;
 
   // For overriding generated resources prefix;
   prefix?: string;
@@ -119,7 +120,7 @@ export class ApiBaseStack extends Stack {
     // Check with using parameters store!!!
 
     const api = new GraphqlApi(this, 'AppSyncApi', {
-      name: `cori-graphql-api-dev`,
+      name: `${this.prefix}-`,
       logConfig: {
         fieldLogLevel: FieldLogLevel.ALL,
       },
@@ -155,7 +156,7 @@ export class ApiBaseStack extends Stack {
       userPoolId: this.props.userPoolId,
       existingUserPoolDomain: this.props.userPoolDomain,
       prefix: this.prefix,
-      userPoolName: this.prefix,
+      userPoolName: `${this.prefix}-users`,
       userPoolDomainName: this.prefix,
       adminUserEmail: this.props.adminUserEmail,
       appUrl: this.hosting.url,
@@ -239,7 +240,7 @@ export class ApiBaseStack extends Stack {
     this.stack = Stack.of(this);
 
     Tags.of(this).add('client', this.props.client);
-    Tags.of(this).add('project', 'data-api');
+    Tags.of(this).add('project', this.props.project);
     Tags.of(this).add('environment', this.props.stage);
 
     this.prefix = `${props.client}-data-api-${props.stage}`;
