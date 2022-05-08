@@ -25,8 +25,8 @@ const cicdProps: CICDProps = {
     prod: {
       env: { account: '190686435752', region: 'us-east-1' },
       client: 'cori',
-      stage: 'qa',
-      branch: 'qa',
+      stage: 'prod',
+      branch: 'prod',
       repo: 'mergingfutures/cori-data-api',
       project: 'data-api',
     },
