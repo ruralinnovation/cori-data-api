@@ -238,9 +238,9 @@ export class ApiBaseStack extends Stack {
     this.props = props;
     this.stack = Stack.of(this);
 
-    Tags.of(this).add('Client', this.props.client);
-    Tags.of(this).add('Project', 'data-api');
-    Tags.of(this).add('Environment', this.props.stage);
+    Tags.of(this).add('client', this.props.client);
+    Tags.of(this).add('project', 'data-api');
+    Tags.of(this).add('environment', this.props.stage);
 
     this.prefix = `${props.client}-data-api-${props.stage}`;
 
