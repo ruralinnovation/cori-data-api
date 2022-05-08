@@ -22,6 +22,14 @@ const cicdProps: CICDProps = {
       repo: 'mergingfutures/cori-data-api',
       project: 'data-api',
     },
+    prod: {
+      env: { account: '190686435752', region: 'us-east-1' },
+      client: 'cori',
+      stage: 'qa',
+      branch: 'qa',
+      repo: 'mergingfutures/cori-data-api',
+      project: 'data-api',
+    },
   },
 };
 const app = new cdk.App();
