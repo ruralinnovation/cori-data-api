@@ -8,6 +8,10 @@ export interface CICDPipelineProps extends StackProps {
   project: string;
   repo: string;
   branch: string;
+  env: {
+    account: string;
+    region: string;
+  };
 }
 
 export class CICDPipelineStack extends Stack {
