@@ -19,7 +19,7 @@ export class CICDStack extends Stack {
     const accountNumber = Stack.of(this).account;
     const region = Stack.of(this).region;
 
-    props.environments.forEach(env => {
+    props.environments.forEach((env, i) => {
       const pipeline = new CodePipeline(this, `Pipeline_${env.stage}`, {
         pipelineName: `${env.client}-${env.project}-cicdpipeline-${env.stage}`,
         dockerEnabledForSynth: true,
@@ -38,7 +38,7 @@ export class CICDStack extends Stack {
       });
 
       pipeline.addStage(
-        new AppStage(this, `${env.stage}_DeployApiResources`, {
+        new AppStage(this, `DeployApiResources${i + 1}`, {
           env: { account: accountNumber, region: region },
           stage: env.stage,
         })
