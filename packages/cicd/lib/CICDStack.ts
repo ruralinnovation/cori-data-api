@@ -5,38 +5,61 @@ import { AppStage } from './AppStage';
 import { CICDPipelineProps } from './PipelineStack';
 
 export interface CICDProps extends StackProps {
-  environments: CICDPipelineProps[];
+  environmentConfigs: {
+    [name: string]: CICDPipelineProps;
+  };
 }
 
 export class CICDStack extends Stack {
   constructor(scope: Construct, id: string, props: CICDProps) {
     super(scope, id, props);
 
-    props.environments.forEach((env, i) => {
-      console.log('deploying ', env);
-      const pipeline = new CodePipeline(this, `Pipeline_${env.stage}`, {
-        pipelineName: `${env.client}-${env.project}-cicdpipeline-${env.stage}`,
-        dockerEnabledForSynth: true,
-        synth: new ShellStep('Synth', {
-          input: CodePipelineSource.gitHub(env.repo, env.branch),
-          commands: [
-            'npm install -g npm@latest',
-            'npm --version',
-            'npm install',
-            'npm ci',
-            'npm run build:all',
-            'npm run synth:cicd',
-          ],
-          primaryOutputDirectory: 'packages/cicd/cdk.out',
-        }),
-      });
-
-      pipeline.addStage(
-        new AppStage(this, `DeployApiResources${env.branch}`, {
-          env: { account: env.env.account, region: env.env.region },
-          stage: env.stage,
-        })
-      );
+    const devPipeline = new CodePipeline(this, `DevPipeline`, {
+      pipelineName: `cori-data-api-pipeline-dev`,
+      dockerEnabledForSynth: true,
+      synth: new ShellStep('Synth', {
+        input: CodePipelineSource.gitHub(props.environmentConfigs.dev.repo, props.environmentConfigs.dev.branch),
+        commands: [
+          'npm install -g npm@latest',
+          'npm --version',
+          'npm install',
+          'npm ci',
+          'npm run build:all',
+          'npm run synth:cicd',
+        ],
+        primaryOutputDirectory: 'packages/cicd/cdk.out',
+      }),
     });
+
+    devPipeline.addStage(
+      new AppStage(this, `DeployDevResources`, {
+        env: props.environmentConfigs.dev.env,
+        stage: props.environmentConfigs.dev.stage,
+      })
+    );
+
+    const prodPipeline = new CodePipeline(this, `QaPipeline`, {
+      pipelineName: `cori-data-api-pipeline-qa`,
+      dockerEnabledForSynth: true,
+      synth: new ShellStep('Synth', {
+        input: CodePipelineSource.gitHub(props.environmentConfigs.qa.repo, props.environmentConfigs.qa.branch),
+        commands: [
+          'npm install -g npm@latest',
+          'npm --version',
+          'npm install',
+          'npm ci',
+          'npm run build:all',
+          'npm run synth:cicd',
+        ],
+        primaryOutputDirectory: 'packages/cicd/cdk.out',
+      }),
+    });
+
+    prodPipeline.addStage(
+      new AppStage(this, `DeployQaResources`, {
+        env: props.environmentConfigs.qa.env,
+        stage: props.environmentConfigs.qa.stage,
+      })
+    );
   }
 }

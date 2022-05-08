@@ -5,8 +5,8 @@ import { CICDProps, CICDStack } from '../lib/CICDStack';
 
 const cicdProps: CICDProps = {
   env: { account: '190686435752', region: 'us-east-1' },
-  environments: [
-    {
+  environmentConfigs: {
+    dev: {
       env: { account: '190686435752', region: 'us-east-1' },
       client: 'cori',
       stage: 'dev',
@@ -14,7 +14,7 @@ const cicdProps: CICDProps = {
       repo: 'mergingfutures/cori-data-api',
       project: 'data-api',
     },
-    {
+    qa: {
       env: { account: '190686435752', region: 'us-east-1' },
       client: 'cori',
       stage: 'qa',
@@ -22,7 +22,7 @@ const cicdProps: CICDProps = {
       repo: 'mergingfutures/cori-data-api',
       project: 'data-api',
     },
-  ],
+  },
 };
 const app = new cdk.App();
 
