@@ -5,7 +5,7 @@ import { AppStage } from './AppStage';
 import { CICDPipelineProps } from './PipelineStack';
 
 export interface CICDProps extends StackProps {
-  env?: {
+  env: {
     account: string;
     region: string;
   };
@@ -15,9 +15,6 @@ export interface CICDProps extends StackProps {
 export class CICDStack extends Stack {
   constructor(scope: Construct, id: string, props: CICDProps) {
     super(scope, id, props);
-
-    const accountNumber = Stack.of(this).account;
-    const region = Stack.of(this).region;
 
     props.environments.forEach((env, i) => {
       const pipeline = new CodePipeline(this, `Pipeline_${env.stage}`, {
@@ -39,7 +36,7 @@ export class CICDStack extends Stack {
 
       pipeline.addStage(
         new AppStage(this, `DeployApiResources${i + 1}`, {
-          env: { account: accountNumber, region: region },
+          env: { account: env.env?.account, region: env.env.region },
           stage: env.stage,
         })
       );
