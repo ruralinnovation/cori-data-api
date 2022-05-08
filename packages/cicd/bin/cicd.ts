@@ -4,6 +4,7 @@ import * as cdk from 'aws-cdk-lib';
 import { CICDProps, CICDStack } from '../lib/CICDStack';
 
 const cicdProps: CICDProps = {
+  env: { account: '190686435752', region: 'us-east-1' },
   environments: [
     {
       env: { account: '190686435752', region: 'us-east-1' },

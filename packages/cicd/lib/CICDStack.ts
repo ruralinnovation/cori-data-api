@@ -32,7 +32,7 @@ export class CICDStack extends Stack {
       });
 
       pipeline.addStage(
-        new AppStage(this, `DeployApiResources${i + 1}`, {
+        new AppStage(this, `DeployApiResources${env.branch}`, {
           env: { account: env.env.account, region: env.env.region },
           stage: env.stage,
         })

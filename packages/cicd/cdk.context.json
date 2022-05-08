@@ -1,0 +1,56 @@
+{
+  "ssm:account=190686435752:parameterName=cori-data-api-read_only_user_password:region=us-east-1": "Brs0EpCGidinyCQSSRL*Y2Ag%77MV&",
+  "vpc-provider:account=190686435752:filter.vpc-id=vpc-0499b35a2f5231aae:region=us-east-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-0499b35a2f5231aae",
+    "vpcCidrBlock": "172.30.0.0/16",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0393a8b0773ca8a0f",
+            "cidr": "172.30.0.0/24",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-0458789e1af94625c"
+          },
+          {
+            "subnetId": "subnet-0bbab33c82d76a172",
+            "cidr": "172.30.1.0/24",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-0458789e1af94625c"
+          },
+          {
+            "subnetId": "subnet-0dace3a73232a4775",
+            "cidr": "172.30.2.0/24",
+            "availabilityZone": "us-east-1c",
+            "routeTableId": "rtb-0458789e1af94625c"
+          },
+          {
+            "subnetId": "subnet-0bd24964a5136ae29",
+            "cidr": "172.30.3.0/24",
+            "availabilityZone": "us-east-1d",
+            "routeTableId": "rtb-0458789e1af94625c"
+          },
+          {
+            "subnetId": "subnet-04cfcfd314652bd05",
+            "cidr": "172.30.4.0/24",
+            "availabilityZone": "us-east-1e",
+            "routeTableId": "rtb-0458789e1af94625c"
+          },
+          {
+            "subnetId": "subnet-0fb3a93a17d9b5d61",
+            "cidr": "172.30.5.0/24",
+            "availabilityZone": "us-east-1f",
+            "routeTableId": "rtb-0458789e1af94625c"
+          }
+        ]
+      }
+    ]
+  },
+  "security-group:account=190686435752:region=us-east-1:securityGroupId=sg-0cdb6d6c66b8e6a4a": {
+    "securityGroupId": "sg-0cdb6d6c66b8e6a4a",
+    "allowAllOutbound": false
+  }
+}
