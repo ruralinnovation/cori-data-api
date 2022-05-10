@@ -1,0 +1,28 @@
+{
+  "Id": "mf-kms-access-policy-1",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Allow use of the key",
+      "Effect": "Allow",
+      "Principal": { "AWS": ["arn:aws:iam::312512371189:user/KeyUser", "arn:aws:iam::190686435752:root"] },
+      "Action": [
+        "kms:CreateGrant",
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow attachment of persistent resources",
+      "Effect": "Allow",
+      "Principal": { "AWS": ["arn:aws:iam::312512371189:user/KeyUser", "arn:aws:iam::190686435752:root"] },
+      "Action": ["kms:CreateGrant", "kms:ListGrants", "kms:RevokeGrant"],
+      "Resource": "*",
+      "Condition": { "Bool": { "kms:GrantIsForAWSResource": true } }
+    }
+  ]
+}

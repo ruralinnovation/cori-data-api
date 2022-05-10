@@ -31,6 +31,11 @@ python-microservices
 
 [Github Actions](https://docs.github.com/en/actions)
 
+[Sharing DB Snapshot between Accounts](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ShareSnapshot.html)
+[Sharing KMS KEY](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ShareSnapshot.html#USER_ShareSnapshot.Encrypted)
+
+[Amazon RDS PostgreSQL verses Amazon Aurora PostgreSQL](https://aws.amazon.com/blogs/database/is-amazon-rds-for-postgresql-or-amazon-aurora-postgresql-a-better-choice-for-me/)
+
 # CICD Setup
 
 ### Github Setup
@@ -38,3 +43,26 @@ python-microservices
 1. Create a new user in Github for CICD
 2. Create a Personal Access Token for this user
 3. Store the Personal Access Token in AWS Secrets Manager with the name `github-token`
+
+### DB Setup
+
+#### Create a READ_ONLY user
+
+1. Log in as admin with psql;
+2. Create read only role and new user with:
+
+```SQL
+CREATE ROLE read_only_access;
+
+GRANT CONNECT ON DATABASE (DB_NAME} TO read_only_access;
+
+GRANT USAGE ON SCHEMA public TO read_only_access;
+
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO read_only_access;
+
+CREATE USER read_only_user WITH PASSWORD  ________________;
+
+GRANT read_only_access TO read_only_user;
+```
+
+3. Save password in AWS Parameter store (keep note of parameter name)
