@@ -60,9 +60,13 @@ GRANT USAGE ON SCHEMA public TO read_only_access;
 
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO read_only_access;
 
+GRANT SELECT ON ALL TABLES IN SCHEMA bcat TO read_only_access;
+
 CREATE USER read_only_user WITH PASSWORD  ________________;
 
 GRANT read_only_access TO read_only_user;
+
+
 ```
 
 3. Save password in AWS Parameter store (keep note of parameter name)

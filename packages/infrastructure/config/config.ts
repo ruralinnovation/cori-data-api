@@ -59,7 +59,7 @@ export const Config: IConfigs = {
       databaseSecurityGroupId: 'sg-0be66ca1818bcc0e0',
       host: 'cori-database-small-dev.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
       dbname: 'data1',
-      parameterName: 'cori-database-small-read-only-credentials',
+      parameterName: '/cori/read_only_user_credentials',
       dbuser: 'read_only_user',
     },
   },
