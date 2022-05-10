@@ -44,7 +44,7 @@ export const Config: IConfigs = {
       dbuser: 'read_only_user',
     },
   },
-  'dev': {
+  'dev1': {
     client: 'cori',
     stage: 'dev',
     project: 'data-api',
@@ -63,7 +63,7 @@ export const Config: IConfigs = {
       dbuser: 'read_only_user',
     },
   },
-  'dev1': {
+  'dev': {
     client: 'cori',
     stage: 'dev',
     project: 'data-api',
@@ -77,8 +77,8 @@ export const Config: IConfigs = {
       vpcId: 'vpc-0499b35a2f5231aae',
       databaseSecurityGroupId: 'sg-0be66ca1818bcc0e0',
       host: 'cori-database-small-dev.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
-      dbname: 'data1',
-      parameterName: '/cori/read_only_user_credentials',
+      dbname: 'data',
+      parameterName: 'cori/read_only_user_credentials',
       dbuser: 'read_only_user',
     },
   },
