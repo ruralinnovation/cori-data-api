@@ -94,9 +94,13 @@ export class ApiBaseStack extends Stack {
 
     const dbPassword = ssm.StringParameter.valueFromLookup(this, databaseConfig.parameterName);
 
+    console.log('Successfully retrieved db creds');
+
     const vpc = Vpc.fromLookup(this, 'CoriDbVpc', {
       vpcId: databaseConfig.vpcId,
     });
+
+    console.log('Successfully retrieved VPC info');
 
     const lambdaSecurityGroup = new SecurityGroup(this, 'OutboundLambdaSecurityGroup', {
       securityGroupName: `${this.prefix}-lambda-vpc-sg`,
