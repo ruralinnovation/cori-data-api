@@ -124,7 +124,7 @@ export class ApiBaseStack extends Stack {
     // Check with using parameters store!!!
 
     const api = new GraphqlApi(this, 'AppSyncApi', {
-      name: `${this.prefix}-`,
+      name: `${this.prefix}-appsync`,
       logConfig: {
         fieldLogLevel: FieldLogLevel.ALL,
       },
