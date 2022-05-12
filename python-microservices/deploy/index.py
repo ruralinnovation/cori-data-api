@@ -87,15 +87,27 @@ def get_hello():
             
     # create a cursor
     cur = conn.cursor()
-        
+    query = `
+    set schema 'acs';
+    select geoid_co, variable, estimate
+    from acs_5_yr_county
+    where variable in ('race_white_non_hispanic_pct',
+                       'race_black_or_african_american_non_hispanic_pct',
+                       'race_american_indian_and_alaska_native_non_hispanic_pct',
+                       'race_asian_non_hispanic_pct',
+                       'race_native_hawaiian_and_other_pacific_islander_non_hispanic_pct',
+                       'race_some_other_race_non_hispanic_pct',
+                       'two_or_more_races_non_hispanic_pct') and year = (select max(year) from acs_5_yr_county);
+    `
     # execute a statement
     print('PostgreSQL database version:')
-    cur.execute('SELECT version()')
+    cur.execute(query)
 
     # display the PostgreSQL database server version
-    db_version = cur.fetchone()
-    print(db_version)
-    return {"hello": f"hello this is the wonderful home route, your version is {db_version}"}
+    results = cur.fetchone()
+    print(results)
+    # return {"hello": f"hello this is the wonderful home route, your version is {db_version}"}
+    return {"hello": f"results {results}"}
 
 
 # You can continue to use other utilities just as before
