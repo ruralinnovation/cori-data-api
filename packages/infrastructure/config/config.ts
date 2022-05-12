@@ -44,7 +44,7 @@ export const Config: IConfigs = {
       dbuser: 'read_only_user',
     },
   },
-  'dev': {
+  'dev1': {
     client: 'cori',
     stage: 'dev',
     project: 'data-api',
@@ -63,7 +63,7 @@ export const Config: IConfigs = {
       dbuser: 'read_only_user',
     },
   },
-  'dev2': {
+  'dev': {
     client: 'cori',
     stage: 'dev',
     project: 'data-api',

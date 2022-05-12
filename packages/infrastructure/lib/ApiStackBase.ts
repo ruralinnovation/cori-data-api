@@ -94,7 +94,7 @@ export class ApiBaseStack extends Stack {
 
     const dbPassword = ssm.StringParameter.valueFromLookup(this, databaseConfig.parameterName);
 
-    console.log('Successfully retrieved db creds');
+    console.log('Successfully retrieved db creds' + dbPassword);
 
     const vpc = Vpc.fromLookup(this, 'CoriDbVpc', {
       vpcId: databaseConfig.vpcId,
