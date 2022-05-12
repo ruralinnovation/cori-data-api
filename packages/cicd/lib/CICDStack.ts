@@ -1,4 +1,5 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { CodePipeline, CodePipelineSource, ShellStep, ManualApprovalStep } from 'aws-cdk-lib/pipelines';
 import { AppStage } from './AppStage';
@@ -17,6 +18,14 @@ export class CICDStack extends Stack {
     const devPipeline = new CodePipeline(this, `DevPipeline`, {
       pipelineName: `cori-data-api-pipeline-dev`,
       dockerEnabledForSynth: true,
+      codeBuildDefaults: {
+        rolePolicy: [
+          new PolicyStatement({
+            actions: ['sts:AssumeRole'],
+            resources: ['*'],
+          }),
+        ],
+      },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(props.environmentConfigs.dev.repo, props.environmentConfigs.dev.branch),
         commands: [
@@ -41,6 +50,14 @@ export class CICDStack extends Stack {
     const qaPipeline = new CodePipeline(this, `QaPipeline`, {
       pipelineName: `cori-data-api-pipeline-qa`,
       dockerEnabledForSynth: true,
+      codeBuildDefaults: {
+        rolePolicy: [
+          new PolicyStatement({
+            actions: ['sts:AssumeRole'],
+            resources: ['*'],
+          }),
+        ],
+      },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(props.environmentConfigs.qa.repo, props.environmentConfigs.qa.branch),
         commands: [
@@ -65,6 +82,14 @@ export class CICDStack extends Stack {
     const prodPipeline = new CodePipeline(this, `ProdPipeline`, {
       pipelineName: `cori-data-api-pipeline-prod`,
       dockerEnabledForSynth: true,
+      codeBuildDefaults: {
+        rolePolicy: [
+          new PolicyStatement({
+            actions: ['sts:AssumeRole'],
+            resources: ['*'],
+          }),
+        ],
+      },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(props.environmentConfigs.prod.repo, props.environmentConfigs.prod.branch),
         commands: [
