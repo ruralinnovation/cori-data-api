@@ -87,7 +87,7 @@ def get_hello():
             
     # create a cursor
     cur = conn.cursor()
-    query = `
+    query = """
     set schema 'acs';
     select geoid_co, variable, estimate
     from acs_5_yr_county
@@ -98,7 +98,7 @@ def get_hello():
                        'race_native_hawaiian_and_other_pacific_islander_non_hispanic_pct',
                        'race_some_other_race_non_hispanic_pct',
                        'two_or_more_races_non_hispanic_pct') and year = (select max(year) from acs_5_yr_county);
-    `
+    """
     # execute a statement
     print('PostgreSQL database version:')
     cur.execute(query)
