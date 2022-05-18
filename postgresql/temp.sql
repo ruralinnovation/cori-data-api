@@ -1,0 +1,53 @@
+-- DECLARE num_of_students VARCHAR:= 'John';
+-- GRANT SELECT ON ALL TABLES IN SCHEMA TO read_only_access;
+-- SELECT rolname FROM pg_roles;
+-- CREATE ROLE consultant_readonly_role;
+-- GRANT CONNECT ON DATABASE data to consultant_readonly_role;
+GRANT USAGE ON SCHEMA 
+	acs,
+	ascendium,
+	canada,
+	core_data,
+	cori_model,
+	eda,
+	employment_data,
+	location_analysis,
+	metadata,
+	opensourcecompass,
+	rii_analysis,
+	rii_diagnostic,
+	rwjf,
+	sch_analysis,
+	sch_broadband,
+	sch_census_tiger,
+	sch_layer,
+	sch_source,
+	tiger,
+	tiger_data,
+	tn_broadband,
+	topology,
+	vt_broadband to read_only_access;
+GRANT SELECT ON ALL TABLES IN SCHEMA 
+	acs,
+	ascendium,
+	canada,
+	core_data,
+	cori_model,
+	eda,
+	employment_data,
+	location_analysis,
+	metadata,
+	opensourcecompass,
+	rii_analysis,
+	rii_diagnostic,
+	rwjf,
+	sch_analysis,
+	sch_broadband,
+	sch_census_tiger,
+	sch_layer,
+	sch_source,
+	tiger,
+	tiger_data,
+	tn_broadband,
+	topology,
+	vt_broadband to read_only_access;
