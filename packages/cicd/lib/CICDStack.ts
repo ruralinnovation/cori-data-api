@@ -28,14 +28,7 @@ export class CICDStack extends Stack {
       },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(props.environmentConfigs.dev.repo, props.environmentConfigs.dev.branch),
-        commands: [
-          'npm install -g npm@latest',
-          'npm --version',
-          'npm install',
-          'npm ci',
-          'npm run build:all',
-          'npm run synth:cicd',
-        ],
+        commands: ['npm install -g npm@latest', 'npm --version', 'npm ci', 'npm run build:all', 'npm run synth:cicd'],
         primaryOutputDirectory: 'packages/cicd/cdk.out',
       }),
     });
@@ -47,37 +40,30 @@ export class CICDStack extends Stack {
       })
     );
 
-    const qaPipeline = new CodePipeline(this, `QaPipeline`, {
-      pipelineName: `cori-data-api-pipeline-qa`,
-      dockerEnabledForSynth: true,
-      codeBuildDefaults: {
-        rolePolicy: [
-          new PolicyStatement({
-            actions: ['sts:AssumeRole'],
-            resources: ['*'],
-          }),
-        ],
-      },
-      synth: new ShellStep('Synth', {
-        input: CodePipelineSource.gitHub(props.environmentConfigs.qa.repo, props.environmentConfigs.qa.branch),
-        commands: [
-          'npm install -g npm@latest',
-          'npm --version',
-          'npm install',
-          'npm ci',
-          'npm run build:all',
-          'npm run synth:cicd',
-        ],
-        primaryOutputDirectory: 'packages/cicd/cdk.out',
-      }),
-    });
+    // const qaPipeline = new CodePipeline(this, `QaPipeline`, {
+    //   pipelineName: `cori-data-api-pipeline-qa`,
+    //   dockerEnabledForSynth: true,
+    //   codeBuildDefaults: {
+    //     rolePolicy: [
+    //       new PolicyStatement({
+    //         actions: ['sts:AssumeRole'],
+    //         resources: ['*'],
+    //       }),
+    //     ],
+    //   },
+    //   synth: new ShellStep('Synth', {
+    //     input: CodePipelineSource.gitHub(props.environmentConfigs.qa.repo, props.environmentConfigs.qa.branch),
+    //     commands: ['npm install -g npm@latest', 'npm --version', 'npm ci', 'npm run build:all', 'npm run synth:cicd'],
+    //     primaryOutputDirectory: 'packages/cicd/cdk.out',
+    //   }),
+    // });
 
-    qaPipeline.addStage(
-      new AppStage(this, `DeployQaResources`, {
-        env: props.environmentConfigs.qa.env,
-        stage: props.environmentConfigs.qa.stage,
-      })
-    );
+    // qaPipeline.addStage(
+    //   new AppStage(this, `DeployQaResources`, {
+    //     env: props.environmentConfigs.qa.env,
+    //     stage: props.environmentConfigs.qa.stage,
+    //   })
+    // );
 
     const prodPipeline = new CodePipeline(this, `ProdPipeline`, {
       pipelineName: `cori-data-api-pipeline-prod`,
@@ -92,14 +78,7 @@ export class CICDStack extends Stack {
       },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(props.environmentConfigs.prod.repo, props.environmentConfigs.prod.branch),
-        commands: [
-          'npm install -g npm@latest',
-          'npm --version',
-          'npm install',
-          'npm ci',
-          'npm run build:all',
-          'npm run synth:cicd',
-        ],
+        commands: ['npm install -g npm@latest', 'npm --version', 'npm ci', 'npm run build:all', 'npm run synth:cicd'],
         primaryOutputDirectory: 'packages/cicd/cdk.out',
       }),
     });
