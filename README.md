@@ -36,6 +36,10 @@ python-microservices
 
 [Amazon RDS PostgreSQL verses Amazon Aurora PostgreSQL](https://aws.amazon.com/blogs/database/is-amazon-rds-for-postgresql-or-amazon-aurora-postgresql-a-better-choice-for-me/)
 
+Downloading the AWS CDK CLI Toolkit for local use.
+CDK Bootstrapping
+CDK CICD Pipelines
+
 # CICD Setup
 
 ### Github Setup
