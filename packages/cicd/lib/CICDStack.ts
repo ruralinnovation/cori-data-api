@@ -28,7 +28,14 @@ export class CICDStack extends Stack {
       },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(props.environmentConfigs.dev.repo, props.environmentConfigs.dev.branch),
-        commands: ['npm install -g npm@latest', 'npm --version', 'npm ci', 'npm run build:all', 'npm run synth:cicd'],
+        commands: [
+          'npm install -g npm@latest',
+          'npm --version',
+          'npm i',
+          'npm ci',
+          'npm run build:all',
+          'npm run synth:cicd',
+        ],
         primaryOutputDirectory: 'packages/cicd/cdk.out',
       }),
     });
@@ -78,7 +85,14 @@ export class CICDStack extends Stack {
       },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(props.environmentConfigs.prod.repo, props.environmentConfigs.prod.branch),
-        commands: ['npm install -g npm@latest', 'npm --version', 'npm ci', 'npm run build:all', 'npm run synth:cicd'],
+        commands: [
+          'npm install -g npm@latest',
+          'npm --version',
+          'npm i',
+          'npm ci',
+          'npm run build:all',
+          'npm run synth:cicd',
+        ],
         primaryOutputDirectory: 'packages/cicd/cdk.out',
       }),
     });
