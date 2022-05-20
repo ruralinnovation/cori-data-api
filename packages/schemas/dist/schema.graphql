@@ -88,28 +88,12 @@ type FeatureCollection {
   features: [PointObject]
 }
 
-type Test {
-  hello: String!
-}
-
 type Query {
+  get_bcat_auction_904_subsidy_awards: [bcat_auction_904_subsidy_awards]
   test: Test
   helloName(name: String!): Test
 }
 
-type Comment {
-  id: ID!
-  text: String!
-}
-
-type NewStuff {
-  god: Boolean
-}
-
-type One {
-  two: Boolean
-}
-
-type Lee {
-  jedi: Boolean
+type Test {
+  hello: String!
 }

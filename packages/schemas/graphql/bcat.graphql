@@ -83,3 +83,7 @@ type FeatureCollection {
   type: String!
   features: [PointObject]
 }
+
+type Query {
+  get_bcat_auction_904_subsidy_awards: [bcat_auction_904_subsidy_awards]
+}

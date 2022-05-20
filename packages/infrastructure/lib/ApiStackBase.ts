@@ -10,7 +10,14 @@ import {
   RemovalPolicy,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { GraphqlApi, Schema, FieldLogLevel, AuthorizationType, MappingTemplate } from '@aws-cdk/aws-appsync-alpha';
+import {
+  GraphqlApi,
+  Schema,
+  FieldLogLevel,
+  AuthorizationType,
+  MappingTemplate,
+  UserPoolDefaultAction,
+} from '@aws-cdk/aws-appsync-alpha';
 import { LayerVersion, Code, Runtime, InlineCode } from 'aws-cdk-lib/aws-lambda';
 import { ApiLambda } from '../constructs/lambda/ApiLambda';
 import { AppSyncApiLambda } from '../constructs/lambda/AppSyncApiLambda';
@@ -60,7 +67,13 @@ export interface ApiStackBaseProps extends StackProps {
   /**
    * Optional. When provided, will attach to existing user pool
    */
+
   userPoolId?: string;
+
+  /**
+   * Optional:  Additional configuration options for AppSync
+   */
+  appSyncConfig?: AppSyncConfig;
 
   /**
    * Optional. When provided, will re-use existing user pool domain
@@ -71,6 +84,17 @@ export interface ApiStackBaseProps extends StackProps {
   version?: string;
 }
 
+interface AppSyncConfig {
+  /**
+   * Optional: When provided will configure additional user pools in the app sync authorization configuration
+   */
+  additionalUserPools: AppSyncUserPoolConfig[];
+}
+
+interface AppSyncUserPoolConfig {
+  userPoolId: string;
+}
+
 export class ApiBaseStack extends Stack {
   props: ApiStackBaseProps;
   prefix: string;
@@ -79,6 +103,7 @@ export class ApiBaseStack extends Stack {
   stack: Stack;
   cognito: Cognito;
   iam: ApiIAM;
+  graphqlApi: GraphqlApi;
 
   /**
    * Call build() to synth this construct when ready.
@@ -123,23 +148,6 @@ export class ApiBaseStack extends Stack {
     // TODO
     // Check with using parameters store!!!
 
-    const api = new GraphqlApi(this, 'AppSyncApi', {
-      name: `${this.prefix}-appsync-graphql`,
-      logConfig: {
-        fieldLogLevel: FieldLogLevel.ALL,
-      },
-      xrayEnabled: true,
-      schema: Schema.fromAsset(resolve(__dirname, '../../', 'schemas/dist/schema.graphql')),
-      authorizationConfig: {
-        defaultAuthorization: {
-          authorizationType: AuthorizationType.API_KEY,
-          apiKeyConfig: {
-            expires: Expiration.after(Duration.days(365)),
-          },
-        },
-      },
-    });
-
     this.iam = new ApiIAM(this, 'Roles', {
       prefix: this.prefix,
       vpc: this.props.databaseConfig.vpcId !== undefined,
@@ -169,8 +177,35 @@ export class ApiBaseStack extends Stack {
       retain: this.props.retain,
     });
 
+    this.graphqlApi = new GraphqlApi(this, 'AppSyncApi', {
+      name: `${this.prefix}-appsync-graphql`,
+      logConfig: {
+        fieldLogLevel: FieldLogLevel.ALL,
+      },
+      xrayEnabled: true,
+      schema: Schema.fromAsset(resolve(__dirname, '../../', 'schemas/dist/schema.graphql')),
+      authorizationConfig: {
+        defaultAuthorization: {
+          authorizationType: AuthorizationType.API_KEY,
+          apiKeyConfig: {
+            expires: Expiration.after(Duration.days(365)),
+          },
+        },
+        additionalAuthorizationModes: [
+          {
+            authorizationType: AuthorizationType.USER_POOL,
+            userPoolConfig: {
+              userPool: this.cognito.userPool,
+              appIdClientRegex: '*',
+              defaultAction: UserPoolDefaultAction.ALLOW,
+            },
+          },
+        ],
+      },
+    });
+
     //this.api.attachCognitoAuthorizer(this.cognito.userPool);
-    const pythonApiDev = api.addHttpDataSource('pythonApiDatasource', this.api.api.url, {
+    const pythonApiDev = this.graphqlApi.addHttpDataSource('pythonApiDatasource', this.api.api.url, {
       name: 'httpPythonRESTApi',
       description: 'AppSync to HTTP API',
     });
@@ -179,11 +214,11 @@ export class ApiBaseStack extends Stack {
      * AWS Lambda Powertools Python Library Layer
      * https://awslabs.github.io/aws-lambda-powertools-python/latest/#lambda-layer
      */
-    const powerToolsLayer = LayerVersion.fromLayerVersionArn(
-      this,
-      'lambda-powertools',
-      `arn:aws:lambda:${Aws.REGION}:017000801446:layer:AWSLambdaPowertoolsPython:17`
-    );
+    // const powerToolsLayer = LayerVersion.fromLayerVersionArn(
+    //   this,
+    //   'lambda-powertools',
+    //   `arn:aws:lambda:${Aws.REGION}:017000801446:layer:AWSLambdaPowertoolsPython:17`
+    // );
 
     const pythonDependencyLayer = new LayerVersion(this, 'DependencyLayer', {
       removalPolicy: RemovalPolicy.RETAIN,
@@ -208,7 +243,6 @@ export class ApiBaseStack extends Stack {
       },
       role: this.iam.roles.pythonLambdaRole,
       timeout: Duration.seconds(360),
-      entry: resolve(__dirname, '../../../', 'python-microservices/deploy'),
       vpc: vpc,
       securityGroups: [lambdaSecurityGroup],
       allowPublicSubnet: true,
@@ -218,6 +252,7 @@ export class ApiBaseStack extends Stack {
 
     new AppSyncApiLambda(this, 'TestApi', {
       ...defaults,
+      entry: resolve(__dirname, '../../../', 'python-microservices/deploy'),
     }).addPathsAndResolvers([
       {
         path: '/api/hello',
@@ -232,9 +267,24 @@ export class ApiBaseStack extends Stack {
         fieldName: 'helloName',
       },
     ]);
+    new AppSyncApiLambda(this, 'Auction904SubsidyAwards', {
+      ...defaults,
+      entry: resolve(__dirname, '../../../', 'python-microservices/bcat/auction_904_subsidy_awards'),
+    }).addPathsAndResolvers([
+      {
+        path: '/api/bcat/auction_904_subsidy_awards',
+        methods: ['GET'],
+        typeName: 'Query',
+        fieldName: 'get_bcat_auction_904_subsidy_awards',
+      },
+    ]);
   }
+
   private buildOutputs() {
     new CfnOutput(this, 'Region', { value: this.stack.region });
+    new CfnOutput(this, 'RestApiUrl', { value: this.api.api.url });
+    new CfnOutput(this, 'AppSyncGraphQLUrl', { value: this.graphqlApi.graphqlUrl });
+    new CfnOutput(this, 'CognitoUserGroupId', { value: this.cognito.userPool.userPoolId });
   }
   /**
    * Building is not done in constructor so that product stack can add parameters.
