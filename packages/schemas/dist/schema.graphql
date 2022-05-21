@@ -22,10 +22,8 @@ type PointObject {
 
 type PointGeometry {
   type: String!
-  coordinates: Coordinates!
+  coordinates: [Float]
 }
-
-scalar Coordinates
 
 type PointProps {
   id: Int!

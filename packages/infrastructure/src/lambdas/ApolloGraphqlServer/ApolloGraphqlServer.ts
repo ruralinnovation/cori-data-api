@@ -29,7 +29,7 @@ export class ApolloGraphqlServer extends Construct {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
     });
 
-    this.function = new ApiNodejsFunction(this, 'ApolloServerHandler', {
+    this.function = new ApiNodejsFunction(this, 'handler', {
       environment,
       api: api,
       enableCORS: true,
