@@ -102,7 +102,7 @@ export class Hosting extends Construct {
       ],
     });
     // Override logical name for backwards compatibility
-    (this.distribution.node.defaultChild as CfnDistribution).overrideLogicalId('ClientCloudFrontDistro');
+    //(this.distribution.node.defaultChild as CfnDistribution).overrideLogicalId('ClientCloudFrontDistro');
 
     this.url = `https://${this.distribution.distributionDomainName}`;
   }

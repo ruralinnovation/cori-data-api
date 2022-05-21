@@ -271,25 +271,31 @@ export class ApiBaseStack extends Stack {
         fieldName: 'helloName',
       },
     ]);
-    new AppSyncApiLambda(this, 'Auction904SubsidyAwards', {
-      ...defaults,
-      entry: resolve(
-        join(__dirname, '../../../', this.props.microservicesDirectory, '/bcat/auction_904_subsidy_awards')
-      ),
-    }).addPathsAndResolvers([
-      {
-        path: '/api/bcat/auction_904_subsidy_awards',
-        methods: ['GET'],
-        typeName: 'Query',
-        fieldName: 'get_bcat_auction_904_subsidy_awards',
-      },
-    ]);
+    // new AppSyncApiLambda(this, 'Auction904SubsidyAwards', {
+    //   ...defaults,
+    //   entry: resolve(
+    //     join(__dirname, '../../../', this.props.microservicesDirectory, '/bcat/', 'auction_904_subsidy_awards')
+    //   ),
+    // }).addPathsAndResolvers([
+    //   {
+    //     path: '/api/bcat/auction_904_subsidy_awards',
+    //     methods: ['GET'],
+    //     typeName: 'Query',
+    //     fieldName: 'get_bcat_auction_904_subsidy_awards',
+    //   },
+    // ]);
     const apolloServer = new ApolloGraphqlServer(this, 'ApolloApiServerLambda', {
       prefix: this.prefix,
       logRetention: RetentionDays.FOUR_MONTHS,
       environment: {} as any,
       api: this.apolloApi.api,
       authorizor: this.apolloApi.authorizer || undefined,
+    });
+
+    this.apolloApi.addLambda({
+      method: 'POST',
+      path: '/graphql',
+      lambda: apolloServer.function,
     });
   }
 

@@ -6,6 +6,7 @@ import { Construct } from 'constructs';
 import { EnvConfigVars } from './EnvConfig';
 import { CognitoUserPoolsAuthorizer, IRestApi, RestApi } from 'aws-cdk-lib/aws-apigateway';
 import { ApiNodejsFunction } from '../../../constructs/lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
 interface ApolloGraphqlServerProps {
   prefix: string;
@@ -29,15 +30,10 @@ export class ApolloGraphqlServer extends Construct {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
     });
 
-    this.function = new ApiNodejsFunction(this, 'handler', {
+    this.function = new NodejsFunction(this, 'handler', {
       runtime: Runtime.NODEJS_14_X,
       environment,
-      api: api,
-      enableCORS: true,
-      authorizer: authorizor || undefined,
-      paths: {
-        '/graphql': ['GET', 'POST'],
-      },
+      functionName,
     });
 
     new LogGroup(this, 'LogGroup', {
