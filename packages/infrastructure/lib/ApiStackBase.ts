@@ -27,6 +27,10 @@ import { ApiIAM } from '../constructs/iam';
 import { resolve, join } from 'path';
 import { Vpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
+import { ApiNodejsFunction } from '../constructs/lambda';
+import { ApolloGraphqlServer } from '../src/lambdas/ApolloGraphqlServer/ApolloGraphqlServer';
+import { RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { MFApi } from '../constructs/MFApi';
 
 export interface DatabaseConfig {
   vpcId: string;
@@ -96,6 +100,7 @@ export class ApiBaseStack extends Stack {
   props: ApiStackBaseProps;
   prefix: string;
   api: Api;
+  apolloApi: MFApi;
   hosting: Hosting;
   stack: Stack;
   cognito: Cognito;
@@ -172,6 +177,17 @@ export class ApiBaseStack extends Stack {
       callbackUrls: [this.hosting.url],
       logoutUrls: [`${this.hosting.url}/logout/`],
       retain: this.props.retain,
+    });
+
+    this.hosting = new Hosting(this, 'ApolloGraphqlHosting', {
+      prefix: this.prefix + '-apollo-graphql',
+      api: this.api,
+    });
+    this.apolloApi = new MFApi(this, 'ApolloApi', {
+      prefix: this.prefix + '-apolloapi',
+      stage: this.props.stage,
+      cloudWatchRole: this.iam.roles === undefined,
+      userPool: this.cognito.userPool,
     });
 
     this.graphqlApi = new GraphqlApi(this, 'AppSyncApi', {
@@ -268,6 +284,13 @@ export class ApiBaseStack extends Stack {
         fieldName: 'get_bcat_auction_904_subsidy_awards',
       },
     ]);
+    const apolloServer = new ApolloGraphqlServer(this, 'ApolloApiServerLambda', {
+      prefix: this.prefix,
+      logRetention: RetentionDays.FOUR_MONTHS,
+      environment: {} as any,
+      api: this.apolloApi.api,
+      authorizor: this.apolloApi.authorizer || undefined,
+    });
   }
 
   private buildOutputs() {
