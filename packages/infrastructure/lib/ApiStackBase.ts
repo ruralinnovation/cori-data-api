@@ -206,16 +206,6 @@ export class ApiBaseStack extends Stack {
       description: 'AppSync to HTTP API',
     });
 
-    /**
-     * AWS Lambda Powertools Python Library Layer
-     * https://awslabs.github.io/aws-lambda-powertools-python/latest/#lambda-layer
-     */
-    // const powerToolsLayer = LayerVersion.fromLayerVersionArn(
-    //   this,
-    //   'lambda-powertools',
-    //   `arn:aws:lambda:${Aws.REGION}:017000801446:layer:AWSLambdaPowertoolsPython:17`
-    // );
-
     const pythonDependencyLayer = new LayerVersion(this, 'DependencyLayer', {
       removalPolicy: RemovalPolicy.RETAIN,
       code: Code.fromAsset(
