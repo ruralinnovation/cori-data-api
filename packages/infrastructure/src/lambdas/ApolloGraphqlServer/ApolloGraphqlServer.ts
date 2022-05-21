@@ -1,6 +1,6 @@
 import { Aws, RemovalPolicy } from 'aws-cdk-lib';
 import { PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { Function } from 'aws-cdk-lib/aws-lambda';
+import { Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 import { EnvConfigVars } from './EnvConfig';
@@ -30,6 +30,7 @@ export class ApolloGraphqlServer extends Construct {
     });
 
     this.function = new ApiNodejsFunction(this, 'handler', {
+      runtime: Runtime.NODEJS_14_X,
       environment,
       api: api,
       enableCORS: true,
