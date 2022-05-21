@@ -15,11 +15,9 @@ import {
   Schema,
   FieldLogLevel,
   AuthorizationType,
-  MappingTemplate,
   UserPoolDefaultAction,
 } from '@aws-cdk/aws-appsync-alpha';
 import { LayerVersion, Code, Runtime, InlineCode } from 'aws-cdk-lib/aws-lambda';
-import { ApiLambda } from '../constructs/lambda/ApiLambda';
 import { AppSyncApiLambda } from '../constructs/lambda/AppSyncApiLambda';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { Api } from '../constructs/api';
@@ -29,8 +27,6 @@ import { ApiIAM } from '../constructs/iam';
 import { resolve, join } from 'path';
 import { Vpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
-import { Tracing } from 'aws-cdk-lib/aws-lambda';
-import { PythonFunction, PythonFunctionProps } from '@aws-cdk/aws-lambda-python-alpha';
 
 export interface DatabaseConfig {
   vpcId: string;
@@ -224,7 +220,7 @@ export class ApiBaseStack extends Stack {
     const pythonDependencyLayer = new LayerVersion(this, 'DependencyLayer', {
       removalPolicy: RemovalPolicy.RETAIN,
       code: Code.fromAsset(
-        join(__dirname, '../../../', this.props.microservicesDirectory, '/dependency-layer/dependency-layer.zip')
+        join(join(__dirname, '../../../', this.props.microservicesDirectory, '/dependency-layer/dependency-layer.zip'))
       ),
       compatibleRuntimes: [Runtime.PYTHON_3_8],
     });
@@ -255,7 +251,7 @@ export class ApiBaseStack extends Stack {
 
     new AppSyncApiLambda(this, 'TestApi', {
       ...defaults,
-      entry: resolve(__dirname, '../../../', this.props.microservicesDirectory, '/deploy'),
+      entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, '/deploy')),
     }).addPathsAndResolvers([
       {
         path: '/api/hello',
@@ -272,7 +268,9 @@ export class ApiBaseStack extends Stack {
     ]);
     new AppSyncApiLambda(this, 'Auction904SubsidyAwards', {
       ...defaults,
-      entry: resolve(__dirname, '../../../', this.props.microservicesDirectory, '/bcat/auction_904_subsidy_awards'),
+      entry: resolve(
+        join(__dirname, '../../../', this.props.microservicesDirectory, '/bcat/auction_904_subsidy_awards')
+      ),
     }).addPathsAndResolvers([
       {
         path: '/api/bcat/auction_904_subsidy_awards',
