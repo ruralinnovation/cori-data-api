@@ -193,7 +193,6 @@ export class ApiBaseStack extends Stack {
             authorizationType: AuthorizationType.USER_POOL,
             userPoolConfig: {
               userPool: this.cognito.userPool,
-              appIdClientRegex: '*',
               defaultAction: UserPoolDefaultAction.ALLOW,
             },
           },
