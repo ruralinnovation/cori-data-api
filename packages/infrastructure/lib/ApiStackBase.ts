@@ -48,6 +48,7 @@ export interface ApiStackBaseProps extends StackProps {
   client: string;
   stage: string;
   project: string;
+  microservicesDirectory: string;
 
   // For overriding generated resources prefix;
   prefix?: string;
@@ -222,7 +223,9 @@ export class ApiBaseStack extends Stack {
 
     const pythonDependencyLayer = new LayerVersion(this, 'DependencyLayer', {
       removalPolicy: RemovalPolicy.RETAIN,
-      code: Code.fromAsset(join(__dirname, '../../../python-microservices/dependency-layer/dependency-layer.zip')),
+      code: Code.fromAsset(
+        join(__dirname, '../../../', this.props.microservicesDirectory, '/dependency-layer/dependency-layer.zip')
+      ),
       compatibleRuntimes: [Runtime.PYTHON_3_8],
     });
 
@@ -252,7 +255,7 @@ export class ApiBaseStack extends Stack {
 
     new AppSyncApiLambda(this, 'TestApi', {
       ...defaults,
-      entry: resolve(__dirname, '../../../', 'python-microservices/deploy'),
+      entry: resolve(__dirname, '../../../', this.props.microservicesDirectory, 'python-microservices', '/deploy'),
     }).addPathsAndResolvers([
       {
         path: '/api/hello',
@@ -269,7 +272,7 @@ export class ApiBaseStack extends Stack {
     ]);
     new AppSyncApiLambda(this, 'Auction904SubsidyAwards', {
       ...defaults,
-      entry: resolve(__dirname, '../../../', 'python-microservices/bcat/auction_904_subsidy_awards'),
+      entry: resolve(__dirname, '../../../', this.props.microservicesDirectory, '/bcat/auction_904_subsidy_awards'),
     }).addPathsAndResolvers([
       {
         path: '/api/bcat/auction_904_subsidy_awards',

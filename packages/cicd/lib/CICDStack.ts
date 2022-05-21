@@ -16,6 +16,7 @@ export class CICDStack extends Stack {
     super(scope, id, props);
 
     const devPipeline = new CodePipeline(this, `DevPipeline`, {
+      selfMutation: false,
       pipelineName: `cori-data-api-pipeline-dev`,
       dockerEnabledForSynth: true,
       codeBuildDefaults: {
@@ -73,6 +74,7 @@ export class CICDStack extends Stack {
     // );
 
     const prodPipeline = new CodePipeline(this, `ProdPipeline`, {
+      selfMutation: false,
       pipelineName: `cori-data-api-pipeline-prod`,
       dockerEnabledForSynth: true,
       codeBuildDefaults: {
