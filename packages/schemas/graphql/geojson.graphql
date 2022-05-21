@@ -1,5 +1,3 @@
-scalar Coordinates
-
 type PointGeometry {
   type: String!
   coordinates: [Float]
