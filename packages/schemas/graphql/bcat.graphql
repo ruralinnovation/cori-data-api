@@ -1,10 +1,12 @@
+# import FeatureCollection from "geojson.graphql"
+
 type bcat_auction_904_subsidy_awards {
   geoid: String
   state_abbr: String
   name_co: String
   subsidy_recipient: String
   tier: String
-  geoms: String
+  geoms: FeatureCollection
   geoid_co: String
   valid_raw: String
 }
@@ -12,13 +14,13 @@ type bcat_auction_904_subsidy_awards {
 type bcat_broadband_unserved_blocks {
   geoid_co: String
   state_abbr: String
-  geometry: String
+  geometry: FeatureCollection
 }
 
 type bcat_county_broadband_farm_bill_eligibility {
   state_abbr: String
   valid_raw: String
-  geoms: String
+  geoms: FeatureCollection
 }
 
 type bcat_county_broadband_pending_rural_dev {
@@ -27,14 +29,14 @@ type bcat_county_broadband_pending_rural_dev {
   program: String
   valid_raw: String
   state_abbr: String
-  geoms: String
+  geoms: FeatureCollection
 }
 
 type bcat_county_ilecs_geo {
   ilec_name: String
   ilec_hoco_name: String
   state_abbr: String
-  geometry: String
+  geometry: FeatureCollection
 }
 
 type bcat_county_rural_dev_broadband_protected_borrowers {
@@ -55,33 +57,7 @@ type bcat_county_rural_dev_broadband_protected_borrowers {
   lon: String
   land_sqmi: Float
   water_sqmi: Float
-  geoms: String
-}
-
-type Geometry {
-  test: String
-}
-type Coordinates {
-  test: String
-}
-
-type PointGeometry {
-  type: String!
-  coordinates: Coordinates!
-}
-type PointProps {
-  id: Int!
-  lat: Float
-  lon: Float
-}
-type PointObject {
-  type: String!
-  geometry: PointGeometry
-  properties: PointProps
-}
-type FeatureCollection {
-  type: String!
-  features: [PointObject]
+  geoms: FeatureCollection
 }
 
 type Query {
