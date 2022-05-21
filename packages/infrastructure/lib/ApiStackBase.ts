@@ -255,7 +255,7 @@ export class ApiBaseStack extends Stack {
 
     new AppSyncApiLambda(this, 'TestApi', {
       ...defaults,
-      entry: resolve(__dirname, '../../../', this.props.microservicesDirectory, 'python-microservices', '/deploy'),
+      entry: resolve(__dirname, '../../../', this.props.microservicesDirectory, '/deploy'),
     }).addPathsAndResolvers([
       {
         path: '/api/hello',
