@@ -292,11 +292,11 @@ export class ApiBaseStack extends Stack {
       authorizor: this.apolloApi.authorizer || undefined,
     });
 
-    this.apolloApi.addLambda({
-      method: 'POST',
-      path: '/graphql',
-      lambda: apolloServer.function,
-    });
+    // this.apolloApi.addLambda({
+    //   method: 'POST',
+    //   path: '/graphql',
+    //   lambda: apolloServer.function,
+    // });
   }
 
   private buildOutputs() {

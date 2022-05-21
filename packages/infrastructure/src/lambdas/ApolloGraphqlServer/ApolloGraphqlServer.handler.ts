@@ -16,4 +16,4 @@ const resolvers = {
 
 const server = new ApolloServer({ typeDefs, resolvers, csrfPrevention: true });
 
-exports.handler = server.createHandler();
+export const handler = server.createHandler();
