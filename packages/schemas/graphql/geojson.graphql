@@ -2,7 +2,7 @@ scalar Coordinates
 
 type PointGeometry {
   type: String!
-  coordinates: Coordinates!
+  coordinates: [Float]
 }
 type PointProps {
   id: Int!
