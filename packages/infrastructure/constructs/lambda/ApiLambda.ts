@@ -3,11 +3,12 @@ import { AwsIntegration, CognitoUserPoolsAuthorizer, IRestApi } from 'aws-cdk-li
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { PythonLambda, PythonLambdaProps } from './PythonLambda';
 import { Api } from '../api';
+import { MFApi } from '../MFApi';
 
 type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS';
 
 export interface ApiLambdaProps extends PythonLambdaProps {
-  api: Api;
+  api: MFApi;
 }
 
 /**

@@ -1,25 +1,19 @@
 import os
 import psycopg
+from psycopg import sql
 import boto3
-import json
 import base64
+import json
 from botocore.exceptions import ClientError
 from aws_lambda_powertools import Logger, Tracer
 from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver
 
+logger = Logger(service="/bcat/broadband_unserved_blocks")
+tracer = Tracer(service="/bcat/broadband_unserved_blocks")
+app = APIGatewayRestResolver(strip_prefixes=["/bcat"])
 
-logger = Logger(service="testApi")
-tracer = Tracer(service="testApi")
-# app = APIGatewayRestResolver(strip_prefixes=["/api"])
-app = APIGatewayRestResolver()
-
-
-@app.get("/hello/<name>")
-def get_hello_you(name):
-    return {"hello": f"hello {name}"}
-
-@app.get("/hello")
+@app.get("/broadband_unserved_blocks")
 def get_hello():
   
     logger.info(os.environ)
@@ -33,14 +27,14 @@ def get_hello():
     # create a cursor
     cur = conn.cursor()
     query = """
-        SELECT
+         SELECT
         json_build_object(
             'type', 'FeatureCollection',
             'features', json_agg(ST_AsGeoJSON(t.*)::json)
         )
         FROM
-        bcat.bcat_auction_904_subsidy_awards AS t
-         WHERE geoid_co = '48329';
+        bcat.bcat_broadband_farm_bill_elligibility AS t
+        WHERE state_abbr = 'TX';
     """
     cur.execute(query)
     results = cur.fetchone()

@@ -40,8 +40,21 @@ export class AppSyncApiLambda extends ApiLambda {
     this.httpSource = props.httpSource;
   }
 
+  // createResourcePath(path: string): string {
+  //   let p = `/prod${path}`;
+  //   // @ts-ignore
+  //   const matches = path.matchAll(this.paramsRegex);
+  //   if (matches) {
+  //     [...matches].forEach(match => {
+  //       const replacer = `$context.arguments.${match[2]}`;
+  //       p = p.replace(match[1], replacer);
+  //     });
+  //     return p;
+  //   }
+  //   return p;
+  // }
   createResourcePath(path: string): string {
-    let p = `/prod${path}`;
+    let p = `${path}`;
     // @ts-ignore
     const matches = path.matchAll(this.paramsRegex);
     if (matches) {

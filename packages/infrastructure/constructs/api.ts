@@ -1,16 +1,18 @@
-import { Construct } from "constructs";
+import { Construct } from 'constructs';
 import {
   AwsIntegration,
   RestApi,
   CognitoUserPoolsAuthorizer,
   IResource,
   ApiKey,
-} from "aws-cdk-lib/aws-apigateway";
-import { IUserPool } from "aws-cdk-lib/aws-cognito";
+  IApiKey,
+} from 'aws-cdk-lib/aws-apigateway';
+import { IUserPool } from 'aws-cdk-lib/aws-cognito';
+import { v4 as uuidv4 } from 'uuid';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 
-import * as lambda from "aws-cdk-lib/aws-lambda";
-
-export type HttpMethod = "GET" | "PUT" | "POST" | "DELETE" | "OPTIONS";
+export type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS';
 
 export interface ApiProps {
   prefix: string;
@@ -20,35 +22,42 @@ export interface ApiProps {
    * Automatically configure configure CloudWatch role
    */
   cloudWatchRole: boolean;
+  apiKey?: Secret;
 }
 
 export class Api extends Construct {
   api: RestApi;
   authorizer: CognitoUserPoolsAuthorizer;
+  key: IApiKey;
 
   constructor(scope: Construct, id: string, private props: ApiProps) {
     super(scope, id);
 
-    this.api = new RestApi(this, "RestApi", {
+    this.api = new RestApi(this, 'RestApi', {
       restApiName: props.prefix,
       cloudWatchRole: props.cloudWatchRole,
     });
 
-    const key = this.api.addApiKey(`${props.prefix}-api-key`);
-    const plan = this.api.addUsagePlan("UsagePlan", {
-      name: "Easy",
-      throttle: {
-        rateLimit: 10,
-        burstLimit: 2,
-      },
-    });
-    plan.addApiKey(key);
+    if (props.apiKey) {
+      const plan = this.api.addUsagePlan('PythonApiUsagePlan', {
+        name: 'Development',
+        throttle: {
+          rateLimit: 10,
+          burstLimit: 2,
+        },
+      });
+      const key = this.api.addApiKey('ApiKey', {
+        apiKeyName: this.props.prefix + 'api-key',
+        value: props.apiKey.secretValueFromJson(props.prefix + '-api-key').toString(),
+      });
+      plan.addApiKey(key);
+    }
   }
 
   attachCognitoAuthorizer(userPool: IUserPool) {
-    this.authorizer = new CognitoUserPoolsAuthorizer(this, "cognitoAuth", {
+    this.authorizer = new CognitoUserPoolsAuthorizer(this, 'cognitoAuth', {
       cognitoUserPools: [userPool],
-      authorizerName: "CognitoAuth",
+      authorizerName: 'CognitoAuth',
     });
     this.authorizer._attachToApi(this.api);
   }
@@ -58,11 +67,11 @@ export class Api extends Construct {
     // Using AwsIntegration since we already granted an invoke, so no need to pass in invokes with sourceArn
     const integration = new AwsIntegration({
       proxy: true,
-      service: "lambda",
+      service: 'lambda',
       path: `2015-03-31/functions/${functionArn}/invocations`,
     });
 
-    if (this.authorizer && method !== "OPTIONS") {
+    if (this.authorizer && method !== 'OPTIONS') {
       resource.addMethod(method, integration);
 
       //resource.addMethod(method, integration, { authorizer: this.authorizer });
@@ -71,22 +80,17 @@ export class Api extends Construct {
     }
   }
 
-  addLambdaPaths(
-    func: lambda.Function,
-    config: { [name: string]: HttpMethod[] }
-  ) {
-    Object.keys(config).forEach((path) => {
-      const resource = this.api.root.resourceForPath(
-        path.startsWith("/") ? path : `/${path}`
-      );
+  addLambdaPaths(func: lambda.Function, config: { [name: string]: HttpMethod[] }) {
+    Object.keys(config).forEach(path => {
+      const resource = this.api.root.resourceForPath(path.startsWith('/') ? path : `/${path}`);
 
-      config[path].forEach((method) => {
+      config[path].forEach(method => {
         this.addMethod(resource, method, func.functionArn);
       });
 
-      if (this.props.stage === "local") {
+      if (this.props.stage === 'local') {
         // Add mapping for CORS Preflight. Mock integrations dont work with sam start-api
-        this.addMethod(resource, "OPTIONS", func.functionArn);
+        this.addMethod(resource, 'OPTIONS', func.functionArn);
       }
     });
   }

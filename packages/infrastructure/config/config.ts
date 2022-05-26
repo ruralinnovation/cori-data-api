@@ -26,21 +26,42 @@ export const getConfig = (name: string): IMixedConfig => {
 
 export const Config: IConfigs = {
   'mf-dev': {
-    client: 'cori',
+    client: 'mf',
     stage: 'dev',
     project: 'data-api',
     loggingLevel: 'info',
     retain: false,
+    microservicesDirectory: 'python-microservices',
     env: {
       account: '190686435752',
       region: 'us-east-1',
     },
     databaseConfig: {
       vpcId: 'vpc-0499b35a2f5231aae',
-      databaseSecurityGroupId: 'sg-0cdb6d6c66b8e6a4a',
-      host: 'cori-testing-db.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
-      dbname: 'postgres',
-      parameterName: 'cori-data-api-read_only_user_password',
+      databaseSecurityGroupId: 'sg-0be66ca1818bcc0e0',
+      host: 'cori-database-small-dev.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
+      dbname: 'data',
+      parameterName: '/cori/read_only_user_credentials',
+      dbuser: 'read_only_user',
+    },
+  },
+  'local': {
+    client: 'mf',
+    stage: 'local',
+    project: 'data-api',
+    loggingLevel: 'info',
+    retain: false,
+    microservicesDirectory: 'python-microservices',
+    env: {
+      account: '190686435752',
+      region: 'us-east-1',
+    },
+    databaseConfig: {
+      vpcId: 'vpc-0499b35a2f5231aae',
+      databaseSecurityGroupId: 'sg-0be66ca1818bcc0e0',
+      host: 'cori-database-small-dev.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
+      dbname: 'data',
+      parameterName: '/cori/read_only_user_credentials',
       dbuser: 'read_only_user',
     },
   },
@@ -50,6 +71,7 @@ export const Config: IConfigs = {
     project: 'data-api',
     loggingLevel: 'info',
     retain: false,
+    microservicesDirectory: 'python-microservices',
     env: {
       account: '190686435752',
       region: 'us-east-1',
@@ -69,6 +91,7 @@ export const Config: IConfigs = {
     project: 'data-api',
     loggingLevel: 'info',
     retain: false,
+    microservicesDirectory: 'python-microservices',
     env: {
       account: '190686435752',
       region: 'us-east-1',
@@ -82,31 +105,13 @@ export const Config: IConfigs = {
       dbuser: 'read_only_user',
     },
   },
-  'qa': {
-    client: 'cori',
-    stage: 'qa',
-    project: 'data-api',
-    loggingLevel: 'info',
-    retain: false,
-    env: {
-      account: '190686435752',
-      region: 'us-east-1',
-    },
-    databaseConfig: {
-      vpcId: 'vpc-0499b35a2f5231aae',
-      databaseSecurityGroupId: 'sg-0cdb6d6c66b8e6a4a',
-      host: 'cori-testing-db.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
-      dbname: 'postgres',
-      parameterName: 'cori-data-api-read_only_user_password',
-      dbuser: 'read_only_user',
-    },
-  },
   'prod': {
     client: 'cori',
     stage: 'prod',
     project: 'data-api',
     loggingLevel: 'info',
     retain: true,
+    microservicesDirectory: 'python-microservices',
     env: {
       account: '190686435752',
       region: 'us-east-1',

@@ -53,7 +53,6 @@ package/**
 **/cdk.out
 
 *.swp
-package-lock.json
 .pytest_cache
 *.egg-info
 

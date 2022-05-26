@@ -3,9 +3,9 @@
     "target": "ES2018",
     "module": "commonjs",
     "lib": ["es2018"],
-    "declaration": true,
+    "skipLibCheck": true,
     "strict": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
@@ -20,5 +20,5 @@
     "typeRoots": ["./node_modules/@types"],
     "outDir": "./packages/dist"
   },
-  "exclude": ["node_modules", "cdk.out"]
+  "exclude": ["node_modules", "cdk.out", "./packages/cicd/node_modules", "./packages/infrastructure/node_modules"]
 }

@@ -9,17 +9,16 @@ from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver
 
 
-logger = Logger(service="testApi")
-tracer = Tracer(service="testApi")
-# app = APIGatewayRestResolver(strip_prefixes=["/api"])
-app = APIGatewayRestResolver()
+logger = Logger(service="LocalApi")
+tracer = Tracer(service="LocalApi")
+app = APIGatewayRestResolver(strip_prefixes=["/local"])
 
 
-@app.get("/hello/<name>")
+@app.get("/test/<name>")
 def get_hello_you(name):
     return {"hello": f"hello {name}"}
 
-@app.get("/hello")
+@app.get("/test")
 def get_hello():
   
     logger.info(os.environ)
