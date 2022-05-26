@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "auction_904_subsidy_awards"
+name = "county_broadband_farm_bill_eligibility"
 version = "0.1.0"
 description = ""
 authors = ["Merging Futures LLC."]

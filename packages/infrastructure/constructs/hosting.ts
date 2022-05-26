@@ -11,11 +11,12 @@ import {
 } from 'aws-cdk-lib/aws-cloudfront';
 import { BlockPublicAccess, Bucket, BucketEncryption } from 'aws-cdk-lib/aws-s3';
 import { Api } from './api';
+import { MFApi } from './MFApi';
 
 export interface HostingProps {
   prefix: string;
 
-  api?: Api;
+  api?: Api | MFApi;
 }
 
 export class Hosting extends Construct {
@@ -26,12 +27,12 @@ export class Hosting extends Construct {
   constructor(scope: Construct, id: string, props: HostingProps) {
     super(scope, id);
 
-    this.bucket = new Bucket(this, 'Bucket', {
-      bucketName: props.prefix,
-      encryption: BucketEncryption.S3_MANAGED,
-      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      removalPolicy: RemovalPolicy.DESTROY,
-    });
+    // this.bucket = new Bucket(this, 'Bucket', {
+    //   bucketName: props.prefix,
+    //   encryption: BucketEncryption.S3_MANAGED,
+    //   blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+    //   removalPolicy: RemovalPolicy.DESTROY,
+    // });
 
     const originAccessIdentity = new OriginAccessIdentity(this, 'OriginAccessIdentity', {
       comment: props.prefix,
@@ -50,10 +51,10 @@ export class Hosting extends Construct {
             maxTtl: Duration.seconds(300),
           },
         ],
-        s3OriginSource: {
-          s3BucketSource: this.bucket,
-          originAccessIdentity,
-        },
+        // s3OriginSource: {
+        //   s3BucketSource: this.bucket,
+        //   originAccessIdentity,
+        // },
       },
     ];
 

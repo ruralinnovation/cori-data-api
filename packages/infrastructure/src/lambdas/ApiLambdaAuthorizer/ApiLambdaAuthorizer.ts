@@ -1,4 +1,4 @@
-import { Aws, Duration, RemovalPolicy } from 'aws-cdk-lib';
+import { Aws, RemovalPolicy } from 'aws-cdk-lib';
 import { PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
@@ -9,21 +9,21 @@ import { ApiNodejsFunction } from '../../../constructs/lambda';
 import { join } from 'path';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
-interface ApolloGraphqlServerProps {
+interface ApiLambdaAuthorizerProps {
   prefix: string;
   logRetention: RetentionDays;
   environment: EnvConfigVars;
 }
 
-export class ApolloGraphqlServer extends Construct {
+export class ApiLambdaAuthorizer extends Construct {
   function: Function;
   role: Role;
-  constructor(scope: Construct, id: string, props: ApolloGraphqlServerProps) {
+  constructor(scope: Construct, id: string, props: ApiLambdaAuthorizerProps) {
     super(scope, id);
 
     const { prefix, logRetention, environment } = props;
 
-    const functionName = `${prefix}-apollo-server`;
+    const functionName = `${prefix}-api-token-authorizer`;
 
     this.role = new Role(this, 'Role', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
@@ -33,7 +33,6 @@ export class ApolloGraphqlServer extends Construct {
       runtime: Runtime.NODEJS_14_X,
       environment,
       functionName,
-      timeout: Duration.seconds(40),
     });
 
     new LogGroup(this, 'LogGroup', {

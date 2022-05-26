@@ -1,8 +1,16 @@
 import { Construct } from 'constructs';
-import { AwsIntegration, RestApi, CognitoUserPoolsAuthorizer, IResource, ApiKey } from 'aws-cdk-lib/aws-apigateway';
+import {
+  AwsIntegration,
+  RestApi,
+  CognitoUserPoolsAuthorizer,
+  IResource,
+  ApiKey,
+  IApiKey,
+} from 'aws-cdk-lib/aws-apigateway';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
-
+import { v4 as uuidv4 } from 'uuid';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 
 export type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS';
 
@@ -14,11 +22,13 @@ export interface ApiProps {
    * Automatically configure configure CloudWatch role
    */
   cloudWatchRole: boolean;
+  apiKey?: Secret;
 }
 
 export class Api extends Construct {
   api: RestApi;
   authorizer: CognitoUserPoolsAuthorizer;
+  key: IApiKey;
 
   constructor(scope: Construct, id: string, private props: ApiProps) {
     super(scope, id);
@@ -28,15 +38,20 @@ export class Api extends Construct {
       cloudWatchRole: props.cloudWatchRole,
     });
 
-    const key = this.api.addApiKey(`${props.prefix}-api-key`);
-    const plan = this.api.addUsagePlan('UsagePlan', {
-      name: 'Easy',
-      throttle: {
-        rateLimit: 10,
-        burstLimit: 2,
-      },
-    });
-    plan.addApiKey(key);
+    if (props.apiKey) {
+      const plan = this.api.addUsagePlan('PythonApiUsagePlan', {
+        name: 'Development',
+        throttle: {
+          rateLimit: 10,
+          burstLimit: 2,
+        },
+      });
+      const key = this.api.addApiKey('ApiKey', {
+        apiKeyName: this.props.prefix + 'api-key',
+        value: props.apiKey.secretValueFromJson(props.prefix + '-api-key').toString(),
+      });
+      plan.addApiKey(key);
+    }
   }
 
   attachCognitoAuthorizer(userPool: IUserPool) {

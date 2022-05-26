@@ -3,8 +3,7 @@
  */
 export interface EnvConfigVars {
   LOGGING_LEVEL: string;
-  PYTHON_API_URL: string;
-  PYTHON_API_STAGE: string;
+  API_KEY: string;
   [name: string]: string;
 }
 
@@ -21,6 +20,5 @@ function getEnv(key: string, fallback: string = '') {
 
 export const EnvConfig: EnvConfigVars = {
   LOGGING_LEVEL: getEnv('LOGGING_LEVEL', 'DEBUG'),
-  PYTHON_API_URL: getEnv('PYTHON_API_URL'),
-  PYTHON_API_STAGE: getEnv('PYTHON_API_STAGE'),
+  API_KEY: getEnv('API_KEY'),
 };

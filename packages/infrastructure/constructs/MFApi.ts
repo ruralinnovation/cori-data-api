@@ -11,6 +11,9 @@ import {
   AwsIntegration,
   IntegrationOptions,
   MethodOptions,
+  IApiKey,
+  ApiKey,
+  TokenAuthorizer,
 } from 'aws-cdk-lib/aws-apigateway';
 import { LambdasAndLogGroups } from './LambdasAndLogGroups';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
@@ -18,6 +21,7 @@ import { Function as BASE_FUNCTION } from 'aws-cdk-lib/aws-lambda';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { toPascal, toKebab } from './naming';
 import { Mutable, HttpMethod } from '../interfaces';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 
 interface GatewayResponse {
   type: ResponseType;
@@ -33,12 +37,14 @@ export interface ApiProps {
    * Automatically configure configure CloudWatch role
    */
   cloudWatchRole?: boolean;
+  apiKey?: Secret;
 }
 
 export class MFApi extends Construct {
-  public api: IRestApi;
+  public api: RestApi;
   public stage: string;
   public authorizer?: CognitoUserPoolsAuthorizer;
+  public tokenAuthorizer?: TokenAuthorizer;
 
   constructor(scope: Construct, id: string, private props: ApiProps) {
     super(scope, id);
@@ -59,6 +65,20 @@ export class MFApi extends Construct {
     if (props.userPool) {
       this.attachCognitoAuthorizer(props.userPool);
     }
+    if (props.apiKey) {
+      const plan = this.api.addUsagePlan('ApiUsagePlan', {
+        name: 'Development',
+        throttle: {
+          rateLimit: 10000,
+          burstLimit: 100,
+        },
+      });
+      const key = this.api.addApiKey('ApiKey', {
+        apiKeyName: this.props.prefix + 'api-key',
+        value: props.apiKey.secretValue.toString(),
+      });
+      plan.addApiKey(key);
+    }
   }
 
   public attachCognitoAuthorizer(userPool: IUserPool) {
@@ -67,6 +87,13 @@ export class MFApi extends Construct {
       authorizerName: 'Cognito',
     });
     this.authorizer._attachToApi(this.api);
+  }
+
+  public attachLambdaAuthorizer(handler: BASE_FUNCTION) {
+    this.tokenAuthorizer = new TokenAuthorizer(this, 'TokenAuthorizer', {
+      handler,
+    });
+    this.tokenAuthorizer._attachToApi(this.api);
   }
 
   public addLambda({

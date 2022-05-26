@@ -74,3 +74,81 @@ GRANT read_only_access TO read_only_user;
 ```
 
 3. Save password in AWS Parameter store (keep note of parameter name)
+
+## Python Lambdas / Microservices
+
+We have 10 different tables in the BCAT Schema
+
+1. bcat_auction_904_subsidy_awards
+
+### bcat_auction_904_subsidy_awards
+
+| Column Name | Data Type |
+| geoid | text |
+| state_abbr | text |
+| name_co | text |
+| subsidy_recipient | text |
+| tier | text |
+| geoms | geometry |
+| geoid_co | text |
+| valid_raw | text |
+
+### Endpoints
+
+## **Auction 904 Subsidy Awards**
+
+---
+
+### Properties
+
+- **URL**
+
+  `/bcat/auction_904_subsidy_awards/properties`
+
+- **Method:**
+
+  `GET`
+
+- **URL Params**
+
+  **NOT REQUIRED**
+  `geoids=[geoid], state_abbrs=[state_abbr]`
+
+- **Returns**
+
+  {
+  geoid: string
+  state_abbr: string
+  name_co: string
+  subsidy_recipient: string
+  tier: string
+  geoid_co: string
+  valid_raw: string
+  }
+
+### Feature Collection
+
+- **URL**
+
+  `/bcat/auction_904_subsidy_awards/geojson/feature_collection?`
+
+- **Method:**
+
+  `GET`
+
+- **URL Params**
+
+  **NOT REQUIRED**
+  `geoids=[geoid]`
+
+- **Returns**
+
+  {
+  geoid: string
+  state_abbr: string
+  name_co: string
+  subsidy_recipient: string
+  tier: string
+  geoid_co: string
+  valid_raw: string
+  }
