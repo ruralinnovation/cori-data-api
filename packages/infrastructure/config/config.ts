@@ -45,6 +45,26 @@ export const Config: IConfigs = {
       dbuser: 'read_only_user',
     },
   },
+  'local': {
+    client: 'mf',
+    stage: 'local',
+    project: 'data-api',
+    loggingLevel: 'info',
+    retain: false,
+    microservicesDirectory: 'python-microservices',
+    env: {
+      account: '190686435752',
+      region: 'us-east-1',
+    },
+    databaseConfig: {
+      vpcId: 'vpc-0499b35a2f5231aae',
+      databaseSecurityGroupId: 'sg-0be66ca1818bcc0e0',
+      host: 'cori-database-small-dev.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
+      dbname: 'data',
+      parameterName: '/cori/read_only_user_credentials',
+      dbuser: 'read_only_user',
+    },
+  },
   'dev1': {
     client: 'cori',
     stage: 'dev',

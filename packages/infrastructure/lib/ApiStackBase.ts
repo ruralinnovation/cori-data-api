@@ -282,10 +282,24 @@ export class ApiBaseStack extends Stack {
       apiOriginPath: this.props.stage,
     };
 
+    if (this.props.stage === 'local') {
+      const localApiWrapper = new PythonLambda(this, 'LocalApi', {
+        ...defaults,
+        functionName: this.prefix + '-local-api',
+        entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'local')),
+      });
+
+      this.pythonApi.addLambda({
+        method: 'GET',
+        path: '/local/{proxy+}',
+        lambda: localApiWrapper.function,
+      });
+    }
+
     const testApiFunction = new PythonLambda(this, 'TestApi', {
       ...defaults,
       functionName: this.prefix + '-test-api',
-      entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, '/deploy')),
+      entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'deploy')),
     });
 
     this.pythonApi.addLambda({
@@ -303,7 +317,9 @@ export class ApiBaseStack extends Stack {
     const subsidyFunction = new PythonLambda(this, 'Auction904SubsidyAwards', {
       ...defaults,
       functionName: this.prefix + '-auction-904-subsidy-awards-service',
-      entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat', 'c')),
+      entry: resolve(
+        join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat', 'auction_904_subsidy_awards')
+      ),
     });
 
     this.pythonApi.addLambda({

@@ -51,6 +51,7 @@ const main = async () => {
  * This generates a SAM compatible template so that you can debug locally with `npm start`.
  */
 const createSamTemplate = (app: App, options: ApiStackBaseProps) => {
+  console.log('Creating template');
   // Generate a template.yaml and local.json to be used with `npm start`
   const stacks = app.synth().stacks;
   const stack = stacks[0];
