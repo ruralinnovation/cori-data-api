@@ -42,6 +42,7 @@ const customPlugin = {
   // Fires whenever a GraphQL request is received from a client.
   async requestDidStart(requestContext: any) {
     console.log('Request started! Query:\n' + requestContext.request.query);
+    console.log('Request :\n' + JSON.stringify(requestContext.request));
 
     return {
       // Fires whenever Apollo Server will parse a GraphQL
@@ -69,13 +70,22 @@ export const apolloConfig = {
     pythonApi: new PythonRestApi(),
   }),
   plugins: [customPlugin],
-  // context: ({ event, context, express }: any) => ({
-  //   headers: event.headers,
-  //   functionName: context.functionName,
-  //   event,
-  //   context,
-  //   expressRequest: express.req,
-  // }),
+  context: ({ event, context, express, req }: any) => {
+    return {
+      headers: event.headers,
+      functionName: context.functionName,
+      event,
+      context,
+      customHeaders: {
+        headers: {
+          'Authorization': event.headers.Authorization,
+          'credentials': 'same-origin',
+          'Content-Type': 'application/json',
+        },
+      },
+      expressRequest: express.req,
+    };
+  },
   // Update this with necessary origins
   cors: {
     origin: ['*'],

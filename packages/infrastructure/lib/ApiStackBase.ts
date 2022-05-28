@@ -191,6 +191,7 @@ export class ApiBaseStack extends Stack {
       prefix: this.prefix + '-python-gis-api',
       stage: this.props.stage,
       cloudWatchRole: this.iam.roles === undefined,
+      userPool: this.cognito.userPool,
     });
 
     this.apolloApi = new Api(this, 'ApolloApi', {
