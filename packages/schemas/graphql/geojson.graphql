@@ -16,3 +16,28 @@ type FeatureCollection {
   type: String!
   features: [PointObject]
 }
+
+enum GeoJSONType {
+  Point
+  MultiPoint
+  LineString
+  MultiLineString
+  Polygon
+  MultiPolygon
+  GeometryCollection
+  Feature
+  FeatureCollection
+}
+enum GeoJSONCRSType {
+  name,
+  link
+}
+
+type GeoJSONCoordinateReferenceSystem {
+  type: GeoJSONCRSType!
+  properties: 
+}
+type GeoJSONPoint {
+  type: GeoJSONType
+  crs: 
+}

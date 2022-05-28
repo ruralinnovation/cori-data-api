@@ -43,7 +43,7 @@ def get_hello():
     """
     cur.execute(query)
     results = cur.fetchone()
-    print(results)
+
     return results[0]
 
 

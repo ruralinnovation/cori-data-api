@@ -40,7 +40,7 @@ export interface ApiProps {
   apiKey?: Secret;
 }
 
-export class MFApi extends Construct {
+export class Api extends Construct {
   public api: RestApi;
   public stage: string;
   public authorizer?: CognitoUserPoolsAuthorizer;

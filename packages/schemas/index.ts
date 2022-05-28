@@ -1,21 +1,40 @@
-import { join } from "path";
-import { writeFileSync, existsSync, mkdirSync } from "fs";
-import { loadSchemaSync } from "@graphql-tools/load";
-import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
-import { addResolversToSchema } from "@graphql-tools/schema";
-import { printSchema } from "graphql";
-const { execSync } = require("child_process");
-
+import { join } from 'path';
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { loadSchemaSync } from '@graphql-tools/load';
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
+import { addResolversToSchema } from '@graphql-tools/schema';
+import { GraphQLObjectType, GraphQLSchema, printSchema } from 'graphql';
+const { execSync } = require('child_process');
+import GeoJSON from './graphql/geojson';
 // Load schema from the file
-const schema = loadSchemaSync("./graphql/**/*.graphql", {
-  loaders: [new GraphQLFileLoader()],
-});
+// const baseSchema = loadSchemaSync('./graphql/query.graphql', {
+//   loaders: [new GraphQLFileLoader()],
+// });
 
-console.log("Checking ... ", printSchema(schema));
-
-if (!existsSync("dist")) {
-  mkdirSync("dist");
-}
-writeFileSync("dist/schema.graphql", printSchema(schema));
+// console.log("Checking ... ", printSchema(schema));
 
 //execSync("hive schema:publish ./dist/schema.graphql");
+
+const Query = new GraphQLObjectType({
+  name: 'Query',
+  fields: {
+    setup: {
+      type: GeoJSON.GeometryTypeUnion,
+    },
+    hello: {
+      type: GeoJSON.FeatureCollectionObject,
+    },
+    auction_904_subsidy_awards: {
+      type: GeoJSON.FeatureCollectionObject,
+    },
+  },
+});
+
+const schema = new GraphQLSchema({
+  query: Query,
+});
+
+if (!existsSync('dist')) {
+  mkdirSync('dist');
+}
+writeFileSync('dist/schema.graphql', printSchema(schema));

@@ -69,13 +69,13 @@ export const apolloConfig = {
     pythonApi: new PythonRestApi(),
   }),
   plugins: [customPlugin],
-  context: ({ event, context, express }: any) => ({
-    headers: event.headers,
-    functionName: context.functionName,
-    event,
-    context,
-    expressRequest: express.req,
-  }),
+  // context: ({ event, context, express }: any) => ({
+  //   headers: event.headers,
+  //   functionName: context.functionName,
+  //   event,
+  //   context,
+  //   expressRequest: express.req,
+  // }),
   // Update this with necessary origins
   cors: {
     origin: ['*'],

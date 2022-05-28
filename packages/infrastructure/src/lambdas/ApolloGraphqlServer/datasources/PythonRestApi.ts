@@ -7,7 +7,7 @@ export class PythonRestApi extends RESTDataSource {
   }
 
   willSendRequest(request: RequestOptions) {
-    console.log('Request :', request);
+    console.log('Request :', JSON.stringify(request));
     request.headers.set('Authorization', this.context.token);
   }
   async getItem(path?: string) {

@@ -2,13 +2,12 @@ import { Construct } from 'constructs';
 import { AwsIntegration, CognitoUserPoolsAuthorizer, IRestApi } from 'aws-cdk-lib/aws-apigateway';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { PythonLambda, PythonLambdaProps } from './PythonLambda';
-import { Api } from '../api';
-import { MFApi } from '../MFApi';
+import { Api } from '../Api';
 
 type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS';
 
 export interface ApiLambdaProps extends PythonLambdaProps {
-  api: MFApi;
+  api: Api;
 }
 
 /**

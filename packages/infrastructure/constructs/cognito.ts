@@ -50,7 +50,7 @@ export interface CognitoConstructProps {
 
 export class Cognito extends Construct {
   userPool: IUserPool;
-  userPoolClients: UserPoolClient[];
+  userPoolClients: UserPoolClient[] = [];
   userPoolDomain: string;
   prefix: string;
   private addAppClients(appClients: UserPoolClientConfig[]) {
@@ -147,21 +147,27 @@ export class Cognito extends Construct {
       }
     }
 
-    // this.userPoolClient = new UserPoolClient(this, 'UserPoolClient', {
-    //   userPoolClientName: this.props.prefix,
-    //   userPool: this.userPool,
-    //   supportedIdentityProviders: [UserPoolClientIdentityProvider.COGNITO],
-    //   generateSecret: false,
-    //   oAuth: {
-    //     flows: {
-    //       implicitCodeGrant: true,
-    //       authorizationCodeGrant: true,
-    //     },
-    //     scopes: [OAuthScope.EMAIL, OAuthScope.OPENID, OAuthScope.PROFILE],
-    //     callbackUrls: this.props.callbackUrls,
-    //     logoutUrls: this.props.logoutUrls,
-    //   },
-    // });
+    this.userPoolClients.push(
+      new UserPoolClient(this, 'PostmanUserPoolClient', {
+        userPoolClientName: this.props.prefix + '-postman-app-client',
+        userPool: this.userPool,
+        supportedIdentityProviders: [UserPoolClientIdentityProvider.COGNITO],
+        generateSecret: false,
+        oAuth: {
+          flows: {
+            implicitCodeGrant: true,
+            authorizationCodeGrant: true,
+          },
+          scopes: [OAuthScope.EMAIL, OAuthScope.OPENID, OAuthScope.PROFILE],
+          callbackUrls: ['https://www.getpostman.com/oauth2/callback'],
+          logoutUrls: ['https://www.getpostman.com/oauth2/callback'],
+        },
+        authFlows: {
+          userPassword: true,
+          userSrp: true,
+        },
+      })
+    );
 
     new CfnOutput(this, 'DomainOutput', {
       value: this.userPoolDomain,

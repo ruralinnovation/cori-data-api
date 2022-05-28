@@ -9,14 +9,13 @@ import {
   OriginProtocolPolicy,
   CfnDistribution,
 } from 'aws-cdk-lib/aws-cloudfront';
-import { BlockPublicAccess, Bucket, BucketEncryption } from 'aws-cdk-lib/aws-s3';
-import { Api } from './api';
-import { MFApi } from './MFApi';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { Api } from './Api';
 
 export interface HostingProps {
   prefix: string;
 
-  api?: Api | MFApi;
+  api?: Api;
 }
 
 export class Hosting extends Construct {
