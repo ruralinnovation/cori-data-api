@@ -103,8 +103,7 @@ export class ApiBaseStack extends Stack {
   prefix: string;
   pythonApi: Api;
   apolloApi: Api;
-  pythonApiHosting: Hosting;
-  graphqlApiHosting: Hosting;
+  hosting: Hosting;
   stack: Stack;
   cognito: Cognito;
   iam: ApiIAM;
@@ -167,9 +166,20 @@ export class ApiBaseStack extends Stack {
       vpc: this.props.databaseConfig.vpcId !== undefined,
     });
 
-    // this.pythonApiHosting = new Hosting(this, 'Hosting', {
+    // this.hosting = new Hosting(this, 'Hosting', {
     //   prefix: this.prefix,
-    //   api: this.api,
+    //   apiOriginConfigs: [
+    //     {
+    //       restApiId: this.pythonApi.api.restApiId,
+    //       originPath: `/${this.props.stage}`,
+    //       behaviorPathPattern: '/api/datap/*',
+    //     },
+    //     {
+    //       restApiId: this.apolloApi.api.restApiId,
+    //       originPath: `/${this.props.stage}`,
+    //       behaviorPathPattern: '/api/graphql/*',
+    //     },
+    //   ],
     // });
 
     // this.graphqlApiHosting = new Hosting(this, 'ApolloGraphqlHosting', {
@@ -247,7 +257,9 @@ export class ApiBaseStack extends Stack {
     const defaults = {
       api: this.pythonApi,
       runtime: Runtime.PYTHON_3_8,
+
       layers: [pythonDependencyLayer] as LayerVersion[],
+      memorySize: 256,
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: this.props.stage,
@@ -278,53 +290,53 @@ export class ApiBaseStack extends Stack {
         path: '/local/{proxy+}',
         lambda: localApiWrapper.function,
       });
+    } else {
+      const testApiFunction = new PythonLambda(this, 'TestApi', {
+        ...defaults,
+        functionName: this.prefix + '-test-api',
+        entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'deploy')),
+      });
+
+      this.pythonApi.addLambda({
+        method: 'GET',
+        path: '/hello',
+        lambda: testApiFunction.function,
+      });
+
+      this.pythonApi.addLambda({
+        method: 'GET',
+        path: '/hello/{name}',
+        lambda: testApiFunction.function,
+      });
+
+      const subsidyFunction = new PythonLambda(this, 'Auction904SubsidyAwards', {
+        ...defaults,
+        functionName: this.prefix + '-auction-904-subsidy-awards-service',
+        entry: resolve(
+          join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat', 'auction_904_subsidy_awards')
+        ),
+      });
+
+      this.pythonApi.addLambda({
+        method: 'GET',
+        path: '/bcat/auction_904_subsidy_awards',
+        lambda: subsidyFunction.function,
+      });
+
+      const broadbandUnservedFunction = new PythonLambda(this, 'BroadbandUnservedBlocks', {
+        ...defaults,
+        functionName: this.prefix + '-broadband-unserved-blocks',
+        entry: resolve(
+          join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat', 'broadband_unserved_blocks')
+        ),
+      });
+
+      this.pythonApi.addLambda({
+        method: 'GET',
+        path: '/bcat/broadband_unserved_blocks',
+        lambda: broadbandUnservedFunction.function,
+      });
     }
-
-    const testApiFunction = new PythonLambda(this, 'TestApi', {
-      ...defaults,
-      functionName: this.prefix + '-test-api',
-      entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'deploy')),
-    });
-
-    this.pythonApi.addLambda({
-      method: 'GET',
-      path: '/hello',
-      lambda: testApiFunction.function,
-    });
-
-    this.pythonApi.addLambda({
-      method: 'GET',
-      path: '/hello/{name}',
-      lambda: testApiFunction.function,
-    });
-
-    const subsidyFunction = new PythonLambda(this, 'Auction904SubsidyAwards', {
-      ...defaults,
-      functionName: this.prefix + '-auction-904-subsidy-awards-service',
-      entry: resolve(
-        join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat', 'auction_904_subsidy_awards')
-      ),
-    });
-
-    this.pythonApi.addLambda({
-      method: 'GET',
-      path: '/bcat/auction_904_subsidy_awards',
-      lambda: subsidyFunction.function,
-    });
-
-    const broadbandUnservedFunction = new PythonLambda(this, 'BroadbandUnservedBlocks', {
-      ...defaults,
-      functionName: this.prefix + '-broadband-unserved-blocks',
-      entry: resolve(
-        join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat', 'broadband_unserved_blocks')
-      ),
-    });
-
-    this.pythonApi.addLambda({
-      method: 'GET',
-      path: '/bcat/broadband_unserved_blocks',
-      lambda: broadbandUnservedFunction.function,
-    });
 
     // new AppSyncApiLambda(this, 'TestApi', {
     //   ...defaults,
@@ -359,6 +371,7 @@ export class ApiBaseStack extends Stack {
 
     const apolloServer = new ApolloGraphqlServer(this, 'ApolloApiServerLambda', {
       prefix: this.prefix,
+
       logRetention: RetentionDays.FOUR_MONTHS,
       environment: {
         PYTHON_API_URL: this.pythonApi.api.url,

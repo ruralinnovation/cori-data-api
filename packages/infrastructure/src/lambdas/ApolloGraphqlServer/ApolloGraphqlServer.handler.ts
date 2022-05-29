@@ -19,7 +19,7 @@ const RootQuery = new GraphQLObjectType({
       type: GeoJSON.FeatureCollectionObject,
       args: null,
       resolve: async (_: any, __: any, { dataSources }: any) => {
-        return dataSources.pythonApi.getItem();
+        return dataSources.pythonApi.getItem('hello');
       },
     },
     auction_904_subsidy_awards: {
