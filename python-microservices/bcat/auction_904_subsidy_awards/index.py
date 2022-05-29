@@ -34,11 +34,11 @@ def get_hello():
         )
         FROM
         bcat.bcat_auction_904_subsidy_awards AS t
-        WHERE geoid_co = '48329';
+         WHERE geoid_co = '48329';
     """
     cur.execute(query)
     results = cur.fetchone()
-    print(results)
+
     return results[0]
 
 

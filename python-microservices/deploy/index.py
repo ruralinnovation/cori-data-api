@@ -44,11 +44,11 @@ def get_hello():
     """
     cur.execute(query)
     results = cur.fetchone()
-    print(results)
     return results[0]
 
 
-# You can continue to use other utilities just as before
+
+
 @tracer.capture_lambda_handler
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST, log_event=True)
 def handler(event, context):

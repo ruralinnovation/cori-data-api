@@ -30,6 +30,7 @@ export class ApolloGraphqlServer extends Construct {
     });
 
     this.function = new NodejsFunction(this, 'handler', {
+      memorySize: 256,
       runtime: Runtime.NODEJS_14_X,
       environment,
       functionName,

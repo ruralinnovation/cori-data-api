@@ -1,91 +1,134 @@
-type bcat_auction_904_subsidy_awards {
-  geoid: String
-  state_abbr: String
-  name_co: String
-  subsidy_recipient: String
-  tier: String
-  geoms: FeatureCollection
-  geoid_co: String
-  valid_raw: String
-}
-
-type FeatureCollection {
-  type: String!
-  features: [PointObject]
-}
-
-type PointObject {
-  type: String!
-  geometry: PointGeometry
-  properties: PointProps
-}
-
-type PointGeometry {
-  type: String!
-  coordinates: [Float]
-}
-
-type PointProps {
-  id: Int!
-  lat: Float
-  lon: Float
-}
-
-type bcat_broadband_unserved_blocks {
-  geoid_co: String
-  state_abbr: String
-  geometry: FeatureCollection
-}
-
-type bcat_county_broadband_farm_bill_eligibility {
-  state_abbr: String
-  valid_raw: String
-  geoms: FeatureCollection
-}
-
-type bcat_county_broadband_pending_rural_dev {
-  applicant_name: String
-  application_status: String
-  program: String
-  valid_raw: String
-  state_abbr: String
-  geoms: FeatureCollection
-}
-
-type bcat_county_ilecs_geo {
-  ilec_name: String
-  ilec_hoco_name: String
-  state_abbr: String
-  geometry: FeatureCollection
-}
-
-type bcat_county_rural_dev_broadband_protected_borrowers {
-  name_x: String
-  valid_raw: String
-  name_y: String
-  geoid: String
-  geoid_st: String
-  statens: String
-  affgeoid: String
-  stusps: String
-  lsad: String
-  region: String
-  division: String
-  mtfcc: String
-  funcstat: String
-  lat: String
-  lon: String
-  land_sqmi: Float
-  water_sqmi: Float
-  geoms: FeatureCollection
-}
-
 type Query {
-  get_bcat_auction_904_subsidy_awards: [bcat_auction_904_subsidy_awards]
-  test: Test
-  helloName(name: String!): Test
+  setup: GeoJSONGeometryTypes
+  hello: GeoJSONFeatureCollection
+  auction_904_subsidy_awards: GeoJSONFeatureCollection
 }
 
-type Test {
-  hello: String!
+"""Geometry Types"""
+union GeoJSONGeometryTypes = GeoJSONPoint | GeoJSONMultiLineString | GeoJSONLineString | GeoJSONPolygon | GeoJSONMultiPoint | GeoJSONMultiPolygon
+
+"""Object describing a single geographical point."""
+type GeoJSONPoint implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: AWSJSON
+}
+
+interface GeoJSONInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+}
+
+"""Enumeration of all GeoJSON object types."""
+enum GeoJSONType {
+  Point
+  MultiPoint
+  LineString
+  MultiLineString
+  Polygon
+  MultiPolygon
+  GeometryCollection
+  Feature
+  FeatureCollection
+}
+
+"""Coordinate Reference System (CRS) object."""
+type GeoJSONCoordinateReferenceSystem {
+  type: GeoJSONCRSType!
+  properties: GeoJSONCRSProperties!
+}
+
+"""Enumeration of all GeoJSON CRS object types."""
+enum GeoJSONCRSType {
+  name
+  link
+}
+
+"""CRS object properties."""
+union GeoJSONCRSProperties = GeoJSONNamedCRSProperties | GeoJSONLinkedCRSProperties
+
+"""Properties for name based CRS object."""
+type GeoJSONNamedCRSProperties {
+  name: String!
+}
+
+"""Properties for link based CRS object."""
+type GeoJSONLinkedCRSProperties {
+  href: String!
+  type: String
+}
+
+interface GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: AWSJSON
+}
+
+scalar AWSJSON
+
+"""Object describing multiple connected sequences of geographical points."""
+type GeoJSONMultiLineString implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: AWSJSON
+}
+
+"""Object describing a single connected sequence of geographical points."""
+type GeoJSONLineString implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: AWSJSON
+}
+
+"""
+Object describing a single shape formed by a set of geographical points.
+"""
+type GeoJSONPolygon implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: AWSJSON
+}
+
+"""Object describing multiple geographical points."""
+type GeoJSONMultiPoint implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: AWSJSON
+}
+
+"""
+Object describing multiple shapes formed by sets of geographical points.
+"""
+type GeoJSONMultiPolygon implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: AWSJSON
+}
+
+"""A set of multiple features."""
+type GeoJSONFeatureCollection implements GeoJSONInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  features: [GeoJSONFeature!]!
+}
+
+"""
+An object that links a geometry to properties in order to provide context.
+"""
+type GeoJSONFeature implements GeoJSONInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  geometry: GeoJSONGeometryInterface
+  properties: AWSJSON
+  id: String
 }

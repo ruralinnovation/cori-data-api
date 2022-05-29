@@ -1,16 +1,7 @@
 import { Construct } from 'constructs';
-import { AwsIntegration, CognitoUserPoolsAuthorizer, IRestApi } from 'aws-cdk-lib/aws-apigateway';
-import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { ApiLambda, ApiLambdaProps } from './ApiLambda';
-import { Api } from '../api';
-import {
-  GraphqlApi,
-  Schema,
-  FieldLogLevel,
-  AuthorizationType,
-  MappingTemplate,
-  HttpDataSource,
-} from '@aws-cdk/aws-appsync-alpha';
+import { MappingTemplate, HttpDataSource } from '@aws-cdk/aws-appsync-alpha';
+import { join, resolve } from 'path';
 
 type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS';
 
@@ -40,21 +31,8 @@ export class AppSyncApiLambda extends ApiLambda {
     this.httpSource = props.httpSource;
   }
 
-  // createResourcePath(path: string): string {
-  //   let p = `/prod${path}`;
-  //   // @ts-ignore
-  //   const matches = path.matchAll(this.paramsRegex);
-  //   if (matches) {
-  //     [...matches].forEach(match => {
-  //       const replacer = `$context.arguments.${match[2]}`;
-  //       p = p.replace(match[1], replacer);
-  //     });
-  //     return p;
-  //   }
-  //   return p;
-  // }
   createResourcePath(path: string): string {
-    let p = `${path}`;
+    let p = `/dev${path}`;
     // @ts-ignore
     const matches = path.matchAll(this.paramsRegex);
     if (matches) {
@@ -66,6 +44,19 @@ export class AppSyncApiLambda extends ApiLambda {
     }
     return p;
   }
+  // createResourcePath(path: string): string {
+  //   let p = `${path}`;
+  //   // @ts-ignore
+  //   const matches = path.matchAll(this.paramsRegex);
+  //   if (matches) {
+  //     [...matches].forEach(match => {
+  //       const replacer = `$context.arguments.${match[2]}`;
+  //       p = p.replace(match[1], replacer);
+  //     });
+  //     return p;
+  //   }
+  //   return p;
+  // }
 
   private attachReadResolver(typeName: string, fieldName: string, resourcePath: string, method: HttpMethod) {
     this.httpSource.createResolver({
