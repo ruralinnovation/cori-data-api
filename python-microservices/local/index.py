@@ -16,30 +16,83 @@ tracer = Tracer(service="LocalApi")
 app = APIGatewayRestResolver(strip_prefixes=["/local"])
 
 
-TILES_CONFIG = {
-    'auction_904_subsidy_awards': {
-        'table': 'bcat.bcat_auction_904_subsidy_awards',
-        'geometry': 'geoms',
-        'columns': "geoid, state_abbr, name_co, subsidy_recipient, tier, geoid_co, valid_raw"
-    },
+DB_ARGS = {
+    'user': os.environ['DB_USER'],
+    'password': os.environ['SECRET'],
+    'host': os.environ['DB_HOST'],
+    'dbname': os.environ['DB_NAME'],
 }
 
-BCAT_CONFIG = {
+CONFIG = {
     'auction_904_subsidy_awards': {
         'table': 'bcat.bcat_auction_904_subsidy_awards',
-        'params': {
-            'geoid_co': str,
-            'tier': str,
-        },
+        'columns': "name_co, subsidy_recipient, tier, geoid_co, state_abbr",
+        'params': ['geoid_co', 'state_abbr', 'geom'],
+        'geom': 'geoms',
+        'epsg': 4326
     },
     'broadband_unserved_blocks': {
         'table': 'bcat.bcat_broadband_unserved_blocks',
-        'params': {
-            'geoid_co': str,
-            'state_abbr': str,
-        }
-    }
+        'params': ['geoid_co', 'state_abbr', 'geom'],
+        'geom': 'geometry',
+        'epsg': 4269
+    },
+    'county_broadband_farm_bill_eligibility': {
+        'table': 'bcat.bcat_county_broadband_farm_bill_eligibility',
+        'params': ['state_abbr', 'geom'],
+        'geom': 'geoms',
+        'epsg': 4269
+    },
+    'county_broadband_pending_rural_dev': {
+        'table': 'bcat.bcat_county_broadband_pending_rural_dev',
+        'params': ['state_abbr', 'geom'],
+        'geom': 'geoms',
+        'epsg': 4269
+    },
+    'county_ilecs_geo': {
+        'table': 'bcat.bcat_county_ilecs_geo',
+        'params': ['state_abbr', 'geom'],
+        'geom': 'geometry',
+        'epsg': 4269
+    },
+    'county_rural_dev_broadband_protected_borrowers': {
+        'table': 'bcat.bcat_county_rural_dev_broadband_protected_borrowers',
+        'params': ['geom', 'stusps'],
+        'geom': 'geoms',
+        'epsg': 4269
+    },
+    'county_summary': {
+        'table': 'bcat.bcat_county_summary',
+        'params': ['geoid_co', 'state_abbr', 'geom'],
+        'geom': None,  # has wkt geom but is text type
+        'epsg': None
+    },
+    'fiber_cable_unserved_blocks': {
+        'table': 'bcat.bcat_fiber_cable_unserved_blocks',
+        'params': ['geoid_co', 'state_abbr', 'geom'],
+        'geom': 'geometry',
+        'epsg': 4269
+    },
+    'incumbent_electric_providers_geo': {
+        'table': 'bcat.bcat_incumbent_electric_providers_geo',
+        'params': ['state_abbr', 'geom'],
+        'geom': 'geometry',
+        'epsg': 4269
+    },
+    'county_adjacency_crosswalk': {
+        'table': 'bcat.county_adjacency_crosswalk',
+        'params': ['geoid_co', 'state_abbr'],
+        'geom': None,
+        'epsg': None
+    },
 }
+
+
+def execute(query):
+    with psycopg.connect(**DB_ARGS) as conn:
+        with conn.cursor() as cur:
+            cur.execute(query)
+            return cur.fetchall()
 
 
 @app.get(rule="/bad-request-error")
@@ -48,128 +101,122 @@ def bad_request_error(msg):
     raise BadRequestError(msg)
 
 
-@app.get("/test/<name>")
-def get_hello_you(name):
-    return {"hello": f"hello {name}"}
-
-
-@app.get("/test")
-def get_hello():
-  
-    logger.info(os.environ)
-    conn = psycopg.connect(
-        user = os.environ['DB_USER'],
-        password = os.environ['SECRET'],
-        host = os.environ['DB_HOST'],
-        dbname = os.environ['DB_NAME']
-    )
-            
-    # create a cursor
-    cur = conn.cursor()
-    query = """
-        SELECT
-        json_build_object(
-            'type', 'FeatureCollection',
-            'features', json_agg(ST_AsGeoJSON(t.*)::json)
-        )
-        FROM
-        bcat.bcat_auction_904_subsidy_awards AS t
-        WHERE geoid_co = '48329';
-    """
-    cur.execute(query)
-    results = cur.fetchone()
-
-    return results[0]
-
-
-@app.get("/bcat/<table>")
-def get_bcat(table):
-
-    logger.info(os.environ)
-
+@app.get("/bcat/<table>/geojson/<state_abbr>")
+def get_table_json_state(table, state_abbr):
     params = app.current_event.query_string_parameters
 
-    if table not in BCAT_CONFIG:
-        raise BadRequestError(f'{table} not a valid table')
+    if params is None:
+        params = {}
 
-    invalid_params = [k for k in params.keys() if k not in BCAT_CONFIG[table]['params']]
+    if table == 'county_rural_dev_broadband_protected_borrowers':
+        params['stusps'] = state_abbr
+    else:
+        params['state_abbr'] = state_abbr
+
+    return get_bcat(table, params)
+
+
+@app.get("/bcat/<table>/geojson")
+def get_table_json_state(table):
+    params = app.current_event.query_string_parameters
+    return get_bcat(table, params)
+
+
+def get_bcat(table, params):
+    logger.info(os.environ)
+
+    if table not in CONFIG:
+        raise BadRequestError(f'invalid table {table}')
+
+    invalid_params = [k for k in params.keys() if k not in CONFIG[table]['params']]
     if invalid_params:
-        raise BadRequestError(f'invalid parameters {invalid_params}')
+        raise BadRequestError(f'invalid parameter {invalid_params}')
 
-    conn = psycopg.connect(
-        user=os.environ['DB_USER'],
-        password=os.environ['SECRET'],
-        host=os.environ['DB_HOST'],
-        dbname=os.environ['DB_NAME']
-    )
+    if ';' in str(params):
+        raise BadRequestError(f'invalid parameter')
 
-    # create a cursor
-    cur = conn.cursor()
-    query = f"""        
+    db_table = CONFIG[table]['table']
+    columns = CONFIG[table].get('columns', '*')
+    geom = CONFIG[table].get('geom', None)
+    epsg = CONFIG[table].get('epsg', None)
+    limit = CONFIG[table].get('limit', 10)
+
+    criteria = []
+    if 'geom' in params:
+        criteria += [f"""
+            {geom} && st_transform(st_geomfromtext('{params['geom']}', 4326), {epsg})
+            AND st_intersects({geom}, st_transform(st_geomfromtext('{params['geom']}', 4326), {epsg}))
+            """]
+
+        del params['geom']
+
+    params.update({k: [v, ] for k, v in params.items() if type(v) != list})
+    params.update({k: "ANY('{" + ",".join(v) + "}')" for k, v in params.items()})
+    for k, v in params.items():
+        criteria += [f'{k} = {v}', ]
+
+    where = ''
+    if criteria:
+        where = 'WHERE ' + ' AND '.join(criteria)
+
+    query = f"""
         SELECT
-        json_build_object(
-            'type', 'FeatureCollection',
-            'features', json_agg(ST_AsGeoJSON(t.*)::json)
-        )
-        FROM {BCAT_CONFIG[table]['table']} AS t
+            json_build_object(
+                'type', 'FeatureCollection',
+                'features', json_agg(t.*)::json
+            )
+        FROM (
+            SELECT {columns} 
+            FROM {db_table}
+            {where}
+            LIMIT {limit}
+            ) t
         
-    """
+        """
+    result = execute(query)[0][0]
 
-    # quote string parameters
-    params.update({k: f"'{v}'" for k, v in params.items() if BCAT_CONFIG[table]['params'][k] == str})
+    if type(result['features']) != list:
+        result['features'] = []
 
-    for i, (k, v) in enumerate(params.items()):
-        if not i:
-            query += f'WHERE {k} = {v}'
-        else:
-            query += f'AND {k} = {v}'
+    return result
 
-    cur.execute(query)
-    results = cur.fetchone()
+    #return {'q': query.replace('\n', ' ')}
 
-    return results[0]
-
-
-@app.get("/tiles/<table>/<z>/<x>/<y>.pbf")
+@app.get("/bcat/tiles/<table>/<z>/<x>/<y>.pbf")
 def get_tile(table, z, x, y):
     logger.info(os.environ)
 
-    if table not in TILES_CONFIG:
-        raise BadRequestError(f'{table} not a valid table')
+    if table not in CONFIG:
+        raise BadRequestError(f'invalid table {table}')
 
-    conn = psycopg.connect(
-        user=os.environ['DB_USER'],
-        password=os.environ['SECRET'],
-        host=os.environ['DB_HOST'],
-        dbname=os.environ['DB_NAME']
-    )
+    if 'geom' not in CONFIG[table]['params']:
+        raise BadRequestError(f'no geometry: {table}')
 
-    # create a cursor
-    cur = conn.cursor()
+    db_table = CONFIG[table]['table']
+    columns = CONFIG[table].get('columns', '*')
+    geom = CONFIG[table]['geom']
+    epsg = CONFIG[table]['epsg']
 
     query = f"""
         SELECT ST_AsMVT(q, '{table}', 4096, 'geom')
         
         FROM (
-            SELECT {TILES_CONFIG[table]['columns']},
+            SELECT {columns},
             ST_AsMvtGeom(
-                st_transform({TILES_CONFIG[table]['geometry']}, 3857),
+                st_transform({geom}, 3857),
                 BBox({x}, {y}, {z}, 3857, 0),
                 4096,
                 256
                 ) AS geom
-            FROM {TILES_CONFIG[table]['table']}
-            WHERE {TILES_CONFIG[table]['geometry']} && BBox({x}, {y}, {z}, 4326, 0)
-            AND st_intersects({TILES_CONFIG[table]['geometry']}, BBox({x}, {y}, {z}, 4326, 0))
+            FROM {db_table}
+            WHERE {geom} && BBox({x}, {y}, {z}, {epsg}, 0)
+            AND st_intersects({geom}, BBox({x}, {y}, {z}, {epsg}, 0))
             ) AS q;
         """
 
-    cur.execute(query)
-    results = cur.fetchone()
-
     # need to configure something to allow returning binary data response
-    # return results[0]
-    return {'r': str(results[0])}
+    # return execute(query)[0][0]
+    return {'r': str(execute(query)[0][0])}
 
 
 # You can continue to use other utilities just as before
