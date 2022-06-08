@@ -230,7 +230,7 @@ export class ApiBaseStack extends Stack {
       // cloudWatchRole: this.iam.roles === undefined,
       cloudWatchRole: true,
       userPool: this.cognito.userPool,
-      binaryMediaTypes: ['application~1x-protobuf'],
+      binaryMediaTypes: ['application~1x-protobuf', '*~1*'],
     });
 
     /**
