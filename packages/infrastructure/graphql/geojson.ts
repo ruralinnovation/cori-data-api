@@ -274,7 +274,6 @@ function coerceObject(value) {
   try {
     return JSON.parse(value);
   } catch (err) {
-    console.log('Invalid JSON return object');
     return value;
   }
 }
