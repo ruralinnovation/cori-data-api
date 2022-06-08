@@ -16,6 +16,7 @@ export interface CustomApiOriginConfig {
   restApiId: string;
   originPath: string;
   behaviorPathPattern: string;
+  default: boolean;
 }
 export interface HostingProps {
   prefix: string;
@@ -29,28 +30,6 @@ export class Hosting extends Construct {
   originConfigs: SourceConfiguration[] = [];
 
   public addCustomApiOrigin(config: CustomApiOriginConfig) {
-    // const domain = `${props.api.api.restApiId}.execute-api.${Stack.of(this).region}.amazonaws.com`;
-    // originConfigs.push({
-    //   customOriginSource: {
-    //     domainName: domain,
-    //     originPath: '/prod',
-    //     originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
-    //   },
-    //   behaviors: [
-    //     {
-    //       pathPattern: '/api/*',
-    //       forwardedValues: {
-    //         queryString: true,
-    //         headers: ['Access-Control-Request-Headers', 'Access-Control-Request-Method', 'Origin', 'Authorization'],
-    //       },
-    //       minTtl: Duration.seconds(0),
-    //       defaultTtl: Duration.seconds(0),
-    //       maxTtl: Duration.seconds(0),
-    //       allowedMethods: CloudFrontAllowedMethods.ALL,
-    //       cachedMethods: CloudFrontAllowedCachedMethods.GET_HEAD_OPTIONS,
-    //     },
-    //   ],
-    // });
     const domain = `${config.restApiId}.execute-api.${Stack.of(this).region}.amazonaws.com`;
     this.originConfigs.push({
       customOriginSource: {
@@ -60,6 +39,7 @@ export class Hosting extends Construct {
       },
       behaviors: [
         {
+          isDefaultBehavior: config.default,
           pathPattern: config.behaviorPathPattern,
           forwardedValues: {
             queryString: true,
@@ -76,9 +56,8 @@ export class Hosting extends Construct {
   }
   constructor(scope: Construct, id: string, props: HostingProps) {
     super(scope, id);
-
-    const originAccessIdentity = new OriginAccessIdentity(this, 'OriginAccessIdentity', {
-      comment: props.prefix,
+    this.bucket = new Bucket(this, 'LogBucket', {
+      bucketName: props.prefix + '-cloudfront-log-bucket',
     });
 
     props.apiOriginConfigs.forEach(config => {
@@ -93,16 +72,18 @@ export class Hosting extends Construct {
         {
           errorCode: 403,
           responseCode: 200,
-          responsePagePath: '/index.html',
           errorCachingMinTtl: 0,
         },
         {
           errorCode: 404,
           responseCode: 200,
-          responsePagePath: '/index.html',
           errorCachingMinTtl: 0,
         },
       ],
+      loggingConfig: {
+        bucket: this.bucket,
+        prefix: 'cloudfront-logs/',
+      },
     });
     // Override logical name for backwards compatibility
     //(this.distribution.node.defaultChild as CfnDistribution).overrideLogicalId('ClientCloudFrontDistro');

@@ -1,27 +1,22 @@
 import os
 import psycopg
+from psycopg import sql
 import boto3
-import json
 import base64
+import json
 from botocore.exceptions import ClientError
 from aws_lambda_powertools import Logger, Tracer
 from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver
 
+logger = Logger(service="bcat-service")
+tracer = Tracer(service="bcat-service")
+app = APIGatewayRestResolver(strip_prefixes=["/bcat"])
 
-logger = Logger(service="testApi")
-tracer = Tracer(service="testApi")
-# app = APIGatewayRestResolver(strip_prefixes=["/api"])
-app = APIGatewayRestResolver()
-
-
-@app.get("/hello/<name>")
-def get_hello_you(name):
-    return {"hello": f"hello {name}"}
-
-@app.get("/hello")
-def get_hello():
+@app.get("/<table>")
+def get(table):
   
+    logger.info('Table ', table)
     logger.info(os.environ)
     conn = psycopg.connect(
         user = os.environ['DB_USER'],
@@ -40,15 +35,15 @@ def get_hello():
         )
         FROM
         bcat.bcat_auction_904_subsidy_awards AS t
-         WHERE geoid_co = '48329';
+        WHERE geoid_co IN ('47033', '47167', '47017');
     """
     cur.execute(query)
     results = cur.fetchone()
+    print(results)
     return results[0]
 
 
-
-
+# You can continue to use other utilities just as before
 @tracer.capture_lambda_handler
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST, log_event=True)
 def handler(event, context):

@@ -38,6 +38,7 @@ export interface ApiProps {
    */
   cloudWatchRole?: boolean;
   apiKey?: Secret;
+  binaryMediaTypes?: string[];
 }
 
 export class Api extends Construct {
@@ -58,6 +59,7 @@ export class Api extends Construct {
         stageName: this.stage,
       },
       cloudWatchRole: props.cloudWatchRole,
+      binaryMediaTypes: props.binaryMediaTypes || undefined,
     });
 
     this.addGatewayResponses();
