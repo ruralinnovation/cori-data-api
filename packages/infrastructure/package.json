@@ -59,6 +59,7 @@
     "apollo-server-lambda": "^3.7.0",
     "apollo-server-plugin-response-cache": "^3.6.0",
     "aws-cdk-lib": "2.20.0",
+    "compression": "^1.7.4",
     "constructs": "^10.0.0",
     "dotenv": "^16.0.0",
     "graphql": "^16.5.0",

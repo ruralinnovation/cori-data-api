@@ -7,17 +7,24 @@ import json
 from botocore.exceptions import ClientError
 from aws_lambda_powertools import Logger, Tracer
 from aws_lambda_powertools.logging import correlation_paths
-from aws_lambda_powertools.event_handler import APIGatewayRestResolver
+from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver, Response
+from io import BytesIO
+import base64
+import gzip
 
 logger = Logger(service="bcat-service")
 tracer = Tracer(service="bcat-service")
 app = APIGatewayRestResolver(strip_prefixes=["/bcat"])
 
-@app.get("/<table>")
+def gzip_b64encode(data):
+    compressed = BytesIO()
+    with gzip.GzipFile(fileobj=compressed, mode='w') as f:
+        json_response = json.dumps(data)
+        f.write(json_response.encode('utf-8'))
+    return base64.b64encode(compressed.getvalue()).decode('ascii')
+
+@app.get("/<table>", compress=True)
 def get(table):
-  
-    logger.info('Table ', table)
-    logger.info(os.environ)
     conn = psycopg.connect(
         user = os.environ['DB_USER'],
         password = os.environ['SECRET'],
@@ -35,11 +42,12 @@ def get(table):
         )
         FROM
         bcat.bcat_auction_904_subsidy_awards AS t
-        WHERE geoid_co IN ('47033', '47167', '47017');
+        WHERE geoid_co IN ('47033', '47167');
     """
     cur.execute(query)
     results = cur.fetchone()
-    print(results)
+    print('Response Length ' + str(len(json.dumps(results[0]))))
+    print('Response Length ' + str(len(gzip_b64encode(results[0]))))
     return results[0]
 
 

@@ -9,6 +9,7 @@ from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver
 
 
+
 logger = Logger(service="LocalApi")
 tracer = Tracer(service="LocalApi")
 app = APIGatewayRestResolver(strip_prefixes=["/local"])

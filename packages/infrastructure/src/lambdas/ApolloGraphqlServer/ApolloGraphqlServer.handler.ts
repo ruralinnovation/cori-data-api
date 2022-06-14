@@ -1,4 +1,3 @@
-// @ts-nocheck -
 const { ApolloServer, gql, cac } = require('apollo-server-lambda');
 const { GraphQLObjectType, GraphQLSchema, GraphQLScalarType } = require('graphql');
 import { PythonRestApi } from './datasources';
@@ -11,6 +10,8 @@ import { ApolloServerPluginCacheControl } from 'apollo-server-core';
 const Redis = require('ioredis');
 import { Cache, checkCache } from './cache';
 import { GraphQLList, GraphQLString } from 'graphql';
+const compression = require('compression');
+const express = require('express');
 
 const cacheObj = new Cache();
 const redisClient = cacheObj.getRawCache();
@@ -24,13 +25,6 @@ const RootQuery = new GraphQLObjectType({
       args: null,
       resolve: async (_: any, __: any, { dataSources }: any) => {
         return true;
-      },
-    },
-    hello: {
-      type: GeoJSON.FeatureCollectionObject,
-      args: null,
-      resolve: async (_: any, __: any, { dataSources }: any) => {
-        return dataSources.pythonApi.getItem('hello');
       },
     },
     auction_904_subsidy_awards: {
@@ -49,11 +43,46 @@ const RootQuery = new GraphQLObjectType({
         table: {
           type: GraphQLString,
         },
+        counties: {
+          type: new GraphQLList(GraphQLString),
+        },
       },
-      resolve: async (_: any, { table }: any, { dataSources, redisClient }: any, info: any) => {
-        info.cacheControl.setCacheHint({ maxAge: 60 });
-        return await checkCache(redisClient, 'auction_904_subsidy_awards', async () => {
-          return await dataSources.pythonApi.getItem(`bcat/${table}`);
+      resolve: async (_: any, { table, counties }: any, { dataSources, redisClient }: any, info: any) => {
+        return await counties.reduce(
+          async (fc, county) => {
+            const featureCollection = await fc;
+            const res: any = await redisClient.checkCache(`${table}-${county}`, async () => {
+              return await dataSources.pythonApi.getItem(`bcat/${table}?geoid_cos=[${county}]`);
+            });
+            if (res) {
+              return {
+                ...featureCollection,
+                features: featureCollection.features.concat(res.features),
+              };
+            } else {
+              return featureCollection;
+            }
+          },
+          Promise.resolve({
+            type: 'FeatureCollection',
+            features: [],
+          })
+        );
+      },
+    },
+    county_feature: {
+      type: GeoJSON.FeatureCollectionObject,
+      args: {
+        table: {
+          type: GraphQLString,
+        },
+        county: {
+          type: GraphQLString,
+        },
+      },
+      resolve: async (_: any, { table, county }: any, { dataSources, redisClient }: any, info: any) => {
+        return await redisClient.checkCache(`${table}-${county}`, async () => {
+          return await dataSources.pythonApi.getItem(`bcat/${table}?geoid_cos=[${county}]`);
         });
       },
     },
@@ -66,6 +95,11 @@ const schema = mergeSchemas({
     }),
   ],
 });
+
+/**
+ * Custom Plugin Development
+ */
+
 const customPlugin = {
   // Fires whenever a GraphQL request is received from a client.
   async requestDidStart(requestContext: any) {
@@ -99,23 +133,23 @@ export const apolloConfig = {
   }),
   plugins: [
     customPlugin,
-    responseCachePlugin({
-      cache: redisCache,
-    }),
-    ApolloServerPluginCacheControl({
-      // Cache everything for 1 second by default.
-      defaultMaxAge: 60000,
-      // Don't send the `cache-control` response header.
-      calculateHttpHeaders: false,
-    }),
+    // responseCachePlugin({
+    //   cache: redisCache,
+    // }),
+    // ApolloServerPluginCacheControl({
+    //   // Cache everything for 1 second by default.
+    //   defaultMaxAge: 60000,
+    //   // Don't send the `cache-control` response header.
+    //   calculateHttpHeaders: false,
+    // }),
   ],
-  cache: EnvConfig.CACHE_ENABLED === 'true' ? redisCache : null,
-  persistedQueries:
-    EnvConfig.CACHE_ENABLED === 'true'
-      ? {
-          cache: redisCache,
-        }
-      : null,
+  // persistedQueries:
+  //   EnvConfig.CACHE_ENABLED === 'true'
+  //     ? {
+  //         cache: redisCache,
+  //       }
+  //     : null,
+  // cache: EnvConfig.CACHE_ENABLED === 'true' ? redisCache : null,
   context: ({ event, context, express, req }: any) => {
     return {
       headers: event.headers,
@@ -130,15 +164,23 @@ export const apolloConfig = {
         },
       },
       expressRequest: express.req,
-      redisClient: redisClient,
+      redisClient: cacheObj,
     };
   },
   cors: {
     origin: ['*'],
-    //credentials: true,
+    credentials: true,
   },
 };
 
 export const server = new ApolloServer(apolloConfig);
 
-export const handler = server.createHandler();
+export const handler = server.createHandler({
+  expressAppFromMiddleware(middleware) {
+    console.log('Setting up express middleware');
+    const app = express();
+    app.use(compression());
+    app.use(middleware);
+    return app;
+  },
+});
