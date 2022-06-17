@@ -17,14 +17,14 @@ import {
   AuthorizationType,
   UserPoolDefaultAction,
 } from '@aws-cdk/aws-appsync-alpha';
-import { LayerVersion, Code, Runtime, InlineCode } from 'aws-cdk-lib/aws-lambda';
+import { LayerVersion, Code, Runtime, InlineCode, Alias } from 'aws-cdk-lib/aws-lambda';
 import { AppSyncApiLambda } from '../constructs/lambda/AppSyncApiLambda';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { Hosting } from '../constructs/hosting';
 import { Cognito } from '../constructs/cognito';
 import { ApiIAM } from '../constructs/iam';
 import { resolve, join } from 'path';
-import { Vpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
+import { Vpc, SecurityGroup, IVpc, ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { ApiNodejsFunction, PythonLambda } from '../constructs/lambda';
 import { ApolloGraphqlServer } from '../src/lambdas/ApolloGraphqlServer/ApolloGraphqlServer';
@@ -34,12 +34,21 @@ import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { ApiLambdaAuthorizer } from '../src/lambdas/ApiLambdaAuthorizer/ApiLambdaAuthorizer';
 import { TokenAuthorizer } from 'aws-cdk-lib/aws-apigateway';
 import { PythonFunction } from '@aws-cdk/aws-lambda-python-alpha';
+import { aws_elasticache as elasticache } from 'aws-cdk-lib';
+import { RedisCluster } from '../constructs/RedisCluster';
+
 export interface DatabaseConfig {
   vpcId: string;
   databaseSecurityGroupId: string;
   host: string;
   dbname: string;
   dbuser: string;
+  parameterName: string;
+}
+export interface CacheConfig {
+  host: string;
+  port: number;
+  username: string;
   parameterName: string;
 }
 export interface ApiStackBaseProps extends StackProps {
@@ -66,6 +75,12 @@ export interface ApiStackBaseProps extends StackProps {
    * Define this prop to put lambdas in VPC. Expecting VPC to be in another stack.
    */
   databaseConfig: DatabaseConfig;
+
+  /**
+   *
+   */
+  cacheEnabled: boolean;
+  cacheConfig: CacheConfig;
 
   /**
    * Optional. When provided, will attach to existing user pool
@@ -109,6 +124,9 @@ export class ApiBaseStack extends Stack {
   iam: ApiIAM;
   graphqlApi: GraphqlApi;
   apiKey: Secret;
+  vpc: IVpc;
+  lambdaSecurityGroup: SecurityGroup;
+  rdsSecurityGroup: ISecurityGroup;
 
   /**
    * Call build() to synth this construct when ready.
@@ -117,34 +135,62 @@ export class ApiBaseStack extends Stack {
     super(scope, id, props);
   }
 
-  private buildResources() {
-    this.prefix = this.props.prefix ? this.props.prefix : `${this.props.client}-data-api-${this.props.stage}`;
+  private buildNetworkingResources() {
+    const { databaseConfig, cacheConfig, cacheEnabled } = this.props;
 
-    const { databaseConfig } = this.props;
+    this.vpc = Vpc.fromLookup(this, 'CoriDbVpc', {
+      vpcId: databaseConfig.vpcId,
+    });
+
+    this.lambdaSecurityGroup = new SecurityGroup(this, 'OutboundPythonLambdaSecurityGroup', {
+      securityGroupName: `${this.prefix}-vpc-python-lambda-sg`,
+      vpc: this.vpc,
+      allowAllOutbound: false,
+      description: 'Security group for RDS access',
+    });
+
+    this.rdsSecurityGroup = SecurityGroup.fromLookupById(
+      this,
+      'RDSSecurityGroup',
+      databaseConfig.databaseSecurityGroupId
+    );
+
+    this.lambdaSecurityGroup.addEgressRule(this.rdsSecurityGroup, ec2.Port.tcp(5432), 'Allow Egress to PostgreSQL');
+    this.rdsSecurityGroup.addIngressRule(this.lambdaSecurityGroup, ec2.Port.tcp(5432), 'Allow Ingress from Lambda');
+  }
+
+  private buildAuthenticationResources() {
+    const { databaseConfig, userPoolDomain, adminUserEmail, userPoolId } = this.props;
+
+    this.iam = new ApiIAM(this, 'Roles', {
+      prefix: this.prefix,
+      vpc: databaseConfig.vpcId !== undefined,
+    });
+
+    this.cognito = new Cognito(this, 'Cognito', {
+      userPoolId: userPoolId,
+      existingUserPoolDomain: userPoolDomain,
+      prefix: this.prefix,
+      userPoolName: `${this.prefix}`,
+      userPoolDomainName: this.prefix,
+      adminUserEmail: adminUserEmail,
+      appClients: [],
+      retain: this.props.retain,
+    });
+  }
+
+  private buildResources() {
+    const { databaseConfig, cacheConfig, cacheEnabled } = this.props;
 
     const dbPassword = ssm.StringParameter.valueFromLookup(this, databaseConfig.parameterName);
-
-    console.log('Successfully retrieved db cred');
+    const cachePassword = ssm.StringParameter.valueFromLookup(this, cacheConfig.parameterName);
 
     const vpc = Vpc.fromLookup(this, 'CoriDbVpc', {
       vpcId: databaseConfig.vpcId,
     });
 
-    // this.apiKey = new Secret(this, 'ApiKeySecret', {
-    //   secretName: this.prefix + '-api-key',
-    // });
-
-    // const lambdaAuthorizer = new ApiLambdaAuthorizer(this, 'ApiTokenAuthorizer', {
-    //   prefix: this.prefix,
-    //   logRetention: this.props.stage === 'prod' ? RetentionDays.SIX_MONTHS : RetentionDays.ONE_WEEK,
-    //   environment: {
-    //     LOGGING_LEVEL: this.props.stage === 'prod' ? 'INFO' : 'DEBUG',
-    //     API_KEY: this.apiKey.secretValue.toString(),
-    //   },
-    // });
-
-    const lambdaSecurityGroup = new SecurityGroup(this, 'OutboundLambdaSecurityGroup', {
-      securityGroupName: `${this.prefix}-lambda-vpc-sg`,
+    const lambdaSecurityGroup = new SecurityGroup(this, 'OutboundPythonLambdaSecurityGroup', {
+      securityGroupName: `${this.prefix}-vpc-python-lambda-sg`,
       vpc,
       allowAllOutbound: false,
       description: 'Security group for RDS access',
@@ -156,9 +202,7 @@ export class ApiBaseStack extends Stack {
       databaseConfig.databaseSecurityGroupId
     );
 
-    lambdaSecurityGroup.addEgressRule(rdsSecurityGroup, ec2.Port.tcp(5432), 'Allow Egress to DB');
-
-    // Could be redundant
+    lambdaSecurityGroup.addEgressRule(rdsSecurityGroup, ec2.Port.tcp(5432), 'Allow Egress to PostgreSQL');
     rdsSecurityGroup.addIngressRule(lambdaSecurityGroup, ec2.Port.tcp(5432), 'Allow Ingress from Lambda');
 
     this.iam = new ApiIAM(this, 'Roles', {
@@ -166,26 +210,6 @@ export class ApiBaseStack extends Stack {
       vpc: this.props.databaseConfig.vpcId !== undefined,
     });
 
-    // this.hosting = new Hosting(this, 'Hosting', {
-    //   prefix: this.prefix,
-    //   apiOriginConfigs: [
-    //     {
-    //       restApiId: this.pythonApi.api.restApiId,
-    //       originPath: `/${this.props.stage}`,
-    //       behaviorPathPattern: '/api/datap/*',
-    //     },
-    //     {
-    //       restApiId: this.apolloApi.api.restApiId,
-    //       originPath: `/${this.props.stage}`,
-    //       behaviorPathPattern: '/api/graphql/*',
-    //     },
-    //   ],
-    // });
-
-    // this.graphqlApiHosting = new Hosting(this, 'ApolloGraphqlHosting', {
-    //   prefix: this.prefix + '-apollo-graphql',
-    //   api: this.apolloApi,
-    // });
     this.cognito = new Cognito(this, 'Cognito', {
       userPoolId: this.props.userPoolId,
       existingUserPoolDomain: this.props.userPoolDomain,
@@ -197,54 +221,56 @@ export class ApiBaseStack extends Stack {
       retain: this.props.retain,
     });
 
+    /**
+     * Python Data RESTApi
+     */
     this.pythonApi = new Api(this, 'PythonApi', {
       prefix: this.prefix + '-python-gis-api',
       stage: this.props.stage,
-      cloudWatchRole: this.iam.roles === undefined,
+      // cloudWatchRole: this.iam.roles === undefined,
+      cloudWatchRole: true,
       userPool: this.cognito.userPool,
+      binaryMediaTypes: ['application~1x-protobuf', '*~1*'],
     });
 
+    /**
+     * Typescript Apollo Server GraphQL Api
+     */
     this.apolloApi = new Api(this, 'ApolloApi', {
       prefix: this.prefix + '-apollo-api',
       stage: this.props.stage,
-      cloudWatchRole: this.iam.roles === undefined,
+      // cloudWatchRole: this.iam.roles === undefined,
+      cloudWatchRole: true,
       userPool: this.cognito.userPool,
-      //apiKey: this.apiKey,
     });
 
-    //this.apolloApi.attachLambdaAuthorizer(lambdaAuthorizer.function);
+    /**
+     * CloudFront Hosting
+     * NEED WORK NOT WORKING
+     */
 
-    // this.graphqlApi = new GraphqlApi(this, 'AppSyncApi', {
-    //   name: `${this.prefix}-appsync-graphql`,
-    //   logConfig: {
-    //     fieldLogLevel: FieldLogLevel.ALL,
-    //   },
-    //   xrayEnabled: true,
-    //   schema: Schema.fromAsset(resolve(__dirname, '../../', 'schemas/dist/schema.graphql')),
-    //   authorizationConfig: {
-    //     defaultAuthorization: {
-    //       authorizationType: AuthorizationType.API_KEY,
-    //       apiKeyConfig: {
-    //         expires: Expiration.after(Duration.days(365)),
-    //       },
-    //     },
-    //     additionalAuthorizationModes: [
-    //       {
-    //         authorizationType: AuthorizationType.USER_POOL,
-    //         userPoolConfig: {
-    //           userPool: this.cognito.userPool,
-    //           defaultAction: UserPoolDefaultAction.ALLOW,
-    //         },
-    //       },
-    //     ],
-    //   },
+    // this.hosting = new Hosting(this, 'Hosting', {
+    //   prefix: this.prefix + '-hosting',
+    //   apiOriginConfigs: [
+    //     // {
+    //     //   default: true,
+    //     //   restApiId: this.pythonApi.api.restApiId,
+    //     //   originPath: `/${this.props.stage}`,
+    //     //   behaviorPathPattern: '/data/*',
+    //     // },
+    //     // {
+    //     //   default: false,
+    //     //   restApiId: this.apolloApi.api.restApiId,
+    //     //   originPath: `/${this.props.stage}`,
+    //     //   behaviorPathPattern: '/gql/*',
+    //     // },
+    //   ],
     // });
 
-    //this.api.attachCognitoAuthorizer(this.cognito.userPool);
-    // const pythonApiDev = this.graphqlApi.addHttpDataSource('pythonApiDatasource', this.pythonApi.api.url, {
-    //   name: 'httpPythonRESTApi',
-    //   description: 'AppSync to HTTP API',
-    // });
+    /**
+     * Python Dependency Lambda Layer
+     * Speeds up Lambda initialization
+     */
 
     const pythonDependencyLayer = new LayerVersion(this, 'DependencyLayer', {
       removalPolicy: RemovalPolicy.RETAIN,
@@ -256,8 +282,17 @@ export class ApiBaseStack extends Stack {
 
     const defaults = {
       api: this.pythonApi,
-      runtime: Runtime.PYTHON_3_8,
+      // cfUrl: this.hosting.url,
+      timeout: Duration.seconds(360),
+      vpc: vpc,
+      allowPublicSubnet: true,
+      apiOriginPath: this.props.stage,
+    };
 
+    const pythonDefaults = {
+      ...defaults,
+      securityGroups: [lambdaSecurityGroup],
+      runtime: Runtime.PYTHON_3_8,
       layers: [pythonDependencyLayer] as LayerVersion[],
       memorySize: 256,
       environment: {
@@ -269,18 +304,29 @@ export class ApiBaseStack extends Stack {
         DB_HOST: databaseConfig.host,
         DB_NAME: databaseConfig.dbname,
       },
-      role: this.iam.roles.pythonLambdaRole,
-      timeout: Duration.seconds(360),
-      vpc: vpc,
-      securityGroups: [lambdaSecurityGroup],
-      allowPublicSubnet: true,
-      // httpSource: pythonApiDev,
-      apiOriginPath: this.props.stage,
+    };
+
+    const apolloDefaults = {
+      prefix: this.prefix,
+      logRetention: RetentionDays.FOUR_MONTHS,
+      environment: {
+        PYTHON_API_URL: this.pythonApi.api.url,
+        PYTHON_API_STAGE: this.props.stage,
+        // CF_URL: this.hosting.url,
+        CACHE_ENABLED: cacheEnabled ? 'true' : 'false',
+        CACHE_HOST: cacheConfig.host,
+        CACHE_PORT: '' + cacheConfig.port,
+        CACHE_USERNAME: cacheConfig.username,
+        CACHE_PASSWORD: cachePassword,
+      } as any,
     };
 
     if (this.props.stage === 'local') {
+      /**
+       * Local Lambda Instantiation for Local API
+       */
       const localApiWrapper = new PythonLambda(this, 'LocalApi', {
-        ...defaults,
+        ...pythonDefaults,
         functionName: this.prefix + '-local-api',
         entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'local')),
       });
@@ -291,92 +337,47 @@ export class ApiBaseStack extends Stack {
         lambda: localApiWrapper.function,
       });
     } else {
-      const testApiFunction = new PythonLambda(this, 'TestApi', {
-        ...defaults,
-        functionName: this.prefix + '-test-api',
-        entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'deploy')),
+      /**
+       * BCAT Microservice
+       */
+      const bcatService = new PythonLambda(this, 'BCATService', {
+        ...pythonDefaults,
+        functionName: this.prefix + '-bcat-service',
+        entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat')),
       });
+
+      const bcatVersion = bcatService.function.currentVersion;
+
+      const bcatAlias = new Alias(this, 'LambdaAlias', {
+        aliasName: this.props.stage,
+        version: bcatVersion,
+        provisionedConcurrentExecutions: 1,
+      });
+
+      bcatAlias.functionArn;
 
       this.pythonApi.addLambda({
         method: 'GET',
-        path: '/hello',
-        lambda: testApiFunction.function,
+        path: '/bcat/{table}/geojson/{state_abbr}',
+        lambda: bcatService.function,
       });
-
       this.pythonApi.addLambda({
         method: 'GET',
-        path: '/hello/{name}',
-        lambda: testApiFunction.function,
+        path: '/bcat/{table}/tiles/{z}/{x}/{y}',
+        lambda: bcatService.function,
       });
-
-      const subsidyFunction = new PythonLambda(this, 'Auction904SubsidyAwards', {
-        ...defaults,
-        functionName: this.prefix + '-auction-904-subsidy-awards-service',
-        entry: resolve(
-          join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat', 'auction_904_subsidy_awards')
-        ),
-      });
-
       this.pythonApi.addLambda({
         method: 'GET',
-        path: '/bcat/auction_904_subsidy_awards',
-        lambda: subsidyFunction.function,
-      });
-
-      const broadbandUnservedFunction = new PythonLambda(this, 'BroadbandUnservedBlocks', {
-        ...defaults,
-        functionName: this.prefix + '-broadband-unserved-blocks',
-        entry: resolve(
-          join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat', 'broadband_unserved_blocks')
-        ),
-      });
-
-      this.pythonApi.addLambda({
-        method: 'GET',
-        path: '/bcat/broadband_unserved_blocks',
-        lambda: broadbandUnservedFunction.function,
+        path: '/bcat/{table}',
+        lambda: bcatService.function,
       });
     }
 
-    // new AppSyncApiLambda(this, 'TestApi', {
-    //   ...defaults,
-    //   entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, '/deploy')),
-    // }).addPathsAndResolvers([
-    //   {
-    //     path: '/api/hello',
-    //     methods: ['GET'],
-    //     typeName: 'Query',
-    //     fieldName: 'test',
-    //   },
-    //   {
-    //     path: '/api/hello/{name}',
-    //     methods: ['GET'],
-    //     typeName: 'Query',
-    //     fieldName: 'helloName',
-    //   },
-    // ]);
-    // new AppSyncApiLambda(this, 'Auction904SubsidyAwards', {
-    //   ...defaults,
-    //   entry: resolve(
-    //     join(__dirname, '../../../', this.props.microservicesDirectory, '/bcat/', 'auction_904_subsidy_awards')
-    //   ),
-    // }).addPathsAndResolvers([
-    //   {
-    //     path: '/bcat/auction_904_subsidy_awards',
-    //     methods: ['GET'],
-    //     typeName: 'Query',
-    //     fieldName: 'auction_904_subsidy_awards',
-    //   },
-    // ]);
-
+    /**
+     * Apollo V3 GraphQL Api Handler
+     */
     const apolloServer = new ApolloGraphqlServer(this, 'ApolloApiServerLambda', {
-      prefix: this.prefix,
-
-      logRetention: RetentionDays.FOUR_MONTHS,
-      environment: {
-        PYTHON_API_URL: this.pythonApi.api.url,
-        PYTHON_API_STAGE: this.props.stage,
-      } as any,
+      ...apolloDefaults,
     });
 
     this.apolloApi.addLambda({
@@ -384,22 +385,23 @@ export class ApiBaseStack extends Stack {
       path: '/graphql',
       lambda: apolloServer.function,
     });
-    this.apolloApi.addLambda({
-      method: 'GET',
-      path: '/playground',
-      lambda: apolloServer.function,
-    });
-    this.apolloApi.addLambda({
-      method: 'POST',
-      path: '/playground',
-      lambda: apolloServer.function,
-    });
+    // this.apolloApi.addLambda({
+    //   method: 'GET',
+    //   path: '/playground',
+    //   lambda: apolloServer.function,
+    // });
+    // this.apolloApi.addLambda({
+    //   method: 'POST',
+    //   path: '/playground',
+    //   lambda: apolloServer.function,
+    // });
   }
 
   private buildOutputs() {
     new CfnOutput(this, 'Region', { value: this.stack.region });
+    // new CfnOutput(this, 'CFApiUrl', { value: this.hosting.url });
     new CfnOutput(this, 'PythonApiUrl', { value: this.pythonApi.api.url });
-    // new CfnOutput(this, 'AppSyncGraphQLUrl', { value: this.graphqlApi.graphqlUrl });
+    new CfnOutput(this, 'ApolloApiUrl', { value: this.apolloApi.api.url });
     new CfnOutput(this, 'CognitoUserGroupId', { value: this.cognito.userPool.userPoolId });
   }
   /**
@@ -422,3 +424,68 @@ export class ApiBaseStack extends Stack {
     return this;
   }
 }
+
+// new AppSyncApiLambda(this, 'TestApi', {
+//   ...defaults,
+//   entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, '/deploy')),
+// }).addPathsAndResolvers([
+//   {
+//     path: '/api/hello',
+//     methods: ['GET'],
+//     typeName: 'Query',
+//     fieldName: 'test',
+//   },
+//   {
+//     path: '/api/hello/{name}',
+//     methods: ['GET'],
+//     typeName: 'Query',
+//     fieldName: 'helloName',
+//   },
+// ]);
+// new AppSyncApiLambda(this, 'Auction904SubsidyAwards', {
+//   ...defaults,
+//   entry: resolve(
+//     join(__dirname, '../../../', this.props.microservicesDirectory, '/bcat/', 'auction_904_subsidy_awards')
+//   ),
+// }).addPathsAndResolvers([
+//   {
+//     path: '/bcat/auction_904_subsidy_awards',
+//     methods: ['GET'],
+//     typeName: 'Query',
+//     fieldName: 'auction_904_subsidy_awards',
+//   },
+// ]);
+
+//this.apolloApi.attachLambdaAuthorizer(lambdaAuthorizer.function);
+
+// this.graphqlApi = new GraphqlApi(this, 'AppSyncApi', {
+//   name: `${this.prefix}-appsync-graphql`,
+//   logConfig: {
+//     fieldLogLevel: FieldLogLevel.ALL,
+//   },
+//   xrayEnabled: true,
+//   schema: Schema.fromAsset(resolve(__dirname, '../../', 'schemas/dist/schema.graphql')),
+//   authorizationConfig: {
+//     defaultAuthorization: {
+//       authorizationType: AuthorizationType.API_KEY,
+//       apiKeyConfig: {
+//         expires: Expiration.after(Duration.days(365)),
+//       },
+//     },
+//     additionalAuthorizationModes: [
+//       {
+//         authorizationType: AuthorizationType.USER_POOL,
+//         userPoolConfig: {
+//           userPool: this.cognito.userPool,
+//           defaultAction: UserPoolDefaultAction.ALLOW,
+//         },
+//       },
+//     ],
+//   },
+// });
+
+//this.api.attachCognitoAuthorizer(this.cognito.userPool);
+// const pythonApiDev = this.graphqlApi.addHttpDataSource('pythonApiDatasource', this.pythonApi.api.url, {
+//   name: 'httpPythonRESTApi',
+//   description: 'AppSync to HTTP API',
+// });

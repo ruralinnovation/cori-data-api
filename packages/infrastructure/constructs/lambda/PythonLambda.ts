@@ -1,21 +1,7 @@
 import { Construct } from 'constructs';
 import { RemovalPolicy } from 'aws-cdk-lib';
-import { LogGroup, LogGroupProps, RetentionDays, CfnLogGroup } from 'aws-cdk-lib/aws-logs';
-import {
-  IRole,
-  Role,
-  CfnRole,
-  RoleProps,
-  PrincipalBase,
-  ServicePrincipal,
-  Policy,
-  PolicyProps,
-  CfnPolicy,
-  ArnPrincipal,
-} from 'aws-cdk-lib/aws-iam';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { PythonFunction, PythonFunctionProps } from '@aws-cdk/aws-lambda-python-alpha';
-import { CannedStatements } from '../CannedStatement';
-import { Permission } from 'aws-cdk-lib/aws-lambda';
 
 export interface PythonLambdaProps extends PythonFunctionProps {
   /**
@@ -28,9 +14,6 @@ export interface PythonLambdaProps extends PythonFunctionProps {
   logRetention?: RetentionDays;
 }
 
-/**
- * Creates and configures
- */
 export class PythonLambda extends Construct {
   function: PythonFunction;
 

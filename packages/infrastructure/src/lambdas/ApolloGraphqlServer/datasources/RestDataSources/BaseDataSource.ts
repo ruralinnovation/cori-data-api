@@ -10,6 +10,8 @@ export class BaseDataSource extends RESTDataSource {
     request.headers.set('Authorization', this.context.headers.Authorization);
   }
   async getItem(path?: string) {
-    return await this.get(path ? path : '');
+    const res = await this.get(path ? path : '', undefined);
+    console.log('REsponse ', res);
+    return res;
   }
 }

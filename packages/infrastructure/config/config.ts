@@ -44,6 +44,13 @@ export const Config: IConfigs = {
       parameterName: '/cori/read_only_user_credentials',
       dbuser: 'read_only_user',
     },
+    cacheEnabled: true,
+    cacheConfig: {
+      host: 'redis-17358.c273.us-east-1-2.ec2.cloud.redislabs.com',
+      port: 17358,
+      username: 'default',
+      parameterName: '/cori/redis-cluster-credentials',
+    },
   },
   'local': {
     client: 'mf',
@@ -63,6 +70,13 @@ export const Config: IConfigs = {
       dbname: 'data',
       parameterName: '/cori/read_only_user_credentials',
       dbuser: 'read_only_user',
+    },
+    cacheEnabled: true,
+    cacheConfig: {
+      host: 'redis-17358.c273.us-east-1-2.ec2.cloud.redislabs.com',
+      port: 17358,
+      username: 'default',
+      parameterName: '/cori/redis-cluster-credentials',
     },
   },
   'dev1': {
@@ -84,6 +98,13 @@ export const Config: IConfigs = {
       parameterName: 'cori-data-api-read_only_user_password',
       dbuser: 'read_only_user',
     },
+    cacheEnabled: true,
+    cacheConfig: {
+      host: 'redis-17358.c273.us-east-1-2.ec2.cloud.redislabs.com',
+      port: 17358,
+      username: 'default',
+      parameterName: '/cori/redis-cluster-credentials',
+    },
   },
   'dev': {
     client: 'cori',
@@ -104,6 +125,13 @@ export const Config: IConfigs = {
       parameterName: '/cori/read_only_user_credentials',
       dbuser: 'read_only_user',
     },
+    cacheEnabled: true,
+    cacheConfig: {
+      host: 'redis-17358.c273.us-east-1-2.ec2.cloud.redislabs.com',
+      port: 17358,
+      username: 'default',
+      parameterName: '/cori/redis-cluster-credentials',
+    },
   },
   'prod': {
     client: 'cori',
@@ -123,6 +151,13 @@ export const Config: IConfigs = {
       dbname: 'postgres',
       parameterName: 'cori-data-api-read_only_user_password',
       dbuser: 'read_only_user',
+    },
+    cacheEnabled: true,
+    cacheConfig: {
+      host: 'redis-17358.c273.us-east-1-2.ec2.cloud.redislabs.com',
+      port: 17358,
+      username: 'default',
+      parameterName: '/cori/redis-cluster-credentials',
     },
   },
 };
