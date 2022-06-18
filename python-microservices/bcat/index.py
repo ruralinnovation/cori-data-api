@@ -1,54 +1,167 @@
 import os
-import psycopg
-from psycopg import sql
-import boto3
-import base64
-import json
-from botocore.exceptions import ClientError
 from aws_lambda_powertools import Logger, Tracer
 from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver, Response
-from io import BytesIO
-import base64
-import gzip
+from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 
-logger = Logger(service="bcat-service")
-tracer = Tracer(service="bcat-service")
-app = APIGatewayRestResolver(strip_prefixes=["/bcat"])
+from bcat_config import CONFIG
+from bcat_connection import execute
 
-def gzip_b64encode(data):
-    compressed = BytesIO()
-    with gzip.GzipFile(fileobj=compressed, mode='w') as f:
-        json_response = json.dumps(data)
-        f.write(json_response.encode('utf-8'))
-    return base64.b64encode(compressed.getvalue()).decode('ascii')
+logger = Logger(service="LocalApi")
+tracer = Tracer(service="LocalApi")
+app = APIGatewayRestResolver(strip_prefixes=["/local"])
 
-@app.get("/<table>", compress=True)
-def get(table):
-    conn = psycopg.connect(
-        user = os.environ['DB_USER'],
-        password = os.environ['SECRET'],
-        host = os.environ['DB_HOST'],
-        dbname = os.environ['DB_NAME']
-    )
-            
-    # create a cursor
-    cur = conn.cursor()
-    query = """
-        SELECT
-        json_build_object(
-            'type', 'FeatureCollection',
-            'features', json_agg(ST_AsGeoJSON(t.*)::json)
-        )
-        FROM
-        bcat.bcat_auction_904_subsidy_awards AS t
-        WHERE geoid_co IN ('47033', '47167');
+
+@app.get(rule="/bad-request-error")
+def bad_request_error(msg):
+    # HTTP  400
+    raise BadRequestError(msg)
+
+
+@app.get("/bcat/<table>/geojson", compress=False)
+def get_bcat(table):
     """
-    cur.execute(query)
-    results = cur.fetchone()
-    print('Response Length ' + str(len(json.dumps(results[0]))))
-    print('Response Length ' + str(len(gzip_b64encode(results[0]))))
-    return results[0]
+    construct and execute a query to <table> with where clause based on <params>
+    """
+    logger.info(os.environ)
+
+    params = app.current_event.query_string_parameters
+
+    # check that the table, parameters, and filter values are all acceptable.
+    #   - allowed tables are top level keys in CONFIG.
+    #   - allowed params are listed in CONFIG[table]["params"]
+    #   - no semicolons to prevent some sql injection style attacks though those wouldnt work anyway because the
+    #       filter values are constructed as text array literals and cant ever be executed.
+    if table not in CONFIG:
+        raise BadRequestError(f'invalid table {table}')
+
+    invalid_params = [k for k in params.keys() if k not in CONFIG[table]['params']]
+    if invalid_params:
+        raise BadRequestError(f'invalid parameter {invalid_params}')
+
+    if ';' in str(params):
+        raise BadRequestError(f'invalid parameter')
+
+    # get some short names of parameters used to construct the query
+    db_table = CONFIG[table]['table']
+    columns = CONFIG[table].get('api_columns', '*')
+    geom = CONFIG[table].get('geom', None)
+    epsg = CONFIG[table].get('epsg', None)
+    simplify = CONFIG[table].get('simplify', 0.0)
+    precision = CONFIG[table].get('precision', None)
+
+    # st_reduceprecision requires postgis 3.1 / geos 3.9 which is available as of october 2021
+    # without it its possible reducing the json precision might result in some invalid geometries.
+    #
+    #if geom and precision:
+    #    columns = columns.replace(geom, f'st_reduceprecision({geom}, 1e-{precision})', )
+
+    if geom:
+        columns = columns.replace(geom, f'st_simplify(st_transform({geom}, 4326), {simplify}) as geom', )
+
+    # option to limit the total number of records returned. dont include this key in the config to disable
+    limit = ''
+    if 'limit' in CONFIG[table]:
+        limit = f"LIMIT {CONFIG[table]['limit']}"
+
+    # criteria is a list of where clauses for the query.
+    criteria = []
+
+    # first handle a potential spatial intersection then remove this parameter and construct the rest.
+    if 'geom' in params:
+        criteria += [f"""
+            {geom} && st_transform(st_geomfromtext('{params['geom']}', 4326), {epsg})
+            AND st_intersects({geom}, st_transform(st_geomfromtext('{params['geom']}', 4326), {epsg}))
+            """]
+
+        del params['geom']
+
+    # since we want to handle one or more parameter values coerce all to list
+    # construct "any" style array literal predicates like: where geoid = any('{123, 456}')
+    params.update({k: [v, ] for k, v in params.items() if type(v) != list})
+    params.update({k: "ANY('{" + ",".join(v) + "}')" for k, v in params.items()})
+    for k, v in params.items():
+        criteria += [f'{k} = {v}', ]
+
+    # join the criteria so that we get the right syntax for any number of clauses
+    where = ''
+    if criteria:
+        where = 'WHERE ' + ' AND '.join(criteria)
+
+    # build the query statement
+    query = f"""
+        SELECT
+            json_build_object(
+                'type', 'FeatureCollection',
+                'features', json_agg(t.*)::json
+            )
+        FROM (
+            SELECT {columns} 
+            FROM {db_table}
+            {where}
+            {limit}
+            ) t
+        
+        """
+
+    # modify our json_agg statement to use st_asgeojson with the maxdecimaldigits argument.
+    # cant do this all the time since some tables dont have a geometry column which isnt allowed for geojson
+    if geom and precision:
+        query = query.replace(
+            "json_agg(t.*)::json",
+            f"json_agg(ST_AsGeoJSON(t.*, 'geom', {precision})::json)",
+        )
+    # execute the query string. the resulting json string is the first row and first column
+    result = execute(query)[0][0]
+
+    # if there are no features postgis returns 'features': null which isnt what we want
+    # so coerce to empty list if null
+    if type(result['features']) != list:
+        result['features'] = []
+
+    return result
+
+
+@app.get("/bcat/tiles/<table>/<z>/<x>/<y>.pbf")
+def get_tile(table, z, x, y):
+    """generate mvt tiles"""
+    logger.info(os.environ)
+
+    # only tables listed in config are permitted and they must have a geometry column name configured.
+    if table not in CONFIG:
+        raise BadRequestError(f'invalid table {table}')
+
+    if 'geom' not in CONFIG[table]['params']:
+        raise BadRequestError(f'no geometry: {table}')
+
+    # define some temporary variables to make the query pattern cleaner
+    db_table = CONFIG[table]['table']
+    columns = CONFIG[table].get('tile_columns', '*')
+    geom = CONFIG[table]['geom']
+    epsg = CONFIG[table]['epsg']
+
+    # build the mvt query. you can find a similar query explained here
+    # https://www.crunchydata.com/blog/dynamic-vector-tiles-from-postgis
+    # bbox function must be created once and is defined in database_changes.sql
+    query = f"""
+        SELECT ST_AsMVT(q, '{table}', 4096, 'geom')
+        
+        FROM (
+            SELECT {columns},
+            ST_AsMvtGeom(
+                st_transform({geom}, 3857),
+                BBox({x}, {y}, {z}, 3857, 0),
+                4096,
+                256
+                ) AS geom
+            FROM {db_table}
+            WHERE {geom} && BBox({x}, {y}, {z}, {epsg}, 0)
+            AND st_intersects({geom}, BBox({x}, {y}, {z}, {epsg}, 0))
+            ) AS q;
+        """
+
+    tile_data = execute(query)[0][0]
+    return Response(status_code=200, content_type='application/x-protobuf', body=tile_data)
 
 
 # You can continue to use other utilities just as before
