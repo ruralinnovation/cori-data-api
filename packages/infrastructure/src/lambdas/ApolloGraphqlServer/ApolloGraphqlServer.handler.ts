@@ -52,7 +52,7 @@ const RootQuery = new GraphQLObjectType({
           async (fc, county) => {
             const featureCollection = await fc;
             const res: any = await redisClient.checkCache(`${table}-${county}`, async () => {
-              return await dataSources.pythonApi.getItem(`bcat/${table}?geoid_cos=[${county}]`);
+              return await dataSources.pythonApi.getItem(`bcat/${table}?geoid_co=${county}`);
             });
             if (res) {
               return {
@@ -82,7 +82,7 @@ const RootQuery = new GraphQLObjectType({
       },
       resolve: async (_: any, { table, county }: any, { dataSources, redisClient }: any, info: any) => {
         return await redisClient.checkCache(`${table}-${county}`, async () => {
-          return await dataSources.pythonApi.getItem(`bcat/${table}?geoid_cos=[${county}]`);
+          return await dataSources.pythonApi.getItem(`bcat/${table}?geoid_co=${county}`);
         });
       },
     },
