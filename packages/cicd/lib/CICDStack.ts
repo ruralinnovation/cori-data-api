@@ -16,7 +16,7 @@ export class CICDStack extends Stack {
     super(scope, id, props);
 
     const devPipeline = new CodePipeline(this, `DevPipeline`, {
-      selfMutation: false,
+      selfMutation: true,
       pipelineName: `cori-data-api-pipeline-dev`,
       dockerEnabledForSynth: true,
       codeBuildDefaults: {
@@ -42,7 +42,7 @@ export class CICDStack extends Stack {
     });
 
     devPipeline.addStage(
-      new AppStage(this, `DeployDevResources`, {
+      new AppStage(this, `DevDeploy`, {
         env: props.environmentConfigs.dev.env,
         stage: props.environmentConfigs.dev.stage,
       })
@@ -74,7 +74,7 @@ export class CICDStack extends Stack {
     // );
 
     // const prodPipeline = new CodePipeline(this, `ProdPipeline`, {
-    //   selfMutation: false,
+    //   selfMutation: true,
     //   pipelineName: `cori-data-api-pipeline-prod`,
     //   dockerEnabledForSynth: true,
     //   codeBuildDefaults: {

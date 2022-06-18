@@ -77,78 +77,13 @@ GRANT read_only_access TO read_only_user;
 
 ## Python Lambdas / Microservices
 
-We have 10 different tables in the BCAT Schema
+### AWS Lambda Powertools Python Library
 
-1. bcat_auction_904_subsidy_awards
+We leverage AWS Lambda Powertools library which is a suite of utilities for AWS Lambda functions to ease adopting best practices such as tracing, structured logging, custom metrics, idempotency, batching, and more.
 
-### bcat_auction_904_subsidy_awards
+For more infomration (READ THE DOCS)[https://awslabs.github.io/aws-lambda-powertools-python/latest/]
 
-| Column Name | Data Type |
-| geoid | text |
-| state_abbr | text |
-| name_co | text |
-| subsidy_recipient | text |
-| tier | text |
-| geoms | geometry |
-| geoid_co | text |
-| valid_raw | text |
+### BCAT Service
 
-### Endpoints
-
-## **Auction 904 Subsidy Awards**
-
----
-
-### Properties
-
-- **URL**
-
-  `/bcat/auction_904_subsidy_awards/properties`
-
-- **Method:**
-
-  `GET`
-
-- **URL Params**
-
-  **NOT REQUIRED**
-  `geoids=[geoid], state_abbrs=[state_abbr]`
-
-- **Returns**
-
-  {
-  geoid: string
-  state_abbr: string
-  name_co: string
-  subsidy_recipient: string
-  tier: string
-  geoid_co: string
-  valid_raw: string
-  }
-
-### Feature Collection
-
-- **URL**
-
-  `/bcat/auction_904_subsidy_awards/geojson/feature_collection?`
-
-- **Method:**
-
-  `GET`
-
-- **URL Params**
-
-  **NOT REQUIRED**
-  `geoids=[geoid]`
-
-- **Returns**
-
-  {
-  geoid: string
-  state_abbr: string
-  name_co: string
-  subsidy_recipient: string
-  tier: string
-  geoid_co: string
-  valid_raw: string
-  }
+There are 10 different tables in the BCAT Schema. Because we need GeoJSON and MVT from each table, we decided it was best to create a single BCAT Service that can dynamically query different tables based on URL params.
+This reduces code redundancies. The BCAT Service Lambda is in the `python-microservices/bcat` directory. This service has supporting methods that parse incoming requests, and leverage a BCAT Database Configuration service to determine PostGIS query process.
