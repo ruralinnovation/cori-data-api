@@ -346,15 +346,13 @@ export class ApiBaseStack extends Stack {
         entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat')),
       });
 
-      const bcatVersion = bcatService.function.currentVersion;
+      // const bcatVersion = bcatService.function.currentVersion;
 
-      const bcatAlias = new Alias(this, 'LambdaAlias', {
-        aliasName: this.props.stage,
-        version: bcatVersion,
-        provisionedConcurrentExecutions: 1,
-      });
-
-      bcatAlias.functionArn;
+      // const bcatAlias = new Alias(this, 'LambdaAlias', {
+      //   aliasName: this.props.stage,
+      //   version: bcatVersion,
+      //   provisionedConcurrentExecutions: 1,
+      // });
 
       this.pythonApi.addLambda({
         method: 'GET',
@@ -424,68 +422,3 @@ export class ApiBaseStack extends Stack {
     return this;
   }
 }
-
-// new AppSyncApiLambda(this, 'TestApi', {
-//   ...defaults,
-//   entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, '/deploy')),
-// }).addPathsAndResolvers([
-//   {
-//     path: '/api/hello',
-//     methods: ['GET'],
-//     typeName: 'Query',
-//     fieldName: 'test',
-//   },
-//   {
-//     path: '/api/hello/{name}',
-//     methods: ['GET'],
-//     typeName: 'Query',
-//     fieldName: 'helloName',
-//   },
-// ]);
-// new AppSyncApiLambda(this, 'Auction904SubsidyAwards', {
-//   ...defaults,
-//   entry: resolve(
-//     join(__dirname, '../../../', this.props.microservicesDirectory, '/bcat/', 'auction_904_subsidy_awards')
-//   ),
-// }).addPathsAndResolvers([
-//   {
-//     path: '/bcat/auction_904_subsidy_awards',
-//     methods: ['GET'],
-//     typeName: 'Query',
-//     fieldName: 'auction_904_subsidy_awards',
-//   },
-// ]);
-
-//this.apolloApi.attachLambdaAuthorizer(lambdaAuthorizer.function);
-
-// this.graphqlApi = new GraphqlApi(this, 'AppSyncApi', {
-//   name: `${this.prefix}-appsync-graphql`,
-//   logConfig: {
-//     fieldLogLevel: FieldLogLevel.ALL,
-//   },
-//   xrayEnabled: true,
-//   schema: Schema.fromAsset(resolve(__dirname, '../../', 'schemas/dist/schema.graphql')),
-//   authorizationConfig: {
-//     defaultAuthorization: {
-//       authorizationType: AuthorizationType.API_KEY,
-//       apiKeyConfig: {
-//         expires: Expiration.after(Duration.days(365)),
-//       },
-//     },
-//     additionalAuthorizationModes: [
-//       {
-//         authorizationType: AuthorizationType.USER_POOL,
-//         userPoolConfig: {
-//           userPool: this.cognito.userPool,
-//           defaultAction: UserPoolDefaultAction.ALLOW,
-//         },
-//       },
-//     ],
-//   },
-// });
-
-//this.api.attachCognitoAuthorizer(this.cognito.userPool);
-// const pythonApiDev = this.graphqlApi.addHttpDataSource('pythonApiDatasource', this.pythonApi.api.url, {
-//   name: 'httpPythonRESTApi',
-//   description: 'AppSync to HTTP API',
-// });
