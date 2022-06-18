@@ -9,7 +9,7 @@ from bcat_connection import execute
 
 logger = Logger(service="LocalApi")
 tracer = Tracer(service="LocalApi")
-app = APIGatewayRestResolver(strip_prefixes=["/local"])
+app = APIGatewayRestResolver(strip_prefixes=["/bcat"])
 
 
 @app.get(rule="/bad-request-error")
@@ -18,7 +18,7 @@ def bad_request_error(msg):
     raise BadRequestError(msg)
 
 
-@app.get("/bcat/<table>/geojson", compress=False)
+@app.get("/bcat/<table>/geojson", compress=True)
 def get_bcat(table):
     """
     construct and execute a query to <table> with where clause based on <params>
