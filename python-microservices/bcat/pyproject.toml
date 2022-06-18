@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "auction_904_subsidy_awards"
+name = "bcat"
 version = "0.1.0"
 description = ""
 authors = ["Merging Futures LLC."]

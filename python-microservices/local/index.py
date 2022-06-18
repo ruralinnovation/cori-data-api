@@ -7,6 +7,7 @@ from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 from bcat_config import CONFIG
 from bcat_connection import execute
 
+
 logger = Logger(service="LocalApi")
 tracer = Tracer(service="LocalApi")
 app = APIGatewayRestResolver(strip_prefixes=["/local"])
