@@ -1,24 +1,7 @@
-import {
-  Aws,
-  Duration,
-  Expiration,
-  Stack,
-  StackProps,
-  CfnParameter,
-  CfnOutput,
-  Tags,
-  RemovalPolicy,
-} from 'aws-cdk-lib';
+import { Duration, Stack, StackProps, CfnOutput, Tags, RemovalPolicy } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import {
-  GraphqlApi,
-  Schema,
-  FieldLogLevel,
-  AuthorizationType,
-  UserPoolDefaultAction,
-} from '@aws-cdk/aws-appsync-alpha';
-import { LayerVersion, Code, Runtime, InlineCode, Alias } from 'aws-cdk-lib/aws-lambda';
-import { AppSyncApiLambda } from '../constructs/lambda/AppSyncApiLambda';
+import { GraphqlApi } from '@aws-cdk/aws-appsync-alpha';
+import { LayerVersion, Code, Runtime } from 'aws-cdk-lib/aws-lambda';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { Hosting } from '../constructs/hosting';
 import { Cognito } from '../constructs/cognito';
@@ -26,16 +9,11 @@ import { ApiIAM } from '../constructs/iam';
 import { resolve, join } from 'path';
 import { Vpc, SecurityGroup, IVpc, ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
-import { ApiNodejsFunction, PythonLambda } from '../constructs/lambda';
+import { PythonLambda } from '../constructs/lambda';
 import { ApolloGraphqlServer } from '../src/lambdas/ApolloGraphqlServer/ApolloGraphqlServer';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Api } from '../constructs/Api';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
-import { ApiLambdaAuthorizer } from '../src/lambdas/ApiLambdaAuthorizer/ApiLambdaAuthorizer';
-import { TokenAuthorizer } from 'aws-cdk-lib/aws-apigateway';
-import { PythonFunction } from '@aws-cdk/aws-lambda-python-alpha';
-import { aws_elasticache as elasticache } from 'aws-cdk-lib';
-import { RedisCluster } from '../constructs/RedisCluster';
 
 export interface DatabaseConfig {
   vpcId: string;
@@ -356,7 +334,7 @@ export class ApiBaseStack extends Stack {
 
       this.pythonApi.addLambda({
         method: 'GET',
-        path: '/bcat/{table}/geojson/{state_abbr}',
+        path: '/bcat/{table}/geojson',
         lambda: bcatService.function,
       });
       this.pythonApi.addLambda({
