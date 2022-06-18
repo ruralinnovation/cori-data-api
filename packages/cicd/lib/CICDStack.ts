@@ -73,39 +73,39 @@ export class CICDStack extends Stack {
     //   })
     // );
 
-    const prodPipeline = new CodePipeline(this, `ProdPipeline`, {
-      selfMutation: false,
-      pipelineName: `cori-data-api-pipeline-prod`,
-      dockerEnabledForSynth: true,
-      codeBuildDefaults: {
-        rolePolicy: [
-          new PolicyStatement({
-            actions: ['sts:AssumeRole'],
-            resources: ['*'],
-          }),
-        ],
-      },
-      synth: new ShellStep('Synth', {
-        input: CodePipelineSource.gitHub(props.environmentConfigs.prod.repo, props.environmentConfigs.prod.branch),
-        commands: [
-          'npm install -g npm@latest',
-          'npm --version',
-          'npm i',
-          'npm ci',
-          'npm run build:all',
-          'npm run synth:cicd',
-        ],
-        primaryOutputDirectory: 'packages/cicd/cdk.out',
-      }),
-    });
-    prodPipeline.addStage(
-      new AppStage(this, `DeployProdResources`, {
-        env: props.environmentConfigs.prod.env,
-        stage: props.environmentConfigs.prod.stage,
-      }),
-      {
-        pre: [new ManualApprovalStep('PromoteToProd')],
-      }
-    );
+    // const prodPipeline = new CodePipeline(this, `ProdPipeline`, {
+    //   selfMutation: false,
+    //   pipelineName: `cori-data-api-pipeline-prod`,
+    //   dockerEnabledForSynth: true,
+    //   codeBuildDefaults: {
+    //     rolePolicy: [
+    //       new PolicyStatement({
+    //         actions: ['sts:AssumeRole'],
+    //         resources: ['*'],
+    //       }),
+    //     ],
+    //   },
+    //   synth: new ShellStep('Synth', {
+    //     input: CodePipelineSource.gitHub(props.environmentConfigs.prod.repo, props.environmentConfigs.prod.branch),
+    //     commands: [
+    //       'npm install -g npm@latest',
+    //       'npm --version',
+    //       'npm i',
+    //       'npm ci',
+    //       'npm run build:all',
+    //       'npm run synth:cicd',
+    //     ],
+    //     primaryOutputDirectory: 'packages/cicd/cdk.out',
+    //   }),
+    // });
+    // prodPipeline.addStage(
+    //   new AppStage(this, `DeployProdResources`, {
+    //     env: props.environmentConfigs.prod.env,
+    //     stage: props.environmentConfigs.prod.stage,
+    //   }),
+    //   {
+    //     pre: [new ManualApprovalStep('PromoteToProd')],
+    //   }
+    // );
   }
 }
