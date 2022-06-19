@@ -7,9 +7,8 @@ from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 from bcat_config import CONFIG
 from bcat_connection import execute
 
-logger = Logger(service="LocalApi")
-tracer = Tracer(service="LocalApi")
-app = APIGatewayRestResolver(strip_prefixes=["/local"])
+logger = Logger(service="BCATService")
+app = APIGatewayRestResolver(strip_prefixes=["/bcat"])
 
 
 @app.get(rule="/bad-request-error")
@@ -18,7 +17,7 @@ def bad_request_error(msg):
     raise BadRequestError(msg)
 
 
-@app.get("/bcat/<table>/geojson", compress=False)
+@app.get("/<table>/geojson", compress=True)
 def get_bcat(table):
     """
     construct and execute a query to <table> with where clause based on <params>
@@ -110,7 +109,7 @@ def get_bcat(table):
     return result
 
 
-@app.get("/bcat/tiles/<table>/<z>/<x>/<y>.pbf")
+@app.get("/tiles/<table>/<z>/<x>/<y>.pbf")
 def get_tile(table, z, x, y):
     """generate mvt tiles"""
     logger.info(os.environ)
@@ -153,7 +152,6 @@ def get_tile(table, z, x, y):
 
 
 # You can continue to use other utilities just as before
-@tracer.capture_lambda_handler
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST, log_event=True)
 def handler(event, context):
     return app.resolve(event, context)
