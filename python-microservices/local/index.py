@@ -49,16 +49,11 @@ def get_bcat(table):
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
     simplify = CONFIG[table].get('simplify', 0.0)
-    precision = CONFIG[table].get('precision', None)
-
-    # st_reduceprecision requires postgis 3.1 / geos 3.9 which is available as of october 2021
-    # without it its possible reducing the json precision might result in some invalid geometries.
-    #
-    #if geom and precision:
-    #    columns = columns.replace(geom, f'st_reduceprecision({geom}, 1e-{precision})', )
 
     if geom:
-        columns = columns.replace(geom, f'st_simplify(st_transform({geom}, 4326), {simplify}) as geom', )
+        columns = columns.replace(geom, f'st_simplify(st_transform({geom}, 4326), {simplify}) as geom')
+    else:
+        columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
 
     # option to limit the total number of records returned. dont include this key in the config to disable
     limit = ''
@@ -94,7 +89,7 @@ def get_bcat(table):
         SELECT
             json_build_object(
                 'type', 'FeatureCollection',
-                'features', json_agg(t.*)::json
+                'features', json_agg(ST_AsGeoJSON(t.*)::json)
             )
         FROM (
             SELECT {columns} 
@@ -105,13 +100,6 @@ def get_bcat(table):
         
         """
 
-    # modify our json_agg statement to use st_asgeojson with the maxdecimaldigits argument.
-    # cant do this all the time since some tables dont have a geometry column which isnt allowed for geojson
-    if geom and precision:
-        query = query.replace(
-            "json_agg(t.*)::json",
-            f"json_agg(ST_AsGeoJSON(t.*, 'geom', {precision})::json)",
-        )
     # execute the query string. the resulting json string is the first row and first column
     result = execute(query)[0][0]
 
