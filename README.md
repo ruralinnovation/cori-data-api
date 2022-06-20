@@ -81,7 +81,7 @@ GRANT read_only_access TO read_only_user;
 
 We leverage AWS Lambda Powertools library which is a suite of utilities for AWS Lambda functions to ease adopting best practices such as tracing, structured logging, custom metrics, idempotency, batching, and more.
 
-For more infomration (READ THE DOCS)[https://awslabs.github.io/aws-lambda-powertools-python/latest/]
+For more infomration [READ THE DOCS](https://awslabs.github.io/aws-lambda-powertools-python/latest/)
 
 ### BCAT Service
 
