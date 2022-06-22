@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { CICDProps, CICDStack } from '../lib/CICDStack';
+import { PipelineStack } from '../lib/PipelineStack';
 import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
+import { getConfig } from '../../../config/config';
 
 // LSW @TODO: Remove
 const defaultEnv = { account: '857240696749', region: 'us-east-1' };
@@ -15,44 +16,31 @@ const sourceConfig = {
   // @todo: change this for merging futures
   authentication: cdk.SecretValue.secretsManager('mergingfutures-pat'),
   // @todo: Need more permissions to use WEBHOOK
-  trigger: GitHubTrigger.POLL
-}
-
-const cicdProps: CICDProps = {
-  env: defaultEnv,
-  environmentConfigs: {
-    dev: {
-      env: defaultEnv,
-      client: 'cori',
-      stage: 'dev',
-      project: 'data-api',
-      source:{
-        ...sourceConfig,
-        branch: 'dev'
-      }
-    },
-    qa: {
-      env: defaultEnv,
-      client: 'cori',
-      stage: 'qa',
-      project: 'data-api',
-      source:{
-        ...sourceConfig,
-        branch: 'qa'
-      }
-    },
-    prod: {
-      env: defaultEnv,
-      client: 'cori',
-      stage: 'prod',
-      project: 'data-api',
-      source:{
-        ...sourceConfig,
-        branch: 'prod'
-      }
-    },
-  },
+  trigger: GitHubTrigger.POLL,
 };
+
+
 const app = new cdk.App();
 
-new CICDStack(app, 'CoriDataApiCICDStack', cicdProps);
+/**
+ * Helper for building a pipeline
+ * @param stage Which stage configuration to use from Configs
+ * @param branch Which repo branch to bind to. If blank, will default to stage.
+ * @returns 
+ */
+function buildPipeline(stage: string, branch?: string): PipelineStack {
+  return new PipelineStack(app, `CoriDataApiPipeline-${stage}`, {
+    env: defaultEnv,
+    source: {
+      ...sourceConfig,
+      branch: branch || stage
+    },
+    ApiConfig: getConfig(stage),
+  });
+}
+
+buildPipeline('ib-dev', 'refactor/ibliskavka-pipelines')
+
+// buildPipeline('dev', 'dev')
+// buildPipeline('qa', 'qa')
+// buildPipeline('prod', 'main')

@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as YAML from 'yaml';
 import { Code } from 'aws-cdk-lib/aws-lambda';
-import { getConfig } from '../config/config';
+import { getConfig } from '../../../config/config';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 
 // Grab environment specific ENV VARS file for DB access

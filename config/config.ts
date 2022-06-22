@@ -1,4 +1,4 @@
-import { ApiStackProps } from '../lib/ApiStack';
+import { ApiStackProps } from '../packages/infrastructure/lib/ApiStack';
 
 export interface IMixedConfig extends ApiStackProps {
   /** This is used by start-api only
@@ -25,6 +25,33 @@ export const getConfig = (name: string): IMixedConfig => {
 };
 
 export const Config: IConfigs = {
+  'ib-dev': {
+    client: 'ib',
+    stage: 'dev',
+    project: 'data-api',
+    loggingLevel: 'info',
+    retain: false,
+    microservicesDirectory: 'python-microservices',
+    env: {
+      account: '857240696749',
+      region: 'us-east-1',
+    },
+    databaseConfig: {
+      vpcId: 'vpc-0499b35a2f5231aae',
+      databaseSecurityGroupId: 'sg-0be66ca1818bcc0e0',
+      host: 'cori-database-small-dev.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
+      dbname: 'data',
+      parameterName: '/cori/read_only_user_credentials',
+      dbuser: 'read_only_user',
+    },
+    cacheEnabled: true,
+    cacheConfig: {
+      host: 'redis-17358.c273.us-east-1-2.ec2.cloud.redislabs.com',
+      port: 17358,
+      username: 'default',
+      parameterName: '/cori/redis-cluster-credentials',
+    },
+  },
   'mf-dev': {
     client: 'mf',
     stage: 'dev',

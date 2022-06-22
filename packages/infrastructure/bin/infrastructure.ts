@@ -3,7 +3,7 @@
 import 'source-map-support/register';
 import { App, DefaultStackSynthesizer } from 'aws-cdk-lib';
 import { ApiStack, ApiBaseStack } from '../lib';
-import { getConfig } from '../config/config';
+import { getConfig } from '../../../config/config';
 
 const app = new App();
 
