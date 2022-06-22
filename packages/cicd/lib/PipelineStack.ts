@@ -5,7 +5,7 @@ import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelin
 import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { ApiStack, ApiStackProps } from '../../infrastructure/lib';
 import { Pipeline } from 'aws-cdk-lib/aws-codepipeline';
-import { Bucket, IBucket } from 'aws-cdk-lib/aws-s3';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 
 export interface PipelineStackProps extends StackProps {
   /**
@@ -49,7 +49,7 @@ export interface PipelineStackProps extends StackProps {
 }
 
 /**
- * Creates a pipeline which listens on a specific branch and deploys to the environment associated with the branch.
+ * Creates a pipeline which listens on a specific branch and deploys to the environment (stage) associated with the branch.
  *  This pipeline only has 1 stage because each stage is tied to a branch.
  *  Create multiple pipelines for other environments.
  */
