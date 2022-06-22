@@ -5,7 +5,6 @@ import { LayerVersion, Code, Runtime } from 'aws-cdk-lib/aws-lambda';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { Hosting } from '../constructs/hosting';
 import { Cognito } from '../constructs/cognito';
-import { ApiIAM } from '../constructs/iam';
 import { resolve, join } from 'path';
 import { Vpc, SecurityGroup, IVpc, ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
@@ -97,7 +96,6 @@ export class ApiStack extends Stack {
   apolloApi: Api;
   hosting: Hosting;
   cognito: Cognito;
-  iam: ApiIAM;
   graphqlApi: GraphqlApi;
   apiKey: Secret;
   vpc: IVpc;
@@ -150,12 +148,6 @@ export class ApiStack extends Stack {
 
   private buildAuthenticationResources() {
     const { databaseConfig, userPoolDomain, userPoolId } = this.props;
-
-    this.iam = new ApiIAM(this, 'Roles', {
-      prefix: this.prefix,
-      vpc: databaseConfig.vpcId !== undefined,
-    });
-
     this.cognito = new Cognito(this, 'Cognito', {
       userPoolId: userPoolId,
       existingUserPoolDomain: userPoolDomain,
@@ -192,11 +184,6 @@ export class ApiStack extends Stack {
 
     lambdaSecurityGroup.addEgressRule(rdsSecurityGroup, ec2.Port.tcp(5432), 'Allow Egress to PostgreSQL');
     rdsSecurityGroup.addIngressRule(lambdaSecurityGroup, ec2.Port.tcp(5432), 'Allow Ingress from Lambda');
-
-    this.iam = new ApiIAM(this, 'Roles', {
-      prefix: this.prefix,
-      vpc: this.props.databaseConfig.vpcId !== undefined,
-    });
 
     this.cognito = new Cognito(this, 'Cognito', {
       userPoolId: this.props.userPoolId,
