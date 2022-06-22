@@ -42,6 +42,7 @@ function buildPipeline(stage: string, branch?: string): PipelineStack {
  * Create pipelines per branch/stage here.
  * You can use cross account deploys to push build in the MF account and deploy to CORI
  *  - Alternatively, you can deploy the CORI pipelines to their account by changing the defaultEnv
+ 
  */
 
 buildPipeline('ib-dev', 'refactor/ibliskavka-pipelines')
