@@ -4,6 +4,7 @@ import { Construct } from 'constructs';
 import { CodePipeline, CodePipelineSource, ShellStep, ManualApprovalStep } from 'aws-cdk-lib/pipelines';
 import { AppStage } from './AppStage';
 import { CICDPipelineProps } from './PipelineStack';
+import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
 
 export interface CICDProps extends StackProps {
   environmentConfigs: {
@@ -15,6 +16,7 @@ export class CICDStack extends Stack {
   constructor(scope: Construct, id: string, props: CICDProps) {
     super(scope, id, props);
 
+    const source = props.environmentConfigs.dev.source;
     const devPipeline = new CodePipeline(this, `DevPipeline`, {
       selfMutation: true,
       pipelineName: `cori-data-api-pipeline-dev`,
@@ -28,7 +30,10 @@ export class CICDStack extends Stack {
         ],
       },
       synth: new ShellStep('Synth', {
-        input: CodePipelineSource.gitHub(props.environmentConfigs.dev.repo, props.environmentConfigs.dev.branch),
+        input: CodePipelineSource.gitHub(source.repo, source.branch, {
+          authentication: source.authentication,
+          trigger: source.trigger
+        }),
         commands: [
           'npm install -g npm@latest',
           'npm --version',

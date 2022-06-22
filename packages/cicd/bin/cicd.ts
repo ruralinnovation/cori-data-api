@@ -2,33 +2,54 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { CICDProps, CICDStack } from '../lib/CICDStack';
+import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
+
+// LSW @TODO: Remove
+const defaultEnv = { account: '857240696749', region: 'us-east-1' };
+
+// Merging Futures
+// const defaultEnv = { account: '190686435752', region: 'us-east-1' };
+
+const sourceConfig = {
+  repo: 'mergingfutures/cori-data-api',
+  // @todo: change this for merging futures
+  authentication: cdk.SecretValue.secretsManager('mergingfutures-pat'),
+  // @todo: Need more permissions to use WEBHOOK
+  trigger: GitHubTrigger.POLL
+}
 
 const cicdProps: CICDProps = {
-  env: { account: '190686435752', region: 'us-east-1' },
+  env: defaultEnv,
   environmentConfigs: {
     dev: {
-      env: { account: '190686435752', region: 'us-east-1' },
+      env: defaultEnv,
       client: 'cori',
       stage: 'dev',
-      branch: 'dev',
-      repo: 'mergingfutures/cori-data-api',
       project: 'data-api',
+      source:{
+        ...sourceConfig,
+        branch: 'dev'
+      }
     },
     qa: {
-      env: { account: '190686435752', region: 'us-east-1' },
+      env: defaultEnv,
       client: 'cori',
       stage: 'qa',
-      branch: 'qa',
-      repo: 'mergingfutures/cori-data-api',
       project: 'data-api',
+      source:{
+        ...sourceConfig,
+        branch: 'qa'
+      }
     },
     prod: {
-      env: { account: '190686435752', region: 'us-east-1' },
+      env: defaultEnv,
       client: 'cori',
       stage: 'prod',
-      branch: 'prod',
-      repo: 'mergingfutures/cori-data-api',
       project: 'data-api',
+      source:{
+        ...sourceConfig,
+        branch: 'prod'
+      }
     },
   },
 };
