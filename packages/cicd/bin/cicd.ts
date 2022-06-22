@@ -5,22 +5,16 @@ import { PipelineStack } from '../lib/PipelineStack';
 import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { getConfig } from '../../../config/config';
 
-// LSW @TODO: Remove
-const defaultEnv = { account: '857240696749', region: 'us-east-1' };
+const app = new cdk.App();
 
 // Merging Futures
-// const defaultEnv = { account: '190686435752', region: 'us-east-1' };
+const defaultEnv = { account: '190686435752', region: 'us-east-1' };
 
 const sourceConfig = {
   repo: 'mergingfutures/cori-data-api',
-  // @todo: change this for merging futures
-  authentication: cdk.SecretValue.secretsManager('mergingfutures-pat'),
-  // @todo: Need more permissions to use WEBHOOK
+  authentication: cdk.SecretValue.secretsManager('github-token'),
   trigger: GitHubTrigger.POLL,
 };
-
-
-const app = new cdk.App();
 
 /**
  * Helper for building a pipeline
