@@ -3,7 +3,7 @@
 import 'source-map-support/register';
 import { App } from 'aws-cdk-lib';
 import { ApiStack } from '../lib';
-import { getConfig } from '../../../config/config';
+import { getConfig } from '../../../config';
 
 const app = new App();
 

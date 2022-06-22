@@ -3,7 +3,7 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { PipelineStack } from '../lib/PipelineStack';
 import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
-import { getConfig } from '../../../config/config';
+import { getConfig } from '../../../config';
 
 const app = new cdk.App();
 

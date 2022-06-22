@@ -4,7 +4,7 @@ import { App } from 'aws-cdk-lib';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as YAML from 'yaml';
-import { getConfig } from '../../../config/config';
+import { getConfig } from '../../../config';
 import { ApiStack, ApiStackProps } from '../lib';
 
 // Grab environment specific ENV VARS file for DB access
