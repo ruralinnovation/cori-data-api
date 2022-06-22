@@ -37,3 +37,10 @@ Validate JSON
     Dictionary Should Contain Key   ${response.json()}                                  type
     Dictionary Should Contain Key   ${response.json()}                                  features
     Should Be Equal As Strings      ${response.json()}[type]                            FeatureCollection
+    Dictionary Should Contain Key   ${response.json()}[features][0]                     geometry
+    Dictionary Should Contain Key   ${response.json()}[features][0]                     properties
+    Dictionary Should Contain Key   ${response.json()}[features][0]                     type
+    Should Be Equal As Strings      ${response.json()}[features][0][type]               Feature
+    Dictionary Should Contain Key   ${response.json()}[features][0][geometry]           type
+    Dictionary Should Contain Key   ${response.json()}[features][0][geometry]           coordinates
+
