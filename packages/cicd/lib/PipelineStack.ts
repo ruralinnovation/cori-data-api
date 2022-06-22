@@ -4,8 +4,13 @@ import { Construct } from 'constructs';
 import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { ApiStack, ApiStackProps } from '../../infrastructure/lib';
+import { Pipeline } from 'aws-cdk-lib/aws-codepipeline';
+import { Bucket, IBucket } from 'aws-cdk-lib/aws-s3';
 
 export interface PipelineStackProps extends StackProps {
+  /**
+   * GitHub source configuration
+   */
   source: {
     /**
      * Case-sensitive GitHub repo name
@@ -33,6 +38,11 @@ export interface PipelineStackProps extends StackProps {
   };
 
   /**
+   * Use this to re-use an existing S3 bucket.
+   */
+  artifactBucketName?: string;
+
+  /**
    * Configures the api to be deployed by the pipeline
    */
   ApiConfig: ApiStackProps;
@@ -48,10 +58,18 @@ export class PipelineStack extends Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
-    const { source } = props;
-    this.pipeline = new CodePipeline(this, `Pipeline`, {
-      selfMutation: true,
+    const { source, artifactBucketName } = props;
+
+    // This allows a more fine-grained control of the underlying pipeline
+    const _pipeline = new Pipeline(this, 'Pipeline', { 
       pipelineName: `${id}-pipeline`,
+      restartExecutionOnUpdate: true,
+      artifactBucket: artifactBucketName ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName) : undefined
+    })
+
+    this.pipeline = new CodePipeline(this, `CodePipeline`, {
+      selfMutation: true,
+      codePipeline: _pipeline,
       dockerEnabledForSynth: true,
       codeBuildDefaults: {
         rolePolicy: [
@@ -76,6 +94,7 @@ export class PipelineStack extends Stack {
         ],
         primaryOutputDirectory: 'packages/cicd/cdk.out',
       }),
+
     });
 
     this.addApiStage(props.ApiConfig);
