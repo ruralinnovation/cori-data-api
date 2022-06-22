@@ -75,7 +75,6 @@ export interface ApiStackProps extends StackProps {
    * Optional. When provided, will re-use existing user pool domain
    */
   userPoolDomain?: string;
-  adminUserEmail?: string;
 
   version?: string;
 }
@@ -150,7 +149,7 @@ export class ApiStack extends Stack {
   }
 
   private buildAuthenticationResources() {
-    const { databaseConfig, userPoolDomain, adminUserEmail, userPoolId } = this.props;
+    const { databaseConfig, userPoolDomain, userPoolId } = this.props;
 
     this.iam = new ApiIAM(this, 'Roles', {
       prefix: this.prefix,
@@ -163,7 +162,6 @@ export class ApiStack extends Stack {
       prefix: this.prefix,
       userPoolName: `${this.prefix}`,
       userPoolDomainName: this.prefix,
-      adminUserEmail: adminUserEmail,
       appClients: [],
       retain: this.props.retain,
     });
@@ -206,7 +204,6 @@ export class ApiStack extends Stack {
       prefix: this.prefix,
       userPoolName: `${this.prefix}`,
       userPoolDomainName: this.prefix,
-      adminUserEmail: this.props.adminUserEmail,
       appClients: [],
       retain: this.props.retain,
     });

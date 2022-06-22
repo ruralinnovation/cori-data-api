@@ -28,7 +28,6 @@ export interface CognitoConstructProps {
    * What to name the user pool domain (if created)
    */
   userPoolDomainName: string;
-  adminUserEmail?: string;
 
   appClients: UserPoolClientConfig[];
 
@@ -106,45 +105,6 @@ export class Cognito extends Construct {
       domain.overrideLogicalId('CognitoDomain');
 
       this.userPoolDomain = domain.domain;
-    }
-
-    const adminGroup = new CfnUserPoolGroup(this, 'AdminGroup', {
-      groupName: 'admin',
-      description: 'Administrator Group',
-      precedence: 0,
-      userPoolId: this.userPool.userPoolId,
-    });
-    adminGroup.overrideLogicalId('AdminUserPoolGroup');
-
-    if (this.props.adminUserEmail) {
-      const adminUser = new CfnUserPoolUser(this, 'AdminUser', {
-        userPoolId: this.userPool.userPoolId,
-        username: this.props.adminUserEmail,
-        desiredDeliveryMediums: ['EMAIL'],
-        userAttributes: [
-          { name: 'email', value: this.props.adminUserEmail },
-          { name: 'email_verified', value: 'true' },
-        ],
-      });
-      adminUser.overrideLogicalId('CognitoAdminUser');
-
-      const groupAttachment = new CfnUserPoolUserToGroupAttachment(this, 'AdminGroupAttachment', {
-        userPoolId: this.userPool.userPoolId,
-        groupName: adminGroup.groupName as string,
-        username: adminUser.username as string,
-      });
-      groupAttachment.overrideLogicalId('AdminGroupAttachment');
-      groupAttachment.addDependsOn(adminGroup);
-      groupAttachment.addDependsOn(adminUser);
-
-      if (Token.isUnresolved(this.props.adminUserEmail)) {
-        // Admin User is a CloudFormation Token, Add Condition
-        const createAdminUserCondition = new CfnCondition(this, 'CreateAdminUserCondition', {
-          expression: Fn.conditionNot(Fn.conditionEquals(this.props.adminUserEmail, '')),
-        });
-        adminUser.cfnOptions.condition = createAdminUserCondition;
-        groupAttachment.cfnOptions.condition = createAdminUserCondition;
-      }
     }
 
     this.userPoolClients.push(
