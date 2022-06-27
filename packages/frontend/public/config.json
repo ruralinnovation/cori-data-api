@@ -1,0 +1,12 @@
+{
+  "environment": "dev",
+  "region": "us-east-1",
+  "apiUrl": "https://czz8sb2fb7.execute-api.us-east-1.amazonaws.com/dev",
+  "cognito": {
+    "clientId": "4a29d010ok8pbm1n7sn0cb470k",
+    "domain": "mf-data-api-dev.auth.us-east-1.amazoncognito.com",
+    "userPoolId": "us-east-1_nUFis6R5q"
+  },
+  "buildTime": "2022-05-20T13:23:42.602Z",
+  "version": "1.0.0"
+}
