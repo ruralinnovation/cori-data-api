@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import { App } from 'aws-cdk-lib';
-import { ApiStack, ApiStackProps, ApiStackBaseProps } from '../lib';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as YAML from 'yaml';
-import { Code } from 'aws-cdk-lib/aws-lambda';
-import { getConfig } from '../config/config';
-import * as ssm from 'aws-cdk-lib/aws-ssm';
+import { getConfig } from '../../../config';
+import { ApiStack, ApiStackProps } from '../lib';
 
 // Grab environment specific ENV VARS file for DB access
 
@@ -33,7 +31,7 @@ const main = async () => {
   /**
    * This is the local api stack
    */
-  const apiProps: ApiStackBaseProps = {
+  const apiProps: ApiStackProps = {
     ...config,
     userPoolId: config.startApiUserPoolId as string,
     // assets: Code.fromAsset('./dist/assets'),
@@ -50,7 +48,7 @@ const main = async () => {
 /**
  * This generates a SAM compatible template so that you can debug locally with `npm start`.
  */
-const createSamTemplate = (app: App, options: ApiStackBaseProps) => {
+const createSamTemplate = (app: App, options: ApiStackProps) => {
   console.log('Creating template');
   // Generate a template.yaml and local.json to be used with `npm start`
   const stacks = app.synth().stacks;

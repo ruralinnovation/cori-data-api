@@ -568,16 +568,6 @@ Resources:
         Ref: CognitoUserPool
     Metadata:
       aws:cdk:path: ApiStack/Cognito/CognitoDomain
-  AdminUserPoolGroup:
-    Type: AWS::Cognito::UserPoolGroup
-    Properties:
-      UserPoolId:
-        Ref: CognitoUserPool
-      Description: Administrator Group
-      GroupName: admin
-      Precedence: 0
-    Metadata:
-      aws:cdk:path: ApiStack/Cognito/AdminGroup
   CognitoUserPoolClientEF2538C4:
     Type: AWS::Cognito::UserPoolClient
     Properties:
