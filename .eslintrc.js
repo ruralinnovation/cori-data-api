@@ -2,24 +2,24 @@ module.exports = {
   root: true,
   env: {
     es2020: true,
-    jest: true
+    jest: true,
   },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
     'plugin:import/recommended',
-    'plugin:import/typescript'
+    'plugin:import/typescript',
   ],
   globals: {
     Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly'
+    SharedArrayBuffer: 'readonly',
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'es2020',
     sourceType: 'module',
-    project: './tsconfig.json'
+    project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
@@ -54,7 +54,7 @@ module.exports = {
     '@typescript-eslint/prefer-optional-chain': 'error',
     '@typescript-eslint/switch-exhaustiveness-check': 'error',
     '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/no-non-null-assertion': 'error', // turning this off removes type safety. use an if(){} to check for the null
+    '@typescript-eslint/no-non-null-assertion': 'warn', // turning this off removes type safety. use an if(){} to check for the null
     '@typescript-eslint/no-var-requires': 'error',
     '@typescript-eslint/no-misused-promises': ['error', { checksConditionals: true, checksVoidReturn: true }],
     '@typescript-eslint/no-unused-vars': [
@@ -62,11 +62,11 @@ module.exports = {
       {
         vars: 'all',
         args: 'after-used',
-        ignoreRestSiblings: false
-      }
+        ignoreRestSiblings: false,
+      },
     ],
     '@typescript-eslint/no-empty-function': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'import/first': 'error'
-  }
+    'import/first': 'error',
+  },
 };
