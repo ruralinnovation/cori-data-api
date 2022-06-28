@@ -2,24 +2,24 @@ module.exports = {
   root: true,
   env: {
     es2020: true,
-    jest: true,
+    jest: true
   },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
     'plugin:import/recommended',
-    'plugin:import/typescript',
+    'plugin:import/typescript'
   ],
   globals: {
     Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
+    SharedArrayBuffer: 'readonly'
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'es2020',
     sourceType: 'module',
-    project: './tsconfig.json',
+    project: './tsconfig.json'
   },
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
@@ -29,7 +29,7 @@ module.exports = {
     'semi': ['error', 'always'],
     'no-cond-assign': ['error', 'always'],
     'init-declarations': 'off',
-    'no-console': 'error', // you should use the Logger to avoid this
+    'no-console': 'off', // you should use the Logger to avoid this
     'eqeqeq': 'error',
     'no-promise-executor-return': 'error',
     'no-template-curly-in-string': 'error',
@@ -62,11 +62,11 @@ module.exports = {
       {
         vars: 'all',
         args: 'after-used',
-        ignoreRestSiblings: false,
-      },
+        ignoreRestSiblings: false
+      }
     ],
     '@typescript-eslint/no-empty-function': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'import/first': 'error',
-  },
+    'import/first': 'error'
+  }
 };
