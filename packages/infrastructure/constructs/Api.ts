@@ -7,12 +7,9 @@ import {
   PassthroughBehavior,
   ResponseType,
   CognitoUserPoolsAuthorizer,
-  IRestApi,
   AwsIntegration,
   IntegrationOptions,
   MethodOptions,
-  IApiKey,
-  ApiKey,
   TokenAuthorizer
 } from 'aws-cdk-lib/aws-apigateway';
 import { LambdasAndLogGroups } from './LambdasAndLogGroups';
@@ -21,7 +18,6 @@ import { Function as BASE_FUNCTION } from 'aws-cdk-lib/aws-lambda';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { toPascal, toKebab } from './naming';
 import { Mutable, HttpMethod } from '../interfaces';
-import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 
 interface GatewayResponse {
   type: ResponseType;
@@ -37,7 +33,6 @@ export interface ApiProps {
    * Automatically configure configure CloudWatch role
    */
   cloudWatchRole?: boolean;
-  apiKey?: Secret;
   binaryMediaTypes?: string[];
 }
 
@@ -66,20 +61,6 @@ export class Api extends Construct {
 
     if (props.userPool) {
       this.attachCognitoAuthorizer(props.userPool);
-    }
-    if (props.apiKey) {
-      const plan = this.api.addUsagePlan('ApiUsagePlan', {
-        name: 'Development',
-        throttle: {
-          rateLimit: 10000,
-          burstLimit: 100
-        }
-      });
-      const key = this.api.addApiKey('ApiKey', {
-        apiKeyName: this.props.prefix + 'api-key',
-        value: props.apiKey.secretValue.toString()
-      });
-      plan.addApiKey(key);
     }
   }
 
@@ -154,10 +135,7 @@ export class Api extends Construct {
     const responses = [...defaultResponses, ...(this.props.gatewayResponses || [])];
     const origin = this.props.allowedOrigins?.length ? this.props.allowedOrigins.join(' ') : "'*'";
     for (const { type, statusCode } of responses) {
-      // If prefix contains a token, use base name.
-      const responseId = Token.isUnresolved(this.props.prefix)
-        ? toPascal(`GatewayResponse-${type.responseType}`)
-        : toPascal(`${this.props.prefix}-GatewayResponse-${type.responseType}`);
+      const responseId = toPascal(`${this.props.prefix}-GatewayResponse-${type.responseType}`);
 
       (this.api as RestApi).addGatewayResponse(responseId, {
         type,

@@ -30,7 +30,7 @@ const createSamTemplate = (app: App, options: ApiStackProps) => {
 
   console.log(functions);
 
-  const env = {} as Record<string, string>;
+  const env = {} as Record<string, unknown>;
   functions.forEach(f => {
     env[f] = {
       LOGGING_LEVEL: options.loggingLevel,
@@ -55,7 +55,7 @@ const createSamTemplate = (app: App, options: ApiStackProps) => {
 const main = async () => {
   const app = new App();
 
-  const config = getConfig(app.node.tryGetContext('config'));
+  const config = getConfig('local');
   const prefix = `${config.client}-data-api-${config.stage}`;
 
   /**

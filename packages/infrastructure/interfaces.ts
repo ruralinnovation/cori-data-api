@@ -11,7 +11,7 @@ export function isHttpMethod(value: unknown): value is HttpMethod {
   return typeof value === 'string' && httpMethods.includes(value.toUpperCase() as HttpMethod);
 }
 
-export type Mutable<T extends Record<string, unknown>> = {
+export type Mutable<T extends object> = {
   -readonly [K in keyof T]: T[K];
 };
 export interface Stage {
