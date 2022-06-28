@@ -34,6 +34,7 @@
     "@typescript-eslint/parser": "^5.30.0",
     "aws-amplify": "^4.3.26",
     "aws-sdk": "^2.1164.0",
+    "axios": "^0.27.2",
     "cd": "^0.3.3",
     "cdk": "2.20.0",
     "eslint": "^8.18.0",

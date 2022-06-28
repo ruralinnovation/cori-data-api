@@ -4,11 +4,6 @@ import { ApiStackProps } from '../packages/infrastructure/lib/ApiStack';
  * Extends stack props with deploy/start configuration
  */
 export interface IMixedConfig extends ApiStackProps {
-  /** This is used by start-api only
-   *  You can add this prop to your config after initial deploy
-   */
-  startApiUserPoolId?: string;
-
   dbpassword?: string;
 
   /**
@@ -16,6 +11,23 @@ export interface IMixedConfig extends ApiStackProps {
    * This allows us to re-use an existing one.
    */
   artifactBucketName?: string;
+
+  /**
+   * This is used by start-api and integration testing
+   * You can add this prop to your config after initial deploy
+   * @todo: Look this up via stack outputs?
+   */
+  userPoolId?: string;
+
+  /**
+   * Used for integration testing
+   */
+  testing?: {
+    apiEndpoint: string;
+    cognitoClientId: string;
+    username: string;
+    password: string;
+  };
 }
 
 /**
@@ -101,7 +113,14 @@ export const Config: IConfigs = {
   'refactor/ibliskavka-simplify': {
     ...mfDefaults,
     client: 'ib',
-    stage: 'simplify'
+    stage: 'simplify',
+    userPoolId: 'us-east-1_mihHAkM5I',
+    testing: {
+      apiEndpoint: 'https://yw3sv9swbi.execute-api.us-east-1.amazonaws.com/dev',
+      cognitoClientId: '6bteqt467q53q4f998ctumuav5',
+      username: 'ib-dev@yopmail.com',
+      password: 'P@ssw0rd1'
+    }
   },
   'mf-dev': {
     ...mfDefaults,

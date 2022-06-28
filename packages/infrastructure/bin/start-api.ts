@@ -63,7 +63,7 @@ const main = async () => {
    */
   const apiProps: ApiStackProps = {
     ...config,
-    userPoolId: config.startApiUserPoolId as string,
+    userPoolId: config.userPoolId as string,
     // assets: Code.fromAsset('./dist/assets'),
     loggingLevel: 'debug'
   };
