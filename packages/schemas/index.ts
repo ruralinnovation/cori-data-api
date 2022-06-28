@@ -4,8 +4,8 @@ import { loadSchemaSync } from '@graphql-tools/load';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { addResolversToSchema } from '@graphql-tools/schema';
 import { GraphQLObjectType, GraphQLSchema, printSchema } from 'graphql';
-const { execSync } = require('child_process');
 import GeoJSON from './graphql/geojson';
+const { execSync } = require('child_process');
 // Load schema from the file
 // const baseSchema = loadSchemaSync('./graphql/query.graphql', {
 //   loaders: [new GraphQLFileLoader()],
@@ -19,19 +19,19 @@ const Query = new GraphQLObjectType({
   name: 'Query',
   fields: {
     setup: {
-      type: GeoJSON.GeometryTypeUnion,
+      type: GeoJSON.GeometryTypeUnion
     },
     hello: {
-      type: GeoJSON.FeatureCollectionObject,
+      type: GeoJSON.FeatureCollectionObject
     },
     auction_904_subsidy_awards: {
-      type: GeoJSON.FeatureCollectionObject,
-    },
-  },
+      type: GeoJSON.FeatureCollectionObject
+    }
+  }
 });
 
 const schema = new GraphQLSchema({
-  query: Query,
+  query: Query
 });
 
 if (!existsSync('dist')) {

@@ -31,7 +31,7 @@ export class MFNodejsFunction extends NodejsFunction {
 
     super(scope, id, {
       ...props,
-      logRetention: logRetention || RetentionDays.TWO_WEEKS,
+      logRetention: logRetention || RetentionDays.TWO_WEEKS
     });
 
     if (logicalIdOverride) {

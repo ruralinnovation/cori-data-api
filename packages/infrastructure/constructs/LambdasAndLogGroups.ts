@@ -7,9 +7,8 @@ import { S3EventSource, DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-s
 import { Role, ServicePrincipal, Policy, PolicyStatement, IRole, IPolicy, ArnPrincipal } from 'aws-cdk-lib/aws-iam';
 import { Function as Lambda, AssetCode, Runtime, LayerVersion, FunctionProps } from 'aws-cdk-lib/aws-lambda';
 
-import { LambdaDefinition, LogLevel } from '../interfaces';
+import { LambdaDefinition, LogLevel, HttpMethod } from '../interfaces';
 import { toKebab, toPascal } from './naming';
-import { HttpMethod } from '../interfaces';
 import { DynamoTables } from './DynamoTables';
 import { CannedStatements } from './CannedStatement';
 
@@ -38,7 +37,7 @@ export interface LambdasAndLogGroupsProps {
 
 const defaultLambdaProps = {
   lambdaLoggingLevel: 'INFO',
-  lambdaTimeout: 10,
+  lambdaTimeout: 10
 } as const;
 interface LambdaResources {
   lambda: Lambda;
@@ -102,7 +101,7 @@ export class LambdasAndLogGroups extends Construct {
       runtime: globalRuntime = Runtime.NODEJS_12_X,
       securityGroups: globalSecurityGroups,
       vpc: globalVpc,
-      vpcSubnets: globalVpcSubnets,
+      vpcSubnets: globalVpcSubnets
     }: LambdasAndLogGroupsProps
   ) {
     super(scope, id);
@@ -130,13 +129,13 @@ export class LambdasAndLogGroups extends Construct {
       table,
       tableEnvKey,
       vpc: handlerVpc,
-      vpcSubnets: handlerVpcSubnets,
+      vpcSubnets: handlerVpcSubnets
     } of lambdas) {
       const environment: { [key: string]: string } = {
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
         LOGGING_LEVEL: handlerLambdaLoggingLevel || globalLambdaLoggingLevel,
         ...globalEnvironment,
-        ...handlerEnvironment,
+        ...handlerEnvironment
       };
       if (connectInstanceId) {
         environment.CONNECT_INSTANCE_ID = connectInstanceId;
@@ -162,7 +161,7 @@ export class LambdasAndLogGroups extends Construct {
         retryAttempts: handlerRetryAttempts ?? globalRetryAttempts,
         securityGroups: handlerSecurityGroups ?? globalSecurityGroups,
         vpc: handlerVpc ?? globalVpc,
-        vpcSubnets: handlerVpcSubnets ?? globalVpcSubnets,
+        vpcSubnets: handlerVpcSubnets ?? globalVpcSubnets
       });
       /**
        *
@@ -197,14 +196,14 @@ export class LambdasAndLogGroups extends Construct {
   buildResources(props: BuildResourcesProps) {
     const PROD = props.prefix.split('-').pop() === 'prod';
     const { prefix, name, logRetention, layer, runtime } = props;
-    const kebabName: string = `${prefix}-${toKebab(name)}`;
+    const kebabName = `${prefix}-${toKebab(name)}`;
     const pascalName: string = toPascal(prefix) + toPascal(name);
 
     const logGroup: LogGroup = new LogGroup(this, `${pascalName}LogGroup`, {
       ...props,
       logGroupName: `/aws/lambda/${kebabName}`,
       removalPolicy: PROD ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
-      retention: logRetention,
+      retention: logRetention
     });
 
     const { role, policy } = this.buildIam({
@@ -213,13 +212,13 @@ export class LambdasAndLogGroups extends Construct {
       pascalName,
       logGroup,
       vpc: props.vpc,
-      policyStatements: props.policyStatements,
+      policyStatements: props.policyStatements
     });
 
     const lambda = new Lambda(this, pascalName, {
       ...props,
       role,
-      functionName: kebabName,
+      functionName: kebabName
     });
     if (layer && layer.compatibleRuntimes?.filter(rt => rt.runtimeEquals(runtime))) {
       lambda.addLayers(layer);
@@ -229,7 +228,7 @@ export class LambdasAndLogGroups extends Construct {
       lambda,
       rolesThatCanInvoke: props.rolesThatCanInvoke,
       connectInvocable: props.connectInvocable,
-      connectInstanceId: props.connectInstanceId,
+      connectInstanceId: props.connectInstanceId
     });
     if (policy) {
       lambda.node.addDependency(policy);
@@ -247,7 +246,7 @@ export class LambdasAndLogGroups extends Construct {
 
     const role: Role = new Role(this, `${pascalName}Role`, {
       roleName: kebabName.substr(0, 64),
-      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+      assumedBy: new ServicePrincipal('lambda.amazonaws.com')
     });
     const policy: Policy = new Policy(this, `${pascalName}Policy`, {
       policyName: props.kebabName.substr(0, 64),
@@ -255,10 +254,10 @@ export class LambdasAndLogGroups extends Construct {
       statements: [
         new PolicyStatement({
           actions: ['logs:DescribeLogStreams', 'logs:CreateLogStream', 'logs:PutLogEvents'],
-          resources: [logGroup.logGroupArn],
+          resources: [logGroup.logGroupArn]
         }),
-        ...policyStatements,
-      ],
+        ...policyStatements
+      ]
     });
     policy.node.addDependency(role);
 
@@ -274,13 +273,13 @@ export class LambdasAndLogGroups extends Construct {
     rolesThatCanInvoke,
     connectInstanceId,
     connectInvocable,
-    pascalName,
+    pascalName
   }: AddLambdaPermissionsProps) {
     if (rolesThatCanInvoke.length) {
       for (const invokeRole of rolesThatCanInvoke) {
         lambda.addPermission(`${pascalName}InvokePolicy${nanoid(4)}`, {
           principal: new ArnPrincipal(invokeRole.roleArn),
-          action: 'lambda:InvokeFunction',
+          action: 'lambda:InvokeFunction'
         });
       }
     }
@@ -289,8 +288,8 @@ export class LambdasAndLogGroups extends Construct {
         principal: new ServicePrincipal('connect.amazonaws.com'),
         action: 'lambda:InvokeFunction',
         sourceArn: Fn.sub('arn:aws:connect:${AWS::Region}:${AWS::AccountId}:instance/${connectInstanceId}', {
-          connectInstanceId,
-        }),
+          connectInstanceId
+        })
       });
     }
   }

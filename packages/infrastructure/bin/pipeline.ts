@@ -11,13 +11,13 @@ const app = new cdk.App();
  */
 const sourceConfig = {
   repo: 'mergingfutures/cori-data-api',
-  authentication: cdk.SecretValue.secretsManager('github-token'),
+  authentication: cdk.SecretValue.secretsManager('github-token')
 };
 
-const main = async ()=>{
+const main = async () => {
   const branch = await getLocalGitBranch();
-  const config = getConfig(branch)
-  const {client, stage, artifactBucketName} = config;
+  const config = getConfig(branch);
+  const { client, stage, artifactBucketName } = config;
   new PipelineStack(app, `${client}-CoriDataApiPipeline-${stage}`, {
     /**
      * Where to deploy the pipeline.
@@ -27,10 +27,10 @@ const main = async ()=>{
     artifactBucketName,
     source: {
       ...sourceConfig,
-      branch,
+      branch
     },
-    ApiConfig: config,
+    ApiConfig: config
   });
-}
+};
 
 main();

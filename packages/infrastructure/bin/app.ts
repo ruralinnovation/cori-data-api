@@ -6,8 +6,7 @@ import { ApiStack } from '../lib';
 import { getConfig } from '../../../config/configs';
 import { getLocalGitBranch } from '../../../config';
 
-const main = async ()=>{
-  
+const main = async () => {
   const app = new App();
 
   const branch = await getLocalGitBranch();
@@ -15,8 +14,8 @@ const main = async ()=>{
   const config = getConfig(branch);
 
   new ApiStack(app, `${config.client}-data-api-${config.stage}`, {
-    ...config,
+    ...config
   });
-}
+};
 
 main();

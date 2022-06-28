@@ -15,7 +15,7 @@ export const addApiMethod = (
   const integration = new AwsIntegration({
     proxy: true,
     service: 'lambda',
-    path: `2015-03-31/functions/${functionArn}/invocations`,
+    path: `2015-03-31/functions/${functionArn}/invocations`
   });
 
   if (method === 'OPTIONS') {

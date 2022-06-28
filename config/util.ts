@@ -1,6 +1,6 @@
 import { exec as EXEC, ChildProcess } from 'child_process';
 
-export function exec(command: string, logToConsole: boolean = true): Promise<string> {
+export function exec(command: string, logToConsole = true): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     function stdoutHandler(data: string) {
       if (logToConsole) {
@@ -38,8 +38,8 @@ export function exec(command: string, logToConsole: boolean = true): Promise<str
  * Note: does not work on CI where git is not available. Set the GIT_BRANCH env variable instead.
  */
 export async function getLocalGitBranch(): Promise<string> {
-  if(process.env.GIT_BRANCH){
-    return process.env.GIT_BRANCH
+  if (process.env.GIT_BRANCH) {
+    return process.env.GIT_BRANCH;
   }
   const output: string = await exec('git status', false);
   const [, branch] = /^On\sbranch\s([\S]*).*/.exec(output.toString()) || [];

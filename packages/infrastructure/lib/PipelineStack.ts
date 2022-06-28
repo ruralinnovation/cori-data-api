@@ -61,11 +61,11 @@ export class PipelineStack extends Stack {
     const { source, artifactBucketName } = props;
 
     // This allows a more fine-grained control of the underlying pipeline
-    const _pipeline = new Pipeline(this, 'Pipeline', { 
+    const _pipeline = new Pipeline(this, 'Pipeline', {
       pipelineName: `${id}-pipeline`,
       restartExecutionOnUpdate: true,
       artifactBucket: artifactBucketName ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName) : undefined
-    })
+    });
 
     this.pipeline = new CodePipeline(this, `CodePipeline`, {
       selfMutation: true,
@@ -75,21 +75,21 @@ export class PipelineStack extends Stack {
         rolePolicy: [
           new PolicyStatement({
             actions: ['sts:AssumeRole'],
-            resources: ['*'],
-          }),
+            resources: ['*']
+          })
         ],
-        buildEnvironment:{
-          environmentVariables:{
+        buildEnvironment: {
+          environmentVariables: {
             GIT_BRANCH: {
               value: source.branch
-            },
+            }
           }
         }
       },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(source.repo, source.branch, {
           authentication: source.authentication,
-          trigger: source.trigger,
+          trigger: source.trigger
         }),
         commands: [
           'npm install -g npm@latest',
@@ -97,11 +97,10 @@ export class PipelineStack extends Stack {
           'npm i',
           'npm ci',
           'npm run build',
-          'npm run synth:pipeline -w infrastructure',
+          'npm run synth:pipeline -w infrastructure'
         ],
-        primaryOutputDirectory: 'packages/infrastructure/cdk.out',
-      }),
-
+        primaryOutputDirectory: 'packages/infrastructure/cdk.out'
+      })
     });
 
     this.addApiStage(props.ApiConfig);
@@ -116,7 +115,7 @@ export class PipelineStack extends Stack {
     const pipelineStage = new Stage(this, stage);
 
     new ApiStack(pipelineStage, `${client}-data-api-${stage}`, {
-      ...config,
+      ...config
     });
 
     this.pipeline.addStage(pipelineStage);

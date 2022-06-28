@@ -126,14 +126,14 @@ export class ApiStack extends Stack {
     const { databaseConfig, cacheConfig, cacheEnabled } = this.props;
 
     this.vpc = Vpc.fromLookup(this, 'CoriDbVpc', {
-      vpcId: databaseConfig.vpcId,
+      vpcId: databaseConfig.vpcId
     });
 
     this.lambdaSecurityGroup = new SecurityGroup(this, 'OutboundPythonLambdaSecurityGroup', {
       securityGroupName: `${this.prefix}-vpc-python-lambda-sg`,
       vpc: this.vpc,
       allowAllOutbound: false,
-      description: 'Security group for RDS access',
+      description: 'Security group for RDS access'
     });
 
     this.rdsSecurityGroup = SecurityGroup.fromLookupById(
@@ -155,7 +155,7 @@ export class ApiStack extends Stack {
       userPoolName: `${this.prefix}`,
       userPoolDomainName: this.prefix,
       appClients: [],
-      retain: this.props.retain,
+      retain: this.props.retain
     });
   }
 
@@ -166,14 +166,14 @@ export class ApiStack extends Stack {
     const cachePassword = ssm.StringParameter.valueFromLookup(this, cacheConfig.parameterName);
 
     const vpc = Vpc.fromLookup(this, 'CoriDbVpc', {
-      vpcId: databaseConfig.vpcId,
+      vpcId: databaseConfig.vpcId
     });
 
     const lambdaSecurityGroup = new SecurityGroup(this, 'OutboundPythonLambdaSecurityGroup', {
       securityGroupName: `${this.prefix}-vpc-python-lambda-sg`,
       vpc,
       allowAllOutbound: false,
-      description: 'Security group for RDS access',
+      description: 'Security group for RDS access'
     });
 
     const rdsSecurityGroup = SecurityGroup.fromLookupById(
@@ -192,7 +192,7 @@ export class ApiStack extends Stack {
       userPoolName: `${this.prefix}`,
       userPoolDomainName: this.prefix,
       appClients: [],
-      retain: this.props.retain,
+      retain: this.props.retain
     });
 
     /**
@@ -204,7 +204,7 @@ export class ApiStack extends Stack {
       // cloudWatchRole: this.iam.roles === undefined,
       cloudWatchRole: true,
       userPool: this.cognito.userPool,
-      binaryMediaTypes: ['application~1x-protobuf', '*~1*'],
+      binaryMediaTypes: ['application~1x-protobuf', '*~1*']
     });
 
     /**
@@ -215,7 +215,7 @@ export class ApiStack extends Stack {
       stage: this.props.stage,
       // cloudWatchRole: this.iam.roles === undefined,
       cloudWatchRole: true,
-      userPool: this.cognito.userPool,
+      userPool: this.cognito.userPool
     });
 
     /**
@@ -251,7 +251,7 @@ export class ApiStack extends Stack {
       code: Code.fromAsset(
         join(join(__dirname, '../../../', this.props.microservicesDirectory, '/dependency-layer/dependency-layer.zip'))
       ),
-      compatibleRuntimes: [Runtime.PYTHON_3_8],
+      compatibleRuntimes: [Runtime.PYTHON_3_8]
     });
 
     const defaults = {
@@ -260,7 +260,7 @@ export class ApiStack extends Stack {
       timeout: Duration.seconds(360),
       vpc: vpc,
       allowPublicSubnet: true,
-      apiOriginPath: this.props.stage,
+      apiOriginPath: this.props.stage
     };
 
     const pythonDefaults = {
@@ -276,8 +276,8 @@ export class ApiStack extends Stack {
         DB_USER: databaseConfig.dbuser,
         REGION: this.props.env.region || '',
         DB_HOST: databaseConfig.host,
-        DB_NAME: databaseConfig.dbname,
-      },
+        DB_NAME: databaseConfig.dbname
+      }
     };
 
     const apolloDefaults = {
@@ -291,8 +291,8 @@ export class ApiStack extends Stack {
         CACHE_HOST: cacheConfig.host,
         CACHE_PORT: '' + cacheConfig.port,
         CACHE_USERNAME: cacheConfig.username,
-        CACHE_PASSWORD: cachePassword,
-      } as any,
+        CACHE_PASSWORD: cachePassword
+      } as any
     };
 
     if (this.props.stage === 'local') {
@@ -302,13 +302,13 @@ export class ApiStack extends Stack {
       const localApiWrapper = new PythonLambda(this, 'LocalApi', {
         ...pythonDefaults,
         functionName: this.prefix + '-local-api',
-        entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'local')),
+        entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'local'))
       });
 
       this.pythonApi.addLambda({
         method: 'GET',
         path: '/local/{proxy+}',
-        lambda: localApiWrapper.function,
+        lambda: localApiWrapper.function
       });
     } else {
       /**
@@ -317,7 +317,7 @@ export class ApiStack extends Stack {
       const bcatService = new PythonLambda(this, 'BCATService', {
         ...pythonDefaults,
         functionName: this.prefix + '-bcat-service',
-        entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat')),
+        entry: resolve(join(__dirname, '../../../', this.props.microservicesDirectory, 'bcat'))
       });
 
       // const bcatVersion = bcatService.function.currentVersion;
@@ -331,17 +331,17 @@ export class ApiStack extends Stack {
       this.pythonApi.addLambda({
         method: 'GET',
         path: '/bcat/{table}/geojson',
-        lambda: bcatService.function,
+        lambda: bcatService.function
       });
       this.pythonApi.addLambda({
         method: 'GET',
         path: '/bcat/{table}/tiles/{z}/{x}/{y}',
-        lambda: bcatService.function,
+        lambda: bcatService.function
       });
       this.pythonApi.addLambda({
         method: 'GET',
         path: '/bcat/{table}',
-        lambda: bcatService.function,
+        lambda: bcatService.function
       });
     }
 
@@ -349,13 +349,13 @@ export class ApiStack extends Stack {
      * Apollo V3 GraphQL Api Handler
      */
     const apolloServer = new ApolloGraphqlServer(this, 'ApolloApiServerLambda', {
-      ...apolloDefaults,
+      ...apolloDefaults
     });
 
     this.apolloApi.addLambda({
       method: 'POST',
       path: '/graphql',
-      lambda: apolloServer.function,
+      lambda: apolloServer.function
     });
     // this.apolloApi.addLambda({
     //   method: 'GET',

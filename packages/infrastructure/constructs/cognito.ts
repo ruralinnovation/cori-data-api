@@ -11,7 +11,7 @@ import {
   CfnUserPoolGroup,
   CfnUserPoolDomain,
   OAuthScope,
-  CfnUserPool,
+  CfnUserPool
 } from 'aws-cdk-lib/aws-cognito';
 
 export interface UserPoolClientConfig {
@@ -62,12 +62,12 @@ export class Cognito extends Construct {
         oAuth: {
           flows: {
             implicitCodeGrant: true,
-            authorizationCodeGrant: true,
+            authorizationCodeGrant: true
           },
           scopes: [OAuthScope.EMAIL, OAuthScope.OPENID, OAuthScope.PROFILE],
           callbackUrls: client.callbackUrls,
-          logoutUrls: client.logoutUrls,
-        },
+          logoutUrls: client.logoutUrls
+        }
       });
       this.userPoolClients.push(nc);
     });
@@ -83,13 +83,13 @@ export class Cognito extends Construct {
         userInvitation: {
           emailSubject: 'Your CORI Data API temporary password',
           emailBody: `Your username is {username} and temporary password is {####}.`,
-          smsMessage: 'Your username is {username} and temporary password is {####}.',
+          smsMessage: 'Your username is {username} and temporary password is {####}.'
         },
         autoVerify: {
-          email: true,
+          email: true
         },
         selfSignUpEnabled: false,
-        removalPolicy: this.props.retain ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
+        removalPolicy: this.props.retain ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY
       });
       // Override logical name for backwards compatibility
       (this.userPool.node.defaultChild as CfnUserPool).overrideLogicalId('CognitoUserPool');
@@ -100,7 +100,7 @@ export class Cognito extends Construct {
     } else {
       const domain = new CfnUserPoolDomain(this, 'CognitoDomain', {
         userPoolId: this.userPool.userPoolId,
-        domain: this.props.userPoolDomainName,
+        domain: this.props.userPoolDomainName
       });
       domain.overrideLogicalId('CognitoDomain');
 
@@ -116,24 +116,24 @@ export class Cognito extends Construct {
         oAuth: {
           flows: {
             implicitCodeGrant: true,
-            authorizationCodeGrant: true,
+            authorizationCodeGrant: true
           },
           scopes: [OAuthScope.EMAIL, OAuthScope.OPENID, OAuthScope.PROFILE],
           callbackUrls: ['https://www.getpostman.com/oauth2/callback'],
-          logoutUrls: ['https://www.getpostman.com/oauth2/callback'],
+          logoutUrls: ['https://www.getpostman.com/oauth2/callback']
         },
         authFlows: {
           userPassword: true,
-          userSrp: true,
-        },
+          userSrp: true
+        }
       })
     );
 
     new CfnOutput(this, 'DomainOutput', {
-      value: this.userPoolDomain,
+      value: this.userPoolDomain
     });
     new CfnOutput(this, 'UserPoolOutput', {
-      value: this.userPool.userPoolId,
+      value: this.userPool.userPoolId
     });
     // new CfnOutput(this, 'UserPoolClientOutput', {
     //   value: this.userPoolClient.userPoolClientId,

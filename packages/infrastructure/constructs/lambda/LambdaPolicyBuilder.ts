@@ -1,7 +1,7 @@
-import { Construct } from "constructs";
-import { Stack } from "aws-cdk-lib";
-import { PolicyDocument, PolicyDocumentProps } from "aws-cdk-lib/aws-iam";
-import { CannedStatements } from "../CannedStatement";
+import { Construct } from 'constructs';
+import { Stack } from 'aws-cdk-lib';
+import { PolicyDocument, PolicyDocumentProps } from 'aws-cdk-lib/aws-iam';
+import { CannedStatements } from '../CannedStatement';
 
 /**
  * Document builder using a fluent API.
@@ -14,11 +14,7 @@ import { CannedStatements } from "../CannedStatement";
  */
 export class LambdaPolicyBuilder extends PolicyDocument {
   stack: Stack;
-  constructor(
-    private scope: Construct,
-    vpc: boolean,
-    props?: PolicyDocumentProps
-  ) {
+  constructor(private scope: Construct, vpc: boolean, props?: PolicyDocumentProps) {
     super(props);
     this.stack = Stack.of(scope);
     if (vpc) {
@@ -52,13 +48,13 @@ export class LambdaPolicyBuilder extends PolicyDocument {
 
   addKmsUsage(kmsId: string): LambdaPolicyBuilder {
     const arn = `arn:aws:kms:${this.stack.region}:${this.stack.account}:key/${kmsId}`;
-    return this.allow(["kms:GenerateDataKey", "kms:Decrypt"], arn);
+    return this.allow(['kms:GenerateDataKey', 'kms:Decrypt'], arn);
   }
 
   addLogging(logGroup: string): LambdaPolicyBuilder {
     const stack = Stack.of(this.scope);
     return this.allow(
-      ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+      ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents'],
       `arn:aws:logs:${stack.region}:${stack.account}:log-group:/aws/lambda/${logGroup}:*`
     );
   }
@@ -73,10 +69,7 @@ export class LambdaPolicyBuilder extends PolicyDocument {
     return this;
   }
 
-  allow(
-    actions: string[] | string,
-    resource: string[] | string
-  ): LambdaPolicyBuilder {
+  allow(actions: string[] | string, resource: string[] | string): LambdaPolicyBuilder {
     this.addStatements(CannedStatements.allowStatement(actions, resource));
     return this;
   }

@@ -13,7 +13,7 @@ import {
   MethodOptions,
   IApiKey,
   ApiKey,
-  TokenAuthorizer,
+  TokenAuthorizer
 } from 'aws-cdk-lib/aws-apigateway';
 import { LambdasAndLogGroups } from './LambdasAndLogGroups';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
@@ -56,10 +56,10 @@ export class Api extends Construct {
     this.api = new RestApi(this, 'RestApi', {
       restApiName: toKebab(props.prefix),
       deployOptions: {
-        stageName: this.stage,
+        stageName: this.stage
       },
       cloudWatchRole: props.cloudWatchRole,
-      binaryMediaTypes: props.binaryMediaTypes || undefined,
+      binaryMediaTypes: props.binaryMediaTypes || undefined
     });
 
     this.addGatewayResponses();
@@ -72,12 +72,12 @@ export class Api extends Construct {
         name: 'Development',
         throttle: {
           rateLimit: 10000,
-          burstLimit: 100,
-        },
+          burstLimit: 100
+        }
       });
       const key = this.api.addApiKey('ApiKey', {
         apiKeyName: this.props.prefix + 'api-key',
-        value: props.apiKey.secretValue.toString(),
+        value: props.apiKey.secretValue.toString()
       });
       plan.addApiKey(key);
     }
@@ -86,14 +86,14 @@ export class Api extends Construct {
   public attachCognitoAuthorizer(userPool: IUserPool) {
     this.authorizer = new CognitoUserPoolsAuthorizer(this, 'CognitoAuthorizer', {
       cognitoUserPools: [userPool],
-      authorizerName: 'Cognito',
+      authorizerName: 'Cognito'
     });
     this.authorizer._attachToApi(this.api);
   }
 
   public attachLambdaAuthorizer(handler: BASE_FUNCTION) {
     this.tokenAuthorizer = new TokenAuthorizer(this, 'TokenAuthorizer', {
-      handler,
+      handler
     });
     this.tokenAuthorizer._attachToApi(this.api);
   }
@@ -102,7 +102,7 @@ export class Api extends Construct {
     method,
     path,
     lambda,
-    options = {},
+    options = {}
   }: {
     method: HttpMethod;
     path: string;
@@ -114,7 +114,7 @@ export class Api extends Construct {
       proxy: true,
       service: 'lambda',
       path: `2015-03-31/functions/${lambda.functionArn}/invocations`,
-      options,
+      options
     });
 
     const _options = options;
@@ -149,7 +149,7 @@ export class Api extends Construct {
       { type: ResponseType.UNAUTHORIZED, statusCode: '401' },
       { type: ResponseType.ACCESS_DENIED, statusCode: '403' },
       { type: ResponseType.RESOURCE_NOT_FOUND, statusCode: '404' },
-      { type: ResponseType.DEFAULT_5XX, statusCode: '500' },
+      { type: ResponseType.DEFAULT_5XX, statusCode: '500' }
     ] as GatewayResponse[];
     const responses = [...defaultResponses, ...(this.props.gatewayResponses || [])];
     // eslint-disable-next-line quotes
@@ -164,8 +164,8 @@ export class Api extends Construct {
         type,
         statusCode,
         responseHeaders: {
-          'Access-Control-Allow-Origin': origin,
-        },
+          'Access-Control-Allow-Origin': origin
+        }
       });
     }
   }
@@ -183,15 +183,15 @@ export class Api extends Construct {
                 "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
               'method.response.header.Access-Control-Allow-Origin': "'*'",
               'method.response.header.Access-Control-Allow-Credentials': "'true'",
-              'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+              'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
               /* eslint-enable quotes */
-            },
-          },
+            }
+          }
         ],
         passthroughBehavior: PassthroughBehavior.NEVER,
         requestTemplates: {
-          'application/json': '{"statusCode": 200}',
-        },
+          'application/json': '{"statusCode": 200}'
+        }
       }),
       {
         methodResponses: [
@@ -201,10 +201,10 @@ export class Api extends Construct {
               'method.response.header.Access-Control-Allow-Headers': true,
               'method.response.header.Access-Control-Allow-Methods': true,
               'method.response.header.Access-Control-Allow-Credentials': true,
-              'method.response.header.Access-Control-Allow-Origin': true,
-            },
-          },
-        ],
+              'method.response.header.Access-Control-Allow-Origin': true
+            }
+          }
+        ]
       }
     );
   }

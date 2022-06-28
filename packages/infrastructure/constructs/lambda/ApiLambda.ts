@@ -28,11 +28,11 @@ export class ApiLambda extends PythonLambda {
     const integration = new AwsIntegration({
       proxy: true,
       service: 'lambda',
-      path: `2015-03-31/functions/${this.function.functionArn}/invocations`,
+      path: `2015-03-31/functions/${this.function.functionArn}/invocations`
     });
 
     resource.addMethod(method, integration, {
-      authorizer: this.props.api.authorizer,
+      authorizer: this.props.api.authorizer
     });
 
     return this;

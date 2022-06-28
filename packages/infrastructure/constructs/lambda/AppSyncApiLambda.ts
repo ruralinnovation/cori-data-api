@@ -69,12 +69,12 @@ export class AppSyncApiLambda extends ApiLambda {
           resourcePath: resourcePath,
           params: {
             headers: {
-              'Content-Type': 'application/json',
-            },
-          },
+              'Content-Type': 'application/json'
+            }
+          }
         })
       ),
-      responseMappingTemplate: MappingTemplate.fromString('$ctx.result.body'),
+      responseMappingTemplate: MappingTemplate.fromString('$ctx.result.body')
     });
   }
   private attachUpdateResolver(
@@ -94,13 +94,13 @@ export class AppSyncApiLambda extends ApiLambda {
           resourcePath: resourcePath,
           params: {
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
-            body,
-          },
+            body
+          }
         })
       ),
-      responseMappingTemplate: MappingTemplate.fromString('$ctx.result.body'),
+      responseMappingTemplate: MappingTemplate.fromString('$ctx.result.body')
     });
   }
 

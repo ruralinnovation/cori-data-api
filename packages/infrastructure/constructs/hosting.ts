@@ -7,7 +7,7 @@ import {
   CloudFrontAllowedMethods,
   CloudFrontAllowedCachedMethods,
   OriginProtocolPolicy,
-  CfnDistribution,
+  CfnDistribution
 } from 'aws-cdk-lib/aws-cloudfront';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Api } from './Api';
@@ -35,7 +35,7 @@ export class Hosting extends Construct {
       customOriginSource: {
         domainName: domain,
         originPath: config.originPath,
-        originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+        originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY
       },
       behaviors: [
         {
@@ -43,21 +43,21 @@ export class Hosting extends Construct {
           pathPattern: config.behaviorPathPattern,
           forwardedValues: {
             queryString: true,
-            headers: ['Access-Control-Request-Headers', 'Access-Control-Request-Method', 'Origin', 'Authorization'],
+            headers: ['Access-Control-Request-Headers', 'Access-Control-Request-Method', 'Origin', 'Authorization']
           },
           minTtl: Duration.seconds(0),
           defaultTtl: Duration.seconds(0),
           maxTtl: Duration.seconds(0),
           allowedMethods: CloudFrontAllowedMethods.ALL,
-          cachedMethods: CloudFrontAllowedCachedMethods.GET_HEAD_OPTIONS,
-        },
-      ],
+          cachedMethods: CloudFrontAllowedCachedMethods.GET_HEAD_OPTIONS
+        }
+      ]
     });
   }
   constructor(scope: Construct, id: string, props: HostingProps) {
     super(scope, id);
     this.bucket = new Bucket(this, 'LogBucket', {
-      bucketName: props.prefix + '-cloudfront-log-bucket',
+      bucketName: props.prefix + '-cloudfront-log-bucket'
     });
 
     props.apiOriginConfigs.forEach(config => {
@@ -72,18 +72,18 @@ export class Hosting extends Construct {
         {
           errorCode: 403,
           responseCode: 200,
-          errorCachingMinTtl: 0,
+          errorCachingMinTtl: 0
         },
         {
           errorCode: 404,
           responseCode: 200,
-          errorCachingMinTtl: 0,
-        },
+          errorCachingMinTtl: 0
+        }
       ],
       loggingConfig: {
         bucket: this.bucket,
-        prefix: 'cloudfront-logs/',
-      },
+        prefix: 'cloudfront-logs/'
+      }
     });
     // Override logical name for backwards compatibility
     //(this.distribution.node.defaultChild as CfnDistribution).overrideLogicalId('ClientCloudFrontDistro');

@@ -33,7 +33,7 @@ export class RedisCluster extends Construct {
     // Create redis subnet group from private subnet ids
     const redisSubnetGroup = new redis.CfnSubnetGroup(this, 'RedisSubnetGroup', {
       subnetIds: this.subnets,
-      description: 'Subnet group for redis',
+      description: 'Subnet group for redis'
     });
 
     // Create Redis Cluster
@@ -44,7 +44,7 @@ export class RedisCluster extends Construct {
       numCacheNodes: 1,
       cacheSubnetGroupName: redisSubnetGroup.ref,
       clusterName: props.prefix + 'redis-cluster',
-      vpcSecurityGroupIds: [redisSecurityGroup.securityGroupId],
+      vpcSecurityGroupIds: [redisSecurityGroup.securityGroupId]
     });
 
     // Define this redis cluster is depends on redis subnet group created first

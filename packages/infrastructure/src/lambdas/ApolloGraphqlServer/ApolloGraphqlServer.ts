@@ -26,7 +26,7 @@ export class ApolloGraphqlServer extends Construct {
     const functionName = `${prefix}-apollo-server`;
 
     this.role = new Role(this, 'Role', {
-      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+      assumedBy: new ServicePrincipal('lambda.amazonaws.com')
     });
 
     this.function = new NodejsFunction(this, 'handler', {
@@ -35,13 +35,13 @@ export class ApolloGraphqlServer extends Construct {
       runtime: Runtime.NODEJS_14_X,
       environment,
       functionName,
-      timeout: Duration.seconds(40),
+      timeout: Duration.seconds(40)
     });
 
     new LogGroup(this, 'LogGroup', {
       logGroupName: `/aws/lambda/${functionName}`,
       removalPolicy: RemovalPolicy.DESTROY,
-      retention: logRetention,
+      retention: logRetention
     });
 
     this.function.addToRolePolicy(
@@ -50,8 +50,8 @@ export class ApolloGraphqlServer extends Construct {
         actions: ['logs:CreateLogStream', 'logs:PutLogEvents'],
         resources: [
           `arn:aws:logs:${Aws.REGION}:${Aws.ACCOUNT_ID}:log-group:/aws/lambda/${functionName}:*`,
-          `arn:aws:logs:${Aws.REGION}:${Aws.ACCOUNT_ID}:log-group:/aws/lambda/${functionName}:*:*`,
-        ],
+          `arn:aws:logs:${Aws.REGION}:${Aws.ACCOUNT_ID}:log-group:/aws/lambda/${functionName}:*:*`
+        ]
       })
     );
   }

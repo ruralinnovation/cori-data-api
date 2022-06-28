@@ -1,7 +1,7 @@
 import { EnvConfig } from './EnvConfig';
+import { RedisOptions } from 'ioredis';
 const { BaseRedisCache } = require('apollo-server-cache-redis');
 const Redis = require('ioredis');
-import { RedisOptions } from 'ioredis';
 
 export interface CacheOptions {
   /**
@@ -31,8 +31,8 @@ export const defaultCacheOptions: CacheOptions = {
     host: EnvConfig.CACHE_HOST,
     port: parseInt(EnvConfig.CACHE_PORT),
     username: EnvConfig.CACHE_USERNAME,
-    password: EnvConfig.CACHE_PASSWORD,
-  },
+    password: EnvConfig.CACHE_PASSWORD
+  }
 };
 
 export class Cache {
@@ -51,7 +51,7 @@ export class Cache {
         host: this.cacheOptions.redisOptions?.host,
         port: this.cacheOptions.redisOptions?.port,
         username: this.cacheOptions.redisOptions?.username,
-        password: this.cacheOptions.redisOptions?.password,
+        password: this.cacheOptions.redisOptions?.password
       });
       return this.rawCache;
     }
@@ -61,7 +61,7 @@ export class Cache {
       return this.cache;
     } else {
       this.cache = new BaseRedisCache({
-        client: this.getRawCache(),
+        client: this.getRawCache()
       });
       return this.cache;
     }
@@ -101,7 +101,9 @@ export class Cache {
       const cacheRes = await this.getCacheValue(key);
       if (!cacheRes) {
         let dbValue = await cb();
-        if (!dbValue) dbValue = null;
+        if (!dbValue) {
+          dbValue = null;
+        }
         this.rawCache.setex(key, maxAge, JSON.stringify(dbValue));
         resolve(dbValue);
       } else {
@@ -119,7 +121,9 @@ export const checkCache = async (
 ): Promise<Object | Array<any> | number> => {
   return new Promise(async (resolve, reject) => {
     redisClient.get(key, async (err, data) => {
-      if (err) return reject(err);
+      if (err) {
+        return reject(err);
+      }
       if (data != null) {
         console.log('Data ', data);
         console.log('read from cache');
@@ -127,7 +131,9 @@ export const checkCache = async (
       } else {
         console.log('read from db');
         let newData = await callback();
-        if (!newData) newData = null;
+        if (!newData) {
+          newData = null;
+        }
         redisClient.setex(key, maxAge, JSON.stringify(newData));
         resolve(newData);
       }
