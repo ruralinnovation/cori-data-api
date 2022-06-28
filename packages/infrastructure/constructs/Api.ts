@@ -1,5 +1,4 @@
 import { Construct } from 'constructs';
-import { Token } from 'aws-cdk-lib';
 import {
   IResource as ApiGatewayResource,
   RestApi,
@@ -37,21 +36,17 @@ export interface ApiProps {
 }
 
 export class Api extends Construct {
-  public api: RestApi;
-  public stage: string;
+  public readonly api: RestApi;
   public authorizer?: CognitoUserPoolsAuthorizer;
   public tokenAuthorizer?: TokenAuthorizer;
 
   constructor(scope: Construct, id: string, private props: ApiProps) {
     super(scope, id);
 
-    // CDK does not like unresolved tokens for stage
-    this.stage = !props.stage || Token.isUnresolved(props.stage) ? 'prod' : props.stage;
-
     this.api = new RestApi(this, 'RestApi', {
       restApiName: toKebab(props.prefix),
       deployOptions: {
-        stageName: this.stage
+        stageName: this.props.stage
       },
       cloudWatchRole: props.cloudWatchRole,
       binaryMediaTypes: props.binaryMediaTypes || undefined
