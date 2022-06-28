@@ -1,7 +1,7 @@
 import { SecretValue, Stack, StackProps, Stage } from 'aws-cdk-lib';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
-import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
+import { CodePipeline, CodePipelineSource, ShellStep, StageDeployment } from 'aws-cdk-lib/pipelines';
 import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { ApiStack, ApiStackProps } from '.';
 import { Pipeline } from 'aws-cdk-lib/aws-codepipeline';
@@ -109,16 +109,28 @@ export class PipelineStack extends Stack {
   /**
    * Creates a Pipeline Stage, which will deploy the data-api
    */
-  addApiStage(config: ApiStackProps): Stage {
-    const { client, stage } = config;
+  addApiStage(config: ApiStackProps): StageDeployment {
+    const { client, stage: stageName } = config;
 
-    const pipelineStage = new Stage(this, stage);
+    const stage = new Stage(this, stageName);
 
-    new ApiStack(pipelineStage, `${client}-data-api-${stage}`, {
+    const stack = new ApiStack(stage, `${client}-data-api-${stageName}`, {
       ...config
     });
 
-    this.pipeline.addStage(pipelineStage);
+    const pipelineStage = this.pipeline.addStage(stage);
+
+    pipelineStage.addPost(
+      new ShellStep('IntegrationTest', {
+        // Add environment specific outputs here
+        envFromCfnOutputs: {
+          PYTHON_API_URL: stack.pythonApiUrlOutput,
+          APOLLO_API_URL: stack.apolloApiUrlOutput
+        },
+        // Execute your integration test
+        commands: ['echo $PYTHON_API_URL', 'echo $APOLLO_API_URL', 'ls']
+      })
+    );
 
     return pipelineStage;
   }

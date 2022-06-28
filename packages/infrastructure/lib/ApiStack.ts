@@ -103,6 +103,9 @@ export class ApiStack extends Stack {
   lambdaSecurityGroup: SecurityGroup;
   rdsSecurityGroup: ISecurityGroup;
 
+  pythonApiUrlOutput: CfnOutput;
+  apolloApiUrlOutput: CfnOutput;
+
   /**
    * Call build() to synth this construct when ready.
    */
@@ -374,8 +377,8 @@ export class ApiStack extends Stack {
   private buildOutputs() {
     new CfnOutput(this, 'Region', { value: Aws.REGION });
     // new CfnOutput(this, 'CFApiUrl', { value: this.hosting.url });
-    new CfnOutput(this, 'PythonApiUrl', { value: this.pythonApi.api.url });
-    new CfnOutput(this, 'ApolloApiUrl', { value: this.apolloApi.api.url });
+    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: this.pythonApi.api.url });
+    this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: this.apolloApi.api.url });
     new CfnOutput(this, 'CognitoUserGroupId', { value: this.cognito.userPool.userPoolId });
   }
 }

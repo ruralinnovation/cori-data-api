@@ -105,11 +105,6 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
 };
 
 export const Config: IConfigs = {
-  'refactor/ibliskavka-pipelines': {
-    ...mfDefaults,
-    client: 'ib',
-    stage: 'dev'
-  },
   'refactor/ibliskavka-simplify': {
     ...mfDefaults,
     client: 'ib',
