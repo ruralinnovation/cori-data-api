@@ -98,6 +98,11 @@ export const Config: IConfigs = {
     client: 'ib',
     stage: 'dev',
   },
+  'refactor/ibliskavka-simplify': {
+    ...mfDefaults,
+    client: 'ib',
+    stage: 'simplify',
+  },
   'mf-dev': {
     ...mfDefaults,
     client: 'mf',
