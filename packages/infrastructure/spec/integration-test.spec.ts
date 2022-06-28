@@ -64,7 +64,7 @@ describe('ApiIntegrationTests', () => {
 
   it('Test geojson', async () => {
     try {
-      const response = await axiosClient.get('/bcat/auction_904_subsidy_awards/geojson/FL');
+      const response = await axiosClient.get('/bcat/broadband_unserved_blocks/geojson?geoid_co=47001,47003');
       logger.info(`Test geojson: ${JSON.stringify(response.data)}`);
       expect(response.data).toBeDefined();
     } catch (error) {

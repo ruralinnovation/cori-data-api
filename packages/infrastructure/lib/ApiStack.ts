@@ -105,6 +105,7 @@ export class ApiStack extends Stack {
 
   pythonApiUrlOutput: CfnOutput;
   apolloApiUrlOutput: CfnOutput;
+  postmanClientId: CfnOutput;
 
   /**
    * Call build() to synth this construct when ready.
@@ -150,19 +151,6 @@ export class ApiStack extends Stack {
     this.rdsSecurityGroup.addIngressRule(this.lambdaSecurityGroup, ec2.Port.tcp(5432), 'Allow Ingress from Lambda');
   }
 
-  private buildAuthenticationResources() {
-    const { userPoolDomain, userPoolId } = this.props;
-    this.cognito = new Cognito(this, 'Cognito', {
-      userPoolId: userPoolId,
-      existingUserPoolDomain: userPoolDomain,
-      prefix: this.prefix,
-      userPoolName: `${this.prefix}`,
-      userPoolDomainName: this.prefix,
-      appClients: [],
-      retain: this.props.retain
-    });
-  }
-
   private buildResources() {
     const { databaseConfig, cacheConfig, cacheEnabled } = this.props;
 
@@ -195,7 +183,6 @@ export class ApiStack extends Stack {
       prefix: this.prefix,
       userPoolName: this.prefix,
       userPoolDomainName: this.prefix,
-      appClients: [],
       retain: this.props.retain
     });
 
@@ -222,23 +209,23 @@ export class ApiStack extends Stack {
       userPool: this.cognito.userPool
     });
 
-    this.hosting = new Hosting(this, 'Hosting', {
-      prefix: this.prefix + '-hosting',
-      apiOriginConfigs: [
-        {
-          default: true,
-          domain: this.pythonApi.apiDomain,
-          originPath: `/${this.props.stage}`,
-          behaviorPathPattern: '/data/*'
-        },
-        {
-          default: false,
-          domain: this.apolloApi.apiDomain,
-          originPath: `/${this.props.stage}`,
-          behaviorPathPattern: '/gql/*'
-        }
-      ]
-    });
+    // this.hosting = new Hosting(this, 'Hosting', {
+    //   prefix: this.prefix + '-hosting',
+    //   apiOriginConfigs: [
+    //     {
+    //       default: true,
+    //       domain: this.pythonApi.apiDomain,
+    //       originPath: `/${this.props.stage}`,
+    //       behaviorPathPattern: '/data/*'
+    //     },
+    //     {
+    //       default: false,
+    //       domain: this.apolloApi.apiDomain,
+    //       originPath: `/${this.props.stage}`,
+    //       behaviorPathPattern: '/gql/*'
+    //     }
+    //   ]
+    // });
 
     /**
      * Python Dependency Lambda Layer
@@ -374,6 +361,9 @@ export class ApiStack extends Stack {
     // new CfnOutput(this, 'CFApiUrl', { value: this.hosting.url });
     this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: this.pythonApi.api.url });
     this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: this.apolloApi.api.url });
+    this.postmanClientId = new CfnOutput(this, 'PostmanClientId', {
+      value: this.cognito.postmanClient.userPoolClientId
+    });
     new CfnOutput(this, 'CognitoUserGroupId', { value: this.cognito.userPool.userPoolId });
   }
 }

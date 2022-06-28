@@ -114,8 +114,11 @@ export class PipelineStack extends Stack {
 
     const stage = new Stage(this, stageName);
 
-    const stack = new ApiStack(stage, `${client}-data-api-${stageName}`, {
-      ...config
+    const stackName = `${client}-data-api-${stageName}`;
+
+    const stack = new ApiStack(stage, stackName, {
+      ...config,
+      stackName: stackName
     });
 
     const pipelineStage = this.pipeline.addStage(stage);
@@ -125,7 +128,8 @@ export class PipelineStack extends Stack {
         // Add environment specific outputs here
         envFromCfnOutputs: {
           PYTHON_API_URL: stack.pythonApiUrlOutput,
-          APOLLO_API_URL: stack.apolloApiUrlOutput
+          APOLLO_API_URL: stack.apolloApiUrlOutput,
+          POSTMAN_CLIENT_ID: stack.postmanClientId
         },
         // Execute your integration test
         commands: ['echo $PYTHON_API_URL', 'echo $APOLLO_API_URL', 'ls']

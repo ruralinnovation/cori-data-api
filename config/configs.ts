@@ -108,14 +108,14 @@ export const Config: IConfigs = {
   'refactor/ibliskavka-multi-api': {
     ...mfDefaults,
     client: 'ib',
-    stage: 'multi-api'
-    // userPoolId: 'us-east-1_mihHAkM5I',
-    // testing: {
-    //   apiEndpoint: 'https://yw3sv9swbi.execute-api.us-east-1.amazonaws.com/dev',
-    //   cognitoClientId: '6bteqt467q53q4f998ctumuav5',
-    //   username: 'ib-dev@yopmail.com',
-    //   password: 'P@ssw0rd1'
-    // }
+    stage: 'multi-api',
+    userPoolId: 'us-east-1_mihHAkM5I',
+    testing: {
+      apiEndpoint: 'https://ail86pmoeb.execute-api.us-east-1.amazonaws.com/dev',
+      cognitoClientId: '6bteqt467q53q4f998ctumuav5',
+      username: 'nahum@mergingfutures.com',
+      password: '7Z9PzBq7Ul8l0@@Li#oxWj37'
+    }
   },
   'mf-dev': {
     ...mfDefaults,
