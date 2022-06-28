@@ -1,15 +1,34 @@
-// @ts-nocheck -
-const {
-  GraphQLString: Str,
-  GraphQLFloat: Float,
-  GraphQLList: List,
-  GraphQLEnumType: EnumType,
-  GraphQLObjectType: ObjectType,
-  GraphQLScalarType: ScalarType,
-  GraphQLInterfaceType: InterfaceType,
-  GraphQLUnionType: UnionType,
-  GraphQLNonNull: NonNull
-} = require('graphql');
+import {
+  GraphQLString as Str,
+  GraphQLList as List,
+  GraphQLEnumType as EnumType,
+  GraphQLObjectType as ObjectType,
+  GraphQLScalarType as ScalarType,
+  GraphQLInterfaceType as InterfaceType,
+  GraphQLUnionType as UnionType,
+  GraphQLNonNull as NonNull,
+  GraphQLFloat as Float
+} from 'graphql';
+
+function coerceCoordinates(value) {
+  return value;
+}
+
+function parseCoordinates(valueAST) {
+  return valueAST.value;
+}
+
+function coerceObject(value) {
+  try {
+    return JSON.parse(value);
+  } catch (err) {
+    return value;
+  }
+}
+
+function parseObject(valueAST) {
+  return JSON.stringify(valueAST.value);
+}
 
 const GeoJSON = {
   TypeEnum: new EnumType({
@@ -46,7 +65,6 @@ const GeoJSON = {
 
   PointObject: new ObjectType({
     name: 'GeoJSONPoint',
-    type: 'GeoJSONPoint',
     description: 'Object describing a single geographical point.',
     interfaces: () => [GeoJSON.GeoJSONInterface, GeoJSON.GeometryInterface],
     fields: () => ({
@@ -107,7 +125,6 @@ const GeoJSON = {
 
   MultiPolygonObject: new ObjectType({
     name: 'GeoJSONMultiPolygon',
-    type: 'MultiPolygonObject',
     description: 'Object describing multiple shapes formed by sets of geographical points.',
     interfaces: () => [GeoJSON.GeoJSONInterface, GeoJSON.GeometryInterface],
     fields: () => ({
@@ -186,7 +203,7 @@ const GeoJSON = {
     name: 'GeoJSONCRSProperties',
     description: 'CRS object properties.',
     types: () => [GeoJSON.NamedCRSPropertiesObject, GeoJSON.LinkedCRSPropertiesObject],
-    resolveType: (value: any) => {
+    resolveType: value => {
       if (value.name) {
         return GeoJSON.NamedCRSPropertiesObject;
       }
@@ -212,7 +229,7 @@ const GeoJSON = {
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) }
     }),
-    resolveType: (value: any) => GeoJSON[`${value.type}Object`]
+    resolveType: value => GeoJSON[`${value.type}Object`]
   }),
 
   GeometryInterface: new InterfaceType({
@@ -254,7 +271,7 @@ const GeoJSON = {
       GeoJSON.MultiPointObject,
       GeoJSON.MultiPolygonObject
     ],
-    resolveType: (value: any) => {
+    resolveType: value => {
       if (value.value === GeoJSON.TypeEnum.Point.value) {
         return GeoJSON.PointObject.name;
       }
@@ -279,25 +296,5 @@ const GeoJSON = {
     }
   })
 };
-
-function coerceCoordinates(value) {
-  return value;
-}
-
-function parseCoordinates(valueAST) {
-  return valueAST.value;
-}
-
-function coerceObject(value) {
-  try {
-    return JSON.parse(value);
-  } catch (err) {
-    return value;
-  }
-}
-
-function parseObject(valueAST) {
-  return JSON.stringify(valueAST.value);
-}
 
 export default GeoJSON;
