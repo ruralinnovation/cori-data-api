@@ -20,5 +20,5 @@
     "typeRoots": ["./node_modules/@types"],
     "outDir": "./packages/dist"
   },
-  "exclude": ["node_modules", "cdk.out", "./packages/cicd/node_modules", "./packages/infrastructure/node_modules"]
+  "exclude": ["node_modules", "cdk.out", "./packages/infrastructure/node_modules"]
 }
