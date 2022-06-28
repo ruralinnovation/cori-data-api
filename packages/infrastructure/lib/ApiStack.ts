@@ -28,6 +28,18 @@ export interface CacheConfig {
   username: string;
   parameterName: string;
 }
+
+interface AppSyncUserPoolConfig {
+  userPoolId: string;
+}
+
+interface AppSyncConfig {
+  /**
+   * Optional: When provided will configure additional user pools in the app sync authorization configuration
+   */
+  additionalUserPools: AppSyncUserPoolConfig[];
+}
+
 export interface ApiStackProps extends StackProps {
   env: {
     account: string;
@@ -76,17 +88,6 @@ export interface ApiStackProps extends StackProps {
   userPoolDomain?: string;
 
   version?: string;
-}
-
-interface AppSyncConfig {
-  /**
-   * Optional: When provided will configure additional user pools in the app sync authorization configuration
-   */
-  additionalUserPools: AppSyncUserPoolConfig[];
-}
-
-interface AppSyncUserPoolConfig {
-  userPoolId: string;
 }
 
 export class ApiStack extends Stack {
@@ -147,7 +148,7 @@ export class ApiStack extends Stack {
   }
 
   private buildAuthenticationResources() {
-    const { databaseConfig, userPoolDomain, userPoolId } = this.props;
+    const { userPoolDomain, userPoolId } = this.props;
     this.cognito = new Cognito(this, 'Cognito', {
       userPoolId: userPoolId,
       existingUserPoolDomain: userPoolDomain,
@@ -284,6 +285,7 @@ export class ApiStack extends Stack {
       prefix: this.prefix,
       logRetention: RetentionDays.FOUR_MONTHS,
       environment: {
+        LOGGING_LEVEL: 'debug',
         PYTHON_API_URL: this.pythonApi.api.url,
         PYTHON_API_STAGE: this.props.stage,
         // CF_URL: this.hosting.url,
@@ -292,7 +294,7 @@ export class ApiStack extends Stack {
         CACHE_PORT: '' + cacheConfig.port,
         CACHE_USERNAME: cacheConfig.username,
         CACHE_PASSWORD: cachePassword
-      } as any
+      }
     };
 
     if (this.props.stage === 'local') {
