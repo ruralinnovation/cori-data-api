@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "streetsidesoftware.code-spell-checker",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "codezombiech.gitignore",
+    "oderwat.indent-rainbow",
+    "eg2.vscode-npm-script",
+    "christian-kohler.path-intellisense",
+    "donjayamanne.githistory",
+    "eamodio.gitlens"
+  ]
+}
