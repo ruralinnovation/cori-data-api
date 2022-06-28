@@ -11,7 +11,6 @@ import {
   MethodOptions,
   TokenAuthorizer
 } from 'aws-cdk-lib/aws-apigateway';
-import { LambdasAndLogGroups } from './LambdasAndLogGroups';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { Function as BASE_FUNCTION } from 'aws-cdk-lib/aws-lambda';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
@@ -109,18 +108,6 @@ export class Api extends Construct {
       this.addCorsMockIntegration(resource); // throws if added multiple times
     } catch {
       // Allow multiple resources of the same name with different methods
-    }
-  }
-
-  /**
-   * @deprecated
-   */
-  public addLambdasAndLogGroups({ apiResources }: LambdasAndLogGroups) {
-    if (!apiResources?.size) {
-      throw new Error('no resources to passed into Api construct');
-    }
-    for (const [{ method, path }, lambda] of apiResources) {
-      this.addLambda({ method, path, lambda });
     }
   }
 

@@ -9,7 +9,7 @@ import {
 } from 'aws-cdk-lib/aws-cloudfront';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 
-export interface CustomApiOriginConfig {
+export interface ApiOriginConfig {
   domain: string;
   originPath: string;
   behaviorPathPattern: string;
@@ -17,15 +17,15 @@ export interface CustomApiOriginConfig {
 }
 export interface HostingProps {
   prefix: string;
-  apiOriginConfigs: CustomApiOriginConfig[];
+  apiOriginConfigs: ApiOriginConfig[];
 }
 
 export class Hosting extends Construct {
   distribution: CloudFrontWebDistribution;
-  bucket: Bucket;
+  loggingBucket: Bucket;
   url: string;
 
-  public buildOrigin(config: CustomApiOriginConfig): SourceConfiguration {
+  private buildApiOrigin(config: ApiOriginConfig): SourceConfiguration {
     return {
       customOriginSource: {
         domainName: config.domain,
@@ -52,13 +52,13 @@ export class Hosting extends Construct {
 
   constructor(scope: Construct, id: string, props: HostingProps) {
     super(scope, id);
-    this.bucket = new Bucket(this, 'LogBucket', {
+    this.loggingBucket = new Bucket(this, 'LogBucket', {
       bucketName: props.prefix + '-cloudfront-log-bucket'
     });
 
     this.distribution = new CloudFrontWebDistribution(this, 'Distribution', {
       comment: props.prefix,
-      originConfigs: props.apiOriginConfigs.map(x => this.buildOrigin(x)),
+      originConfigs: props.apiOriginConfigs.map(x => this.buildApiOrigin(x)),
       defaultRootObject: 'index.html',
       errorConfigurations: [
         {
@@ -73,7 +73,7 @@ export class Hosting extends Construct {
         }
       ],
       loggingConfig: {
-        bucket: this.bucket,
+        bucket: this.loggingBucket,
         prefix: 'cloudfront-logs/'
       }
     });
