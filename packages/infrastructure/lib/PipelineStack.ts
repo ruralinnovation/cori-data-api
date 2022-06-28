@@ -3,7 +3,7 @@ import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
 import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
-import { ApiStack, ApiStackProps } from '../../infrastructure/lib';
+import { ApiStack, ApiStackProps } from '.';
 import { Pipeline } from 'aws-cdk-lib/aws-codepipeline';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 
@@ -78,6 +78,13 @@ export class PipelineStack extends Stack {
             resources: ['*'],
           }),
         ],
+        buildEnvironment:{
+          environmentVariables:{
+            GIT_BRANCH: {
+              value: source.branch
+            },
+          }
+        }
       },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(source.repo, source.branch, {

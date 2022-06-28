@@ -31,7 +31,11 @@
     "test": "jest",
     "cdk": "cdk",
     "odeploy": "npx cdk deploy",
-    "osynth": "npx cdk synth -c config=mf-dev"
+    "osynth": "npx cdk synth -c config=mf-dev",
+    "cdk:pipeline": "npm run cdk -- --app \"npx ts-node --prefer-ts-exts bin/pipeline.ts\"",
+    "bootstrap:pipeline": "npm run cdk:pipeline -- bootstrap --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess",
+    "synth:pipeline": "npm run cdk:pipeline -- synth --all",
+    "deploy:pipeline": "npm run cdk:pipeline -- deploy --all"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
