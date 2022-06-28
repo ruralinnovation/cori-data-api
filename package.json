@@ -18,7 +18,7 @@
     "build:python-layer": "bash ./buildPythonDependencyLayer.sh",
     "lint": "eslint ./packages ./config",
     "lint:fix": "eslint --fix ./packages ./config",
-    "format": "prettier ./packages ./config"
+    "format": "prettier --write ./packages ./config"
   },
   "author": "Merging Futures LLC.",
   "license": "ISC",

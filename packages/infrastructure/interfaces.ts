@@ -11,8 +11,7 @@ export function isHttpMethod(value: unknown): value is HttpMethod {
   return typeof value === 'string' && httpMethods.includes(value.toUpperCase() as HttpMethod);
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type Mutable<T extends object> = {
+export type Mutable<T extends Record<string, unknown>> = {
   -readonly [K in keyof T]: T[K];
 };
 export interface Stage {

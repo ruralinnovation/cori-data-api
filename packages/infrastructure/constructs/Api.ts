@@ -152,7 +152,6 @@ export class Api extends Construct {
       { type: ResponseType.DEFAULT_5XX, statusCode: '500' }
     ] as GatewayResponse[];
     const responses = [...defaultResponses, ...(this.props.gatewayResponses || [])];
-    // eslint-disable-next-line quotes
     const origin = this.props.allowedOrigins?.length ? this.props.allowedOrigins.join(' ') : "'*'";
     for (const { type, statusCode } of responses) {
       // If prefix contains a token, use base name.
@@ -178,13 +177,11 @@ export class Api extends Construct {
           {
             statusCode: '204',
             responseParameters: {
-              /* eslint-disable quotes */
               'method.response.header.Access-Control-Allow-Headers':
                 "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
               'method.response.header.Access-Control-Allow-Origin': "'*'",
               'method.response.header.Access-Control-Allow-Credentials': "'true'",
               'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
-              /* eslint-enable quotes */
             }
           }
         ],
