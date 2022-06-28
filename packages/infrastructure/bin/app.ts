@@ -10,10 +10,9 @@ const main = async ()=>{
   
   const app = new App();
 
-  // @todo: Get rid of the context variable in favor of branch name
-  const configName = app.node.tryGetContext('config') || await getLocalGitBranch();
+  const branch = await getLocalGitBranch();
 
-  const config = getConfig(configName);
+  const config = getConfig(branch);
 
   new ApiStack(app, `${config.client}-data-api-${config.stage}`, {
     ...config,

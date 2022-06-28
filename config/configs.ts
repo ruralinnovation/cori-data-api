@@ -20,6 +20,7 @@ export interface IMixedConfig extends ApiStackProps {
 
 /**
  * Provides strongly typed configs for deployment
+ * Configs should be matched to a branch. Use the GIT_BRANCH environment variable to override.
  */
 interface IConfigs {
   [name: string]: IMixedConfig;
