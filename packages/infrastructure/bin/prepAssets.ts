@@ -7,7 +7,7 @@ import * as fs from 'fs';
 
 export const copyFiles = (source: string, destination: string): Promise<void> => {
   return new Promise((resolve, reject) => {
-    ncp.ncp(source, destination, (e: any) => {
+    ncp.ncp(source, destination, (e: unknown) => {
       if (e) {
         reject(e);
       } else {
@@ -27,15 +27,8 @@ export const cleanFolder = (dir: string) => {
 
 /**
  * Create layer assets for project
- * @param options Options for uploading to S3, otherwise local path is used.
- * @returns
  */
-export const prepAssets = async (options?: {
-  bucket: string;
-  prefix: string;
-  profile: string;
-  outDir: string;
-}): Promise<void> => {
+export const prepAssets = async (): Promise<void> => {
   const assetsDir = path.resolve('./dist/assets');
   cleanFolder(assetsDir);
 

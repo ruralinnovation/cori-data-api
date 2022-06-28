@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { AwsIntegration, CognitoUserPoolsAuthorizer, IRestApi } from 'aws-cdk-lib/aws-apigateway';
+import { AwsIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { PythonLambda, PythonLambdaProps } from './PythonLambda';
 import { Api } from '../Api';

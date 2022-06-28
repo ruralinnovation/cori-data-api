@@ -1,12 +1,9 @@
 import { Aws, Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { Function, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Function as LambdaFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 import { EnvConfigVars } from './EnvConfig';
-import { CognitoUserPoolsAuthorizer, IRestApi, RestApi } from 'aws-cdk-lib/aws-apigateway';
-import { ApiNodejsFunction } from '../../../constructs/lambda';
-import { join } from 'path';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
 interface ApolloGraphqlServerProps {
@@ -16,7 +13,7 @@ interface ApolloGraphqlServerProps {
 }
 
 export class ApolloGraphqlServer extends Construct {
-  function: Function;
+  function: LambdaFunction;
   role: Role;
   constructor(scope: Construct, id: string, props: ApolloGraphqlServerProps) {
     super(scope, id);
