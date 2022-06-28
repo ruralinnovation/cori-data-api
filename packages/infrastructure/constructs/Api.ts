@@ -17,6 +17,7 @@ import { Function as BASE_FUNCTION } from 'aws-cdk-lib/aws-lambda';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { toPascal, toKebab } from './naming';
 import { Mutable, HttpMethod } from '../interfaces';
+import { Aws } from 'aws-cdk-lib';
 
 interface GatewayResponse {
   type: ResponseType;
@@ -39,6 +40,7 @@ export class Api extends Construct {
   public readonly api: RestApi;
   public authorizer?: CognitoUserPoolsAuthorizer;
   public tokenAuthorizer?: TokenAuthorizer;
+  public apiDomain: string;
 
   constructor(scope: Construct, id: string, private props: ApiProps) {
     super(scope, id);
@@ -57,6 +59,8 @@ export class Api extends Construct {
     if (props.userPool) {
       this.attachCognitoAuthorizer(props.userPool);
     }
+
+    this.apiDomain = `${this.api.restApiId}.execute-api.${Aws.REGION}.amazonaws.com`;
   }
 
   public attachCognitoAuthorizer(userPool: IUserPool) {

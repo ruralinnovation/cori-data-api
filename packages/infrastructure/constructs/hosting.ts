@@ -1,19 +1,16 @@
 import { Construct } from 'constructs';
-import { Duration, RemovalPolicy, Stack } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 import {
   CloudFrontWebDistribution,
-  OriginAccessIdentity,
   SourceConfiguration,
   CloudFrontAllowedMethods,
   CloudFrontAllowedCachedMethods,
-  OriginProtocolPolicy,
-  CfnDistribution
+  OriginProtocolPolicy
 } from 'aws-cdk-lib/aws-cloudfront';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
-import { Api } from './Api';
 
 export interface CustomApiOriginConfig {
-  restApiId: string;
+  domain: string;
   originPath: string;
   behaviorPathPattern: string;
   default: boolean;
@@ -27,13 +24,11 @@ export class Hosting extends Construct {
   distribution: CloudFrontWebDistribution;
   bucket: Bucket;
   url: string;
-  originConfigs: SourceConfiguration[] = [];
 
-  public addCustomApiOrigin(config: CustomApiOriginConfig) {
-    const domain = `${config.restApiId}.execute-api.${Stack.of(this).region}.amazonaws.com`;
-    this.originConfigs.push({
+  public buildOrigin(config: CustomApiOriginConfig): SourceConfiguration {
+    return {
       customOriginSource: {
-        domainName: domain,
+        domainName: config.domain,
         originPath: config.originPath,
         originProtocolPolicy: OriginProtocolPolicy.HTTPS_ONLY
       },
@@ -52,21 +47,18 @@ export class Hosting extends Construct {
           cachedMethods: CloudFrontAllowedCachedMethods.GET_HEAD_OPTIONS
         }
       ]
-    });
+    };
   }
+
   constructor(scope: Construct, id: string, props: HostingProps) {
     super(scope, id);
     this.bucket = new Bucket(this, 'LogBucket', {
       bucketName: props.prefix + '-cloudfront-log-bucket'
     });
 
-    props.apiOriginConfigs.forEach(config => {
-      this.addCustomApiOrigin(config);
-    });
-
     this.distribution = new CloudFrontWebDistribution(this, 'Distribution', {
       comment: props.prefix,
-      originConfigs: this.originConfigs,
+      originConfigs: props.apiOriginConfigs.map(x => this.buildOrigin(x)),
       defaultRootObject: 'index.html',
       errorConfigurations: [
         {
@@ -85,9 +77,6 @@ export class Hosting extends Construct {
         prefix: 'cloudfront-logs/'
       }
     });
-    // Override logical name for backwards compatibility
-    //(this.distribution.node.defaultChild as CfnDistribution).overrideLogicalId('ClientCloudFrontDistro');
-
     this.url = `https://${this.distribution.distributionDomainName}`;
   }
 }

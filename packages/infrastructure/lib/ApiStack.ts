@@ -193,7 +193,7 @@ export class ApiStack extends Stack {
       userPoolId: this.props.userPoolId,
       existingUserPoolDomain: this.props.userPoolDomain,
       prefix: this.prefix,
-      userPoolName: `${this.prefix}`,
+      userPoolName: this.prefix,
       userPoolDomainName: this.prefix,
       appClients: [],
       retain: this.props.retain
@@ -222,28 +222,23 @@ export class ApiStack extends Stack {
       userPool: this.cognito.userPool
     });
 
-    /**
-     * CloudFront Hosting
-     * NEED WORK NOT WORKING
-     */
-
-    // this.hosting = new Hosting(this, 'Hosting', {
-    //   prefix: this.prefix + '-hosting',
-    //   apiOriginConfigs: [
-    //     // {
-    //     //   default: true,
-    //     //   restApiId: this.pythonApi.api.restApiId,
-    //     //   originPath: `/${this.props.stage}`,
-    //     //   behaviorPathPattern: '/data/*',
-    //     // },
-    //     // {
-    //     //   default: false,
-    //     //   restApiId: this.apolloApi.api.restApiId,
-    //     //   originPath: `/${this.props.stage}`,
-    //     //   behaviorPathPattern: '/gql/*',
-    //     // },
-    //   ],
-    // });
+    this.hosting = new Hosting(this, 'Hosting', {
+      prefix: this.prefix + '-hosting',
+      apiOriginConfigs: [
+        {
+          default: true,
+          domain: this.pythonApi.apiDomain,
+          originPath: `/${this.props.stage}`,
+          behaviorPathPattern: '/data/*'
+        },
+        {
+          default: false,
+          domain: this.apolloApi.apiDomain,
+          originPath: `/${this.props.stage}`,
+          behaviorPathPattern: '/gql/*'
+        }
+      ]
+    });
 
     /**
      * Python Dependency Lambda Layer

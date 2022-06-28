@@ -105,17 +105,17 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
 };
 
 export const Config: IConfigs = {
-  'refactor/ibliskavka-simplify': {
+  'refactor/ibliskavka-multi-api': {
     ...mfDefaults,
     client: 'ib',
-    stage: 'simplify',
-    userPoolId: 'us-east-1_mihHAkM5I',
-    testing: {
-      apiEndpoint: 'https://yw3sv9swbi.execute-api.us-east-1.amazonaws.com/dev',
-      cognitoClientId: '6bteqt467q53q4f998ctumuav5',
-      username: 'ib-dev@yopmail.com',
-      password: 'P@ssw0rd1'
-    }
+    stage: 'multi-api'
+    // userPoolId: 'us-east-1_mihHAkM5I',
+    // testing: {
+    //   apiEndpoint: 'https://yw3sv9swbi.execute-api.us-east-1.amazonaws.com/dev',
+    //   cognitoClientId: '6bteqt467q53q4f998ctumuav5',
+    //   username: 'ib-dev@yopmail.com',
+    //   password: 'P@ssw0rd1'
+    // }
   },
   'mf-dev': {
     ...mfDefaults,
