@@ -82,6 +82,14 @@ export class PipelineStack extends Stack {
           environmentVariables: {
             GIT_BRANCH: {
               value: source.branch
+            },
+            // @todo: Move to param store
+            TEST_USER: {
+              value: 'int-test@yopmail.com'
+            },
+            // @todo: Move to param store
+            TEST_PASSWORD: {
+              value: 'P@ssw0rd1'
             }
           }
         }
@@ -95,7 +103,6 @@ export class PipelineStack extends Stack {
           'npm install -g npm@latest',
           'npm --version',
           'npm i',
-          'npm ci',
           'npm run build',
           'npm run synth:pipeline -w infrastructure'
         ],
@@ -136,6 +143,8 @@ export class PipelineStack extends Stack {
           'echo $COGNITO_CLIENT_ID',
           'echo $COGNITO_DOMAIN',
           'ls',
+          'npm install -g npm@latest',
+          'npm i',
           // @todo: Execute Python Integration test
           'npm run test:integration --w packages/infrastructure'
         ]

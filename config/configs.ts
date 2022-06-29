@@ -113,11 +113,11 @@ export const Config: IConfigs = {
     stage: 'multi-api',
     testing: {
       region: 'us-east-1',
-      userPoolId: 'us-east-1_mihHAkM5I',
-      apiEndpoint: 'https://ail86pmoeb.execute-api.us-east-1.amazonaws.com/dev',
-      cognitoClientId: '6bteqt467q53q4f998ctumuav5',
-      username: 'nahum@mergingfutures.com',
-      password: '7Z9PzBq7Ul8l0@@Li#oxWj37'
+      userPoolId: 'us-east-1_VCOJIG6El',
+      apiEndpoint: 'https://4hw0kb39xi.execute-api.us-east-1.amazonaws.com/multi-api/',
+      cognitoClientId: '3au6c2jjloltaugrpgd7a1jjnk',
+      username: 'int-test@yopmail.com',
+      password: 'P@ssw0rd1'
     }
   },
   'mf-dev': {
