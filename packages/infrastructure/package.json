@@ -19,6 +19,7 @@
     "clean:modules": "rimraf node_modules",
     "build": "tsc",
     "test-graphql": "npx ts-node test.ts",
+    "test:integration": "jest ./spec/integration-test.spec.ts",
     "build:orig": "tsc && npm run build:assets",
     "build:assets": "ts-node ./bin/prepAssets.ts",
     "synth": "tsc && npx cdk synth  --profile mf-cori",

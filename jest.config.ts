@@ -9,10 +9,10 @@ const config: InitialOptionsTsJest = {
       diagnostics: true
     }
   },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  collectCoverage: true,
-  coverageDirectory: 'coverage',
-  coverageReporters: ['lcov', 'html']
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node']
+  // collectCoverage: true,
+  // coverageDirectory: 'coverage',
+  // coverageReporters: ['lcov', 'html']
 };
 
 export default config;

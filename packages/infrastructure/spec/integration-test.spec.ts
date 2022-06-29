@@ -5,26 +5,17 @@
  */
 import { Auth } from 'aws-amplify';
 import axios, { AxiosInstance } from 'axios';
-import { getConfig, getLocalGitBranch, IMixedConfig } from '../../../config';
+import { getTestConfig } from './testUtils';
 
 const logger = console;
 
 describe('ApiIntegrationTests', () => {
-  let configData: IMixedConfig;
-
   let axiosClient: AxiosInstance;
   /**
    * Sign in test user and define Axios
    */
   beforeAll(async () => {
-    //load the config for the environment
-    const branch = await getLocalGitBranch();
-    configData = getConfig(branch);
-    const { env, testing } = configData;
-
-    if (!testing) {
-      fail('Testing props are not defined for this branch');
-    }
+    const config = await getTestConfig();
 
     //create Auth amplify instance
     const options = {
@@ -32,10 +23,9 @@ describe('ApiIntegrationTests', () => {
         disabled: true
       },
       Auth: {
-        region: env.region,
-        userPoolId: testing.userPoolId,
-        userPoolWebClientId: testing.cognitoClientId,
-        // identityPoolId: testing.identityPoolId,
+        region: config.region,
+        userPoolId: config.userPoolId,
+        userPoolWebClientId: config.cognitoClientId,
         oauth: {
           scope: ['email', 'openid', 'profile'],
           redirectSignIn: '',
@@ -46,7 +36,7 @@ describe('ApiIntegrationTests', () => {
       }
     };
     Auth.configure(options);
-    const response = await Auth.signIn(testing.username, testing.password);
+    const response = await Auth.signIn(config.username, config.password);
     logger.info(`Response from amplify: ${JSON.stringify(response)}`);
     const accessToken = response?.signInUserSession?.idToken?.jwtToken;
     logger.info(`Access token: ${JSON.stringify(accessToken)}`);
@@ -54,7 +44,7 @@ describe('ApiIntegrationTests', () => {
       fail('Test user was not authenticated.');
     }
     axiosClient = axios.create({
-      baseURL: testing.apiEndpoint,
+      baseURL: config.apiEndpoint,
       headers: {
         'Content-Type': 'application/json'
       }

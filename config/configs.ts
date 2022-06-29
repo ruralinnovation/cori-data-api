@@ -1,5 +1,14 @@
 import { ApiStackProps } from '../packages/infrastructure/lib/ApiStack';
 
+export interface TestEnvConfig {
+  region: string;
+  apiEndpoint: string;
+  userPoolId: string;
+  cognitoClientId: string;
+  username: string;
+  password: string;
+}
+
 /**
  * Extends stack props with deploy/start configuration
  */
@@ -20,13 +29,7 @@ export interface IMixedConfig extends ApiStackProps {
   /**
    * Used for integration testing or running API locally
    */
-  testing?: {
-    apiEndpoint: string;
-    userPoolId: string;
-    cognitoClientId: string;
-    username: string;
-    password: string;
-  };
+  testing?: TestEnvConfig;
 }
 
 /**
@@ -109,6 +112,7 @@ export const Config: IConfigs = {
     client: 'ib',
     stage: 'multi-api',
     testing: {
+      region: 'us-east-1',
       userPoolId: 'us-east-1_mihHAkM5I',
       apiEndpoint: 'https://ail86pmoeb.execute-api.us-east-1.amazonaws.com/dev',
       cognitoClientId: '6bteqt467q53q4f998ctumuav5',

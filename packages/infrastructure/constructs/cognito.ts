@@ -91,9 +91,6 @@ export class Cognito extends Construct {
     new CfnOutput(this, 'DomainOutput', {
       value: this.userPoolDomain
     });
-    new CfnOutput(this, 'UserPoolOutput', {
-      value: this.userPool.userPoolId
-    });
   }
 
   /**

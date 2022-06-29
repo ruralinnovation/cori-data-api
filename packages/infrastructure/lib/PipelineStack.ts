@@ -110,15 +110,10 @@ export class PipelineStack extends Stack {
    * Creates a Pipeline Stage, which will deploy the data-api
    */
   addApiStage(config: ApiStackProps): StageDeployment {
-    const { client, stage: stageName } = config;
-
-    const stage = new Stage(this, stageName);
-
-    const stackName = `${client}-data-api-${stageName}`;
-
-    const stack = new ApiStack(stage, stackName, {
+    const stage = new Stage(this, 'Deploy');
+    const stack = new ApiStack(stage, 'App', {
       ...config,
-      stackName: stackName
+      stackName: `${config.client}-data-api-${config.stage}`
     });
 
     const pipelineStage = this.pipeline.addStage(stage);
@@ -129,10 +124,21 @@ export class PipelineStack extends Stack {
         envFromCfnOutputs: {
           PYTHON_API_URL: stack.pythonApiUrlOutput,
           APOLLO_API_URL: stack.apolloApiUrlOutput,
-          POSTMAN_CLIENT_ID: stack.postmanClientId
+          USER_POOL_ID: stack.userPoolIdOutput,
+          COGNITO_CLIENT_ID: stack.postmanClientIdOutput,
+          COGNITO_DOMAIN: stack.cognitoDomainOutput
         },
         // Execute your integration test
-        commands: ['echo $PYTHON_API_URL', 'echo $APOLLO_API_URL', 'ls']
+        commands: [
+          'echo $PYTHON_API_URL',
+          'echo $APOLLO_API_URL',
+          'echo $USER_POOL_ID',
+          'echo $COGNITO_CLIENT_ID',
+          'echo $COGNITO_DOMAIN',
+          'ls',
+          // @todo: Execute Python Integration test
+          'npm run test:integration --w packages/infrastructure'
+        ]
       })
     );
 

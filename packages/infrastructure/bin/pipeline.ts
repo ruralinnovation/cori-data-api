@@ -21,7 +21,6 @@ const main = async () => {
   new PipelineStack(app, `${client}-CoriDataApiPipeline-${stage}`, {
     /**
      * Where to deploy the pipeline.
-     * @todo: Change this if doing cross-account deploys
      */
     env: config.env,
     artifactBucketName,

@@ -3,7 +3,7 @@ import baseJest from '../../jest.config';
 
 const config: InitialOptionsTsJest = {
   ...baseJest,
-  roots: ['<rootDir>/test']
+  roots: ['<rootDir>/spec']
 };
 
 export default config;

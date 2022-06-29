@@ -100,9 +100,14 @@ export class ApiStack extends Stack {
   lambdaSecurityGroup: SecurityGroup;
   rdsSecurityGroup: ISecurityGroup;
 
+  /**
+   * Used to connect values to integration test
+   */
   pythonApiUrlOutput: CfnOutput;
   apolloApiUrlOutput: CfnOutput;
-  postmanClientId: CfnOutput;
+  userPoolIdOutput: CfnOutput;
+  postmanClientIdOutput: CfnOutput;
+  cognitoDomainOutput: CfnOutput;
 
   /**
    * Call build() to synth this construct when ready.
@@ -354,12 +359,14 @@ export class ApiStack extends Stack {
 
   private buildOutputs() {
     new CfnOutput(this, 'Region', { value: Aws.REGION });
-    // new CfnOutput(this, 'CFApiUrl', { value: this.hosting.url });
     this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: this.pythonApi.api.url });
     this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: this.apolloApi.api.url });
-    this.postmanClientId = new CfnOutput(this, 'PostmanClientId', {
+    this.userPoolIdOutput = new CfnOutput(this, 'UserPoolId', {
+      value: this.cognito.userPool.userPoolId
+    });
+    this.postmanClientIdOutput = new CfnOutput(this, 'PostmanClientId', {
       value: this.cognito.postmanClient.userPoolClientId
     });
-    new CfnOutput(this, 'CognitoUserGroupId', { value: this.cognito.userPool.userPoolId });
+    this.cognitoDomainOutput = new CfnOutput(this, 'CognitoDomain', { value: this.cognito.userPoolDomain });
   }
 }
