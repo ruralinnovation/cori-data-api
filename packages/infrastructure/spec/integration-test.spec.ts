@@ -20,8 +20,9 @@ describe('ApiIntegrationTests', () => {
     //load the config for the environment
     const branch = await getLocalGitBranch();
     configData = getConfig(branch);
+    const { env, testing } = configData;
 
-    if (!configData.testing) {
+    if (!testing) {
       fail('Testing props are not defined for this branch');
     }
 
@@ -31,10 +32,10 @@ describe('ApiIntegrationTests', () => {
         disabled: true
       },
       Auth: {
-        region: configData.env.region,
-        userPoolId: configData.userPoolId,
-        userPoolWebClientId: configData.testing?.cognitoClientId,
-        // identityPoolId: configData.identityPoolId,
+        region: env.region,
+        userPoolId: testing.userPoolId,
+        userPoolWebClientId: testing.cognitoClientId,
+        // identityPoolId: testing.identityPoolId,
         oauth: {
           scope: ['email', 'openid', 'profile'],
           redirectSignIn: '',
@@ -45,7 +46,7 @@ describe('ApiIntegrationTests', () => {
       }
     };
     Auth.configure(options);
-    const response = await Auth.signIn(configData.testing.username, configData.testing.password);
+    const response = await Auth.signIn(testing.username, testing.password);
     logger.info(`Response from amplify: ${JSON.stringify(response)}`);
     const accessToken = response?.signInUserSession?.idToken?.jwtToken;
     logger.info(`Access token: ${JSON.stringify(accessToken)}`);
@@ -53,7 +54,7 @@ describe('ApiIntegrationTests', () => {
       fail('Test user was not authenticated.');
     }
     axiosClient = axios.create({
-      baseURL: configData.testing?.apiEndpoint,
+      baseURL: testing.apiEndpoint,
       headers: {
         'Content-Type': 'application/json'
       }

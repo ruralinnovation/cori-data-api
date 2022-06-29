@@ -52,7 +52,7 @@ const createSamTemplate = (app: App, options: ApiStackProps) => {
  * This setup is a little different because we must synth and run the ApiStack locally.
  * Typically those resources are included as a Nested Stack.
  */
-const main = async () => {
+const main = () => {
   const app = new App();
 
   const config = getConfig('local');
@@ -63,7 +63,8 @@ const main = async () => {
    */
   const apiProps: ApiStackProps = {
     ...config,
-    userPoolId: config.userPoolId as string,
+    // Allow use to auth to an existing pool during testing.
+    existingUserPoolId: config.testing?.userPoolId as string,
     // assets: Code.fromAsset('./dist/assets'),
     loggingLevel: 'debug'
   };

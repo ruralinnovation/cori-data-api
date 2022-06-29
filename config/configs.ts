@@ -13,17 +13,16 @@ export interface IMixedConfig extends ApiStackProps {
   artifactBucketName?: string;
 
   /**
-   * This is used by start-api and integration testing
-   * You can add this prop to your config after initial deploy
-   * @todo: Look this up via stack outputs?
+   * Re-use an existing user pool
    */
-  userPoolId?: string;
+  existingUserPoolId?: string;
 
   /**
-   * Used for integration testing
+   * Used for integration testing or running API locally
    */
   testing?: {
     apiEndpoint: string;
+    userPoolId: string;
     cognitoClientId: string;
     username: string;
     password: string;
@@ -109,8 +108,8 @@ export const Config: IConfigs = {
     ...mfDefaults,
     client: 'ib',
     stage: 'multi-api',
-    userPoolId: 'us-east-1_mihHAkM5I',
     testing: {
+      userPoolId: 'us-east-1_mihHAkM5I',
       apiEndpoint: 'https://ail86pmoeb.execute-api.us-east-1.amazonaws.com/dev',
       cognitoClientId: '6bteqt467q53q4f998ctumuav5',
       username: 'nahum@mergingfutures.com',

@@ -19,7 +19,6 @@ export interface UserPoolClientConfig {
 
 export interface CognitoConstructProps {
   prefix: string;
-  userPoolName: string;
 
   /**
    * What to name the user pool domain (if created)
@@ -55,7 +54,7 @@ export class Cognito extends Construct {
       this.userPool = UserPool.fromUserPoolId(this, 'UserPool', props.userPoolId);
     } else {
       this.userPool = new UserPool(this, 'UserPool', {
-        userPoolName: this.props.userPoolName,
+        userPoolName: this.props.prefix,
         userInvitation: {
           emailSubject: 'Your CORI Data API temporary password',
           emailBody: `Your username is {username} and temporary password is {####}.`,

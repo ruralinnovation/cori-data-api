@@ -72,22 +72,19 @@ export interface ApiStackProps extends StackProps {
   cacheConfig: CacheConfig;
 
   /**
-   * Optional. When provided, will attach to existing user pool
-   */
-
-  userPoolId?: string;
-
-  /**
    * Optional:  Additional configuration options for AppSync
    */
   appSyncConfig?: AppSyncConfig;
 
   /**
+   * Optional. When provided, will attach to existing user pool
+   */
+  existingUserPoolId?: string;
+
+  /**
    * Optional. When provided, will re-use existing user pool domain
    */
   userPoolDomain?: string;
-
-  version?: string;
 }
 
 export class ApiStack extends Stack {
@@ -128,7 +125,7 @@ export class ApiStack extends Stack {
   }
 
   private buildNetworkingResources() {
-    const { databaseConfig, cacheConfig, cacheEnabled } = this.props;
+    const { databaseConfig } = this.props;
 
     this.vpc = Vpc.fromLookup(this, 'CoriDbVpc', {
       vpcId: databaseConfig.vpcId
@@ -178,10 +175,9 @@ export class ApiStack extends Stack {
     rdsSecurityGroup.addIngressRule(lambdaSecurityGroup, ec2.Port.tcp(5432), 'Allow Ingress from Lambda');
 
     this.cognito = new Cognito(this, 'Cognito', {
-      userPoolId: this.props.userPoolId,
+      userPoolId: this.props.existingUserPoolId,
       existingUserPoolDomain: this.props.userPoolDomain,
       prefix: this.prefix,
-      userPoolName: this.prefix,
       userPoolDomainName: this.prefix,
       retain: this.props.retain
     });
