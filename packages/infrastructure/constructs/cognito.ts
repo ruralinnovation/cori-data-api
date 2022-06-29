@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
+import { RemovalPolicy } from 'aws-cdk-lib';
 
 import {
   UserPool,
@@ -10,12 +10,6 @@ import {
   OAuthScope,
   CfnUserPool
 } from 'aws-cdk-lib/aws-cognito';
-
-export interface UserPoolClientConfig {
-  userPoolClientName: string;
-  callbackUrls: string[];
-  logoutUrls: string[];
-}
 
 export interface CognitoConstructProps {
   prefix: string;
@@ -87,10 +81,6 @@ export class Cognito extends Construct {
       ['https://www.getpostman.com/oauth2/callback'],
       ['https://www.getpostman.com/oauth2/callback']
     );
-
-    new CfnOutput(this, 'DomainOutput', {
-      value: this.userPoolDomain
-    });
   }
 
   /**
@@ -113,6 +103,10 @@ export class Cognito extends Construct {
         scopes: [OAuthScope.EMAIL, OAuthScope.OPENID, OAuthScope.PROFILE],
         callbackUrls: callbackUrls,
         logoutUrls: logoutUrls
+      },
+      authFlows: {
+        userPassword: true,
+        userSrp: true
       }
     });
   }
