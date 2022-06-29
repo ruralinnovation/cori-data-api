@@ -112,12 +112,9 @@ def get_bcat(table):
     # execute the query string.
     features = execute(query)
 
-    if not len(features):
-        features = [[], ]
-
     result = {
         'type': 'FeatureCollection',
-        'features': features[0],
+        'features': [f[0] for f in features],
         }
 
     return result
