@@ -1,6 +1,10 @@
+import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import * as redis from 'aws-cdk-lib/aws-elasticache';
 
-import { ISecurityGroup, IVpc } from 'aws-cdk-lib/aws-ec2';
+import { ISecurityGroup, ISubnet, IVpc } from 'aws-cdk-lib/aws-ec2';
+import { RedisSubnetGroup } from './RedisSubnetGroup';
+import { RedisSecurityGroup } from './RedisSecurityGroup';
 import { CfnCacheCluster } from 'aws-cdk-lib/aws-elasticache';
 
 interface RedisStackProps {
@@ -12,27 +16,18 @@ interface RedisStackProps {
 
 export class RedisCluster extends Construct {
   subnets: string[];
-  redisCache: CfnCacheCluster;
-  constructor(scope: Construct, id: string, private props: RedisStackProps) {
+  redisCache: redis.CfnCacheCluster;
+  constructor(scope: Construct, id: string, props: RedisStackProps) {
     super(scope, id);
 
-    // Get the vpc and redisSecurityGroup from vpc and security stack
-    const { vpc, redisSecurityGroup } = this.props;
+    const redisSecurityGroup = new RedisSecurityGroup(this, 'RedisSecurityGroup', {
+      vpc: props.vpc,
+      securityGroupName: `${props.prefix}-redis-sg`
+    });
 
-    // Get all private subnet ids
-    if (props.private) {
-      this.subnets = vpc.privateSubnets.map(subnet => {
-        return subnet.subnetId;
-      });
-    } else {
-      this.subnets = vpc.publicSubnets.map(subnet => {
-        return subnet.subnetId;
-      });
-    }
-    // Create redis subnet group from private subnet ids
-    this.redisSubnetGroup = new CfnSubnetGroup(this, 'RedisSubnetGroup', {
-      subnetIds: this.subnets,
-      description: 'Subnet group for redis'
+    const redisSubnetGroup = new RedisSubnetGroup(this, 'RedisSubnetGroup', {
+      vpc: props.vpc,
+      private: props.private
     });
 
     // Create Redis Cluster
