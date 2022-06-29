@@ -2,15 +2,32 @@
 
 ### Requirements
 
-node >16
+- NodeJS 16.x+ - [Installing NodeJS](https://nodejs.org/en/download/)
+- npm 8.x+ - (needed for NPM Workspaces) - (should be installed as part of NodeJS installation)
+- AWS CLI - [Installing AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- AWS SAM CLI [Installing SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+- AWS CDK V2 - [Installing AWS CDK V2](https://docs.aws.amazon.com/cdk/api/v2/)
+- Python 3.6+ - [Installing Python](https://www.python.org/downloads/)
 
-npm >8
+### Additional Suggested Environment Setup
+
+- A Node Version Manager [Installing NVM](https://github.com/nvm-sh/nvm) or [Installing n](https://github.com/tj/n)
 
 ### Directory Structure
 
-packages
+#### Overview
+
+- `.github` - Configuration for Github Actions
+- `.vscode` - VSCode Configuration for local debugging
+- `docs` - Documentation resources
+- `postgresql` - supportive database scripts and documentation
+- `packages/*` - Typescript/NodeJS Infrastructure and Code
+- `python-microservices` - Python Lambdas, Business Logic and Code
+
 infrastructure
+
 schemas
+
 python-microservices
 
 > This project uses NPM Workspaces to managing multiple packages from your local file system from within a singular top-level, root package.
@@ -26,8 +43,6 @@ python-microservices
 [GraphQL Tools](https://www.graphql-tools.com/)
 
 [AWS CDK V2](https://docs.aws.amazon.com/cdk/api/v2/)
-
-[AppSync CDK V2](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-appsync-alpha-readme.html)
 
 [Github Actions](https://docs.github.com/en/actions)
 
