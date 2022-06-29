@@ -111,7 +111,7 @@ def get_bcat(table):
     return result
 
 
-@app.get("/bcat/tiles/<table>/<z>/<x>/<y>.pbf")
+@app.get("/bcat/<table>/tiles/<z>/<x>/<y>.pbf")
 def get_tile(table, z, x, y):
     """generate mvt tiles"""
     logger.info(os.environ)
