@@ -7,8 +7,10 @@ from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 from bcat_config import CONFIG
 from bcat_connection import execute
 
-logger = Logger(service="BCATService")
-app = APIGatewayRestResolver(strip_prefixes=["/bcat"])
+
+logger = Logger(service="LocalApi")
+tracer = Tracer(service="LocalApi")
+app = APIGatewayRestResolver(strip_prefixes=["/local"])
 
 
 @app.get(rule="/bad-request-error")
@@ -17,7 +19,7 @@ def bad_request_error(msg):
     raise BadRequestError(msg)
 
 
-@app.get("/<table>/geojson", compress=True)
+@app.get("/bcat/<table>/geojson", compress=False)
 def get_bcat(table):
     """
     construct and execute a query to <table> with where clause based on <params>
@@ -47,9 +49,17 @@ def get_bcat(table):
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
     simplify = CONFIG[table].get('simplify', 0.0)
+    id = CONFIG[table].get('id', None)
+
+    if id:
+        columns = columns.replace(f'{id},', f'"{id}" as x_id,')
+    else:
+        # if no id then use somewhat hacky ctid to bigint method.
+        # WARNING: only works if there are no changes to table rows!!
+        columns += ", ((ctid::text::point)[0]::bigint<<32 | (ctid::text::point)[1]::bigint) as x_id"
 
     if geom:
-        columns = columns.replace(geom, f'st_simplify(st_transform({geom}, 4326), {simplify}) as geom')
+        columns = columns.replace(f'{geom},', f'st_simplify(st_transform({geom}, 4326), {simplify}) as geom, ')
     else:
         columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
 
@@ -64,8 +74,7 @@ def get_bcat(table):
     # first handle a potential spatial intersection then remove this parameter and construct the rest.
     if 'geom' in params:
         criteria += [f"""
-            {geom} && st_transform(st_geomfromtext('{params['geom']}', 4326), {epsg})
-            AND st_intersects({geom}, st_transform(st_geomfromtext('{params['geom']}', 4326), {epsg}))
+            st_intersects({geom}, st_transform(st_geomfromtext('{params['geom']}', 4326), {epsg}))
             """]
 
         del params['geom']
@@ -86,8 +95,10 @@ def get_bcat(table):
     query = f"""
         SELECT
             json_build_object(
-                'type', 'FeatureCollection',
-                'features', json_agg(ST_AsGeoJSON(t.*)::json)
+                'type',       'Feature',
+                'id',         x_id, 
+                'geometry',   ST_AsGeoJSON(geom)::jsonb,
+                'properties', to_jsonb(t.*) - 'x_id' - 'geom'
             )
         FROM (
             SELECT {columns} 
@@ -98,18 +109,21 @@ def get_bcat(table):
         
         """
 
-    # execute the query string. the resulting json string is the first row and first column
-    result = execute(query)[0][0]
+    # execute the query string.
+    features = execute(query)
 
-    # if there are no features postgis returns 'features': null which isnt what we want
-    # so coerce to empty list if null
-    if type(result['features']) != list:
-        result['features'] = []
+    if not len(features):
+        features = [[], ]
+
+    result = {
+        'type': 'FeatureCollection',
+        'features': features[0],
+        }
 
     return result
 
 
-@app.get("/tiles/<table>/<z>/<x>/<y>.pbf")
+@app.get("/bcat/<table>/tiles/<z>/<x>/<y>.pbf")
 def get_tile(table, z, x, y):
     """generate mvt tiles"""
     logger.info(os.environ)
@@ -152,6 +166,7 @@ def get_tile(table, z, x, y):
 
 
 # You can continue to use other utilities just as before
+@tracer.capture_lambda_handler
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST, log_event=True)
 def handler(event, context):
     return app.resolve(event, context)
