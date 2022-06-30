@@ -8,7 +8,7 @@ const {
   GraphQLScalarType: ScalarType,
   GraphQLInterfaceType: InterfaceType,
   GraphQLUnionType: UnionType,
-  GraphQLNonNull: NonNull,
+  GraphQLNonNull: NonNull
 } = require('graphql');
 
 const GeoJSON = {
@@ -24,12 +24,12 @@ const GeoJSON = {
       MultiPolygon: { value: 'MultiPolygon' },
       GeometryCollection: { value: 'GeometryCollection' },
       Feature: { value: 'Feature' },
-      FeatureCollection: { value: 'FeatureCollection' },
-    },
+      FeatureCollection: { value: 'FeatureCollection' }
+    }
   }),
 
   JsonScalar: new ScalarType({
-    name: 'AWSJSON',
+    name: 'AWSJSON'
   }),
 
   PointObject: new ObjectType({
@@ -41,8 +41,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.JsonScalar },
-    }),
+      coordinates: { type: GeoJSON.JsonScalar }
+    })
   }),
 
   MultiPointObject: new ObjectType({
@@ -53,8 +53,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.JsonScalar },
-    }),
+      coordinates: { type: GeoJSON.JsonScalar }
+    })
   }),
 
   LineStringObject: new ObjectType({
@@ -65,8 +65,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.JsonScalar },
-    }),
+      coordinates: { type: GeoJSON.JsonScalar }
+    })
   }),
 
   MultiLineStringObject: new ObjectType({
@@ -77,8 +77,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.JsonScalar },
-    }),
+      coordinates: { type: GeoJSON.JsonScalar }
+    })
   }),
 
   PolygonObject: new ObjectType({
@@ -89,8 +89,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.JsonScalar },
-    }),
+      coordinates: { type: GeoJSON.JsonScalar }
+    })
   }),
 
   MultiPolygonObject: new ObjectType({
@@ -102,8 +102,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.JsonScalar },
-    }),
+      coordinates: { type: GeoJSON.JsonScalar }
+    })
   }),
 
   GeometryCollectionObject: new ObjectType({
@@ -114,8 +114,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      geometries: { type: new NonNull(new List(new NonNull(GeoJSON.GeometryInterface))) },
-    }),
+      geometries: { type: new NonNull(new List(new NonNull(GeoJSON.GeometryInterface))) }
+    })
   }),
 
   FeatureObject: new ObjectType({
@@ -128,8 +128,8 @@ const GeoJSON = {
       bbox: { type: new List(Float) },
       geometry: { type: GeoJSON.GeometryInterface },
       properties: { type: GeoJSON.JsonScalar },
-      id: { type: Str },
-    }),
+      id: { type: Str }
+    })
   }),
 
   FeatureCollectionObject: new ObjectType({
@@ -140,8 +140,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      features: { type: new NonNull(new List(new NonNull(GeoJSON.FeatureObject))) },
-    }),
+      features: { type: new NonNull(new List(new NonNull(GeoJSON.FeatureObject))) }
+    })
   }),
 
   CRSTypeEnum: new EnumType({
@@ -149,16 +149,16 @@ const GeoJSON = {
     description: 'Enumeration of all GeoJSON CRS object types.',
     values: {
       name: { value: 'name' },
-      link: { value: 'link' },
-    },
+      link: { value: 'link' }
+    }
   }),
 
   NamedCRSPropertiesObject: new ObjectType({
     name: 'GeoJSONNamedCRSProperties',
     description: 'Properties for name based CRS object.',
     fields: () => ({
-      name: { type: new NonNull(Str) },
-    }),
+      name: { type: new NonNull(Str) }
+    })
   }),
 
   LinkedCRSPropertiesObject: new ObjectType({
@@ -166,14 +166,14 @@ const GeoJSON = {
     description: 'Properties for link based CRS object.',
     fields: () => ({
       href: { type: new NonNull(Str) },
-      type: { type: Str },
-    }),
+      type: { type: Str }
+    })
   }),
 
   CRSPropertiesUnion: new UnionType({
     name: 'GeoJSONCRSProperties',
     description: 'CRS object properties.',
-    types: () => [GeoJSON.NamedCRSPropertiesObject, GeoJSON.LinkedCRSPropertiesObject],
+    types: () => [GeoJSON.NamedCRSPropertiesObject, GeoJSON.LinkedCRSPropertiesObject]
   }),
 
   CoordinateReferenceSystemObject: new ObjectType({
@@ -181,8 +181,8 @@ const GeoJSON = {
     description: 'Coordinate Reference System (CRS) object.',
     fields: () => ({
       type: { type: new NonNull(GeoJSON.CRSTypeEnum) },
-      properties: { type: new NonNull(GeoJSON.CRSPropertiesUnion) },
-    }),
+      properties: { type: new NonNull(GeoJSON.CRSPropertiesUnion) }
+    })
   }),
 
   GeoJSONInterface: new InterfaceType({
@@ -190,8 +190,8 @@ const GeoJSON = {
     fields: () => ({
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
-      bbox: { type: new List(Float) },
-    }),
+      bbox: { type: new List(Float) }
+    })
   }),
 
   GeometryInterface: new InterfaceType({
@@ -200,8 +200,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.JsonScalar },
-    }),
+      coordinates: { type: GeoJSON.JsonScalar }
+    })
   }),
 
   GeometryTypeUnion: new UnionType({
@@ -213,9 +213,9 @@ const GeoJSON = {
       GeoJSON.LineStringObject,
       GeoJSON.PolygonObject,
       GeoJSON.MultiPointObject,
-      GeoJSON.MultiPolygonObject,
-    ],
-  }),
+      GeoJSON.MultiPolygonObject
+    ]
+  })
 };
 
 export default GeoJSON;

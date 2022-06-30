@@ -9,7 +9,7 @@ import {
   BillingMode,
   TableEncryption,
   GlobalSecondaryIndexProps,
-  LocalSecondaryIndexProps,
+  LocalSecondaryIndexProps
 } from 'aws-cdk-lib/aws-dynamodb';
 import { toPascal } from './naming';
 
@@ -63,7 +63,7 @@ export class DynamoTables extends Construct {
       partitionKey: DynamoTables.parseKey(dynamoDefinition.partitionKey),
       sortKey: dynamoDefinition.sortKey ? DynamoTables.parseKey(dynamoDefinition.sortKey) : undefined,
       encryption: encryption ? encryption : encryptionKey ? TableEncryption.CUSTOMER_MANAGED : undefined,
-      removalPolicy: removalPolicy ? removalPolicy : RemovalPolicy.DESTROY,
+      removalPolicy: removalPolicy ? removalPolicy : RemovalPolicy.DESTROY
     });
     (table.node.defaultChild as CfnTable).overrideLogicalId(tableId);
 
@@ -72,7 +72,7 @@ export class DynamoTables extends Construct {
         table.addGlobalSecondaryIndex({
           ...index,
           partitionKey: DynamoTables.parseKey(index.partitionKey),
-          sortKey: dynamoDefinition.sortKey ? DynamoTables.parseKey(dynamoDefinition.sortKey) : undefined,
+          sortKey: dynamoDefinition.sortKey ? DynamoTables.parseKey(dynamoDefinition.sortKey) : undefined
         });
       }
     }
@@ -80,7 +80,7 @@ export class DynamoTables extends Construct {
       for (const index of lsi) {
         table.addLocalSecondaryIndex({
           ...index,
-          sortKey: DynamoTables.parseKey(index.sortKey),
+          sortKey: DynamoTables.parseKey(index.sortKey)
         });
       }
     }
@@ -111,7 +111,7 @@ export class DynamoTables extends Construct {
     const [partitionKeyName, partitionKeyValue] = Object.entries(attribute)[0];
     return {
       name: partitionKeyName,
-      type: DynamoTables.getAttributeType(partitionKeyValue),
+      type: DynamoTables.getAttributeType(partitionKeyValue)
     };
   }
 }

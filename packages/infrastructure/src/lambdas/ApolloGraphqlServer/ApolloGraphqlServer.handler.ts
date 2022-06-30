@@ -1,13 +1,13 @@
-const { ApolloServer, gql, cac } = require('apollo-server-lambda');
-const { GraphQLObjectType, GraphQLSchema } = require('graphql');
 import { PythonRestApi } from './datasources';
 import { mergeSchemas } from '@graphql-tools/schema';
 import GeoJSON from './schema/geojson';
 import { Cache, checkCache } from './cache';
 import { GraphQLBoolean, GraphQLList, GraphQLString } from 'graphql';
+import { bcatQueries } from './schema/bcatQueries';
+const { ApolloServer, gql, cac } = require('apollo-server-lambda');
+const { GraphQLObjectType, GraphQLSchema } = require('graphql');
 const compression = require('compression');
 const express = require('express');
-import { bcatQueries } from './schema/bcatQueries';
 
 const cache = new Cache();
 
@@ -19,23 +19,23 @@ const RootQuery = new GraphQLObjectType({
       args: null,
       resolve: async (_: any, __: any, { dataSources }: any) => {
         return true;
-      },
+      }
     },
     feature_collection: {
       type: GeoJSON.FeatureCollectionObject,
       args: {
         table: {
-          type: GraphQLString!,
+          type: GraphQLString!
         },
         counties: {
-          type: new GraphQLList(GraphQLString),
+          type: new GraphQLList(GraphQLString)
         },
         state_abbr: {
-          type: GraphQLString,
+          type: GraphQLString
         },
         skipCache: {
-          type: GraphQLBoolean,
-        },
+          type: GraphQLBoolean
+        }
       },
       resolve: async (
         _: any,
@@ -64,7 +64,7 @@ const RootQuery = new GraphQLObjectType({
               if (res) {
                 return {
                   ...featureCollection,
-                  features: featureCollection.features.concat(res.features),
+                  features: featureCollection.features.concat(res.features)
                 };
               } else {
                 return featureCollection;
@@ -72,38 +72,38 @@ const RootQuery = new GraphQLObjectType({
             },
             Promise.resolve({
               type: 'FeatureCollection',
-              features: [],
+              features: []
             })
           );
         }
-      },
+      }
     },
     county_feature: {
       type: GeoJSON.FeatureCollectionObject,
       args: {
         table: {
-          type: GraphQLString!,
+          type: GraphQLString!
         },
         county: {
-          type: GraphQLString!,
-        },
+          type: GraphQLString!
+        }
       },
       resolve: async (_: any, { table, county }: any, { dataSources, redisClient }: any, info: any) => {
         return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
         return await redisClient.checkCache(`${table}-${county}`, async () => {
           return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
         });
-      },
+      }
     },
-    ...bcatQueries,
-  },
+    ...bcatQueries
+  }
 });
 const schema = mergeSchemas({
   schemas: [
     new GraphQLSchema({
-      query: RootQuery,
-    }),
-  ],
+      query: RootQuery
+    })
+  ]
 });
 
 /**
@@ -127,19 +127,19 @@ const customPlugin = {
       // request's document AST against your GraphQL schema.
       async validationDidStart(requestContext: any) {
         console.log('Validation started!');
-      },
+      }
     };
-  },
+  }
 };
 
 export const apolloConfig = {
   schema,
   csrfPrevention: false,
   playground: {
-    endpoint: '/playground',
+    endpoint: '/playground'
   },
   dataSources: () => ({
-    pythonApi: new PythonRestApi(),
+    pythonApi: new PythonRestApi()
   }),
   plugins: [customPlugin],
   context: ({ event, context, express, req }: any) => {
@@ -152,17 +152,17 @@ export const apolloConfig = {
         headers: {
           'Authorization': event.headers ? event.headers.Authorization : '',
           'credentials': 'same-origin',
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       },
       expressRequest: express.req,
-      redisClient: cache,
+      redisClient: cache
     };
   },
   cors: {
     origin: ['*'],
-    credentials: true,
-  },
+    credentials: true
+  }
 };
 
 export const server = new ApolloServer(apolloConfig);
@@ -174,5 +174,5 @@ export const handler = server.createHandler({
     app.use(compression());
     app.use(middleware);
     return app;
-  },
+  }
 });

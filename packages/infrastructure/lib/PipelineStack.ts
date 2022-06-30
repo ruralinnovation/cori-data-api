@@ -1,9 +1,9 @@
 import { SecretValue, Stack, StackProps, Stage } from 'aws-cdk-lib';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
-import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
+import { CodePipeline, CodePipelineSource, ShellStep, StageDeployment } from 'aws-cdk-lib/pipelines';
 import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
-import { ApiStack, ApiStackProps } from '../../infrastructure/lib';
+import { ApiStack, ApiStackProps } from '.';
 import { Pipeline } from 'aws-cdk-lib/aws-codepipeline';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 
@@ -61,11 +61,11 @@ export class PipelineStack extends Stack {
     const { source, artifactBucketName } = props;
 
     // This allows a more fine-grained control of the underlying pipeline
-    const _pipeline = new Pipeline(this, 'Pipeline', { 
+    const _pipeline = new Pipeline(this, 'Pipeline', {
       pipelineName: `${id}-pipeline`,
       restartExecutionOnUpdate: true,
       artifactBucket: artifactBucketName ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName) : undefined
-    })
+    });
 
     this.pipeline = new CodePipeline(this, `CodePipeline`, {
       selfMutation: true,
@@ -75,26 +75,39 @@ export class PipelineStack extends Stack {
         rolePolicy: [
           new PolicyStatement({
             actions: ['sts:AssumeRole'],
-            resources: ['*'],
-          }),
+            resources: ['*']
+          })
         ],
+        buildEnvironment: {
+          environmentVariables: {
+            GIT_BRANCH: {
+              value: source.branch
+            },
+            // @todo: Move to param store
+            TEST_USER: {
+              value: 'int-test@yopmail.com'
+            },
+            // @todo: Move to param store
+            TEST_PASSWORD: {
+              value: 'P@ssw0rd1'
+            }
+          }
+        }
       },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(source.repo, source.branch, {
           authentication: source.authentication,
-          trigger: source.trigger,
+          trigger: source.trigger
         }),
         commands: [
           'npm install -g npm@latest',
           'npm --version',
           'npm i',
-          'npm ci',
-          'npm run build:all',
-          'npm run synth:cicd',
+          'npm run build',
+          'npm run synth:pipeline -w infrastructure'
         ],
-        primaryOutputDirectory: 'packages/cicd/cdk.out',
-      }),
-
+        primaryOutputDirectory: 'packages/infrastructure/cdk.out'
+      })
     });
 
     this.addApiStage(props.ApiConfig);
@@ -103,16 +116,42 @@ export class PipelineStack extends Stack {
   /**
    * Creates a Pipeline Stage, which will deploy the data-api
    */
-  addApiStage(config: ApiStackProps): Stage {
-    const { client, stage } = config;
-
-    const pipelineStage = new Stage(this, stage);
-
-    new ApiStack(pipelineStage, `${client}-data-api-${stage}`, {
+  addApiStage(config: ApiStackProps): StageDeployment {
+    const stage = new Stage(this, 'Deploy');
+    const stack = new ApiStack(stage, 'App', {
       ...config,
+      stackName: `${config.client}-data-api-${config.stage}`
     });
 
-    this.pipeline.addStage(pipelineStage);
+    const pipelineStage = this.pipeline.addStage(stage);
+
+    pipelineStage.addPost(
+      new ShellStep('IntegrationTest', {
+        // Add environment specific outputs here
+        envFromCfnOutputs: {
+          PYTHON_API_URL: stack.pythonApiUrlOutput,
+          APOLLO_API_URL: stack.apolloApiUrlOutput,
+          USER_POOL_ID: stack.userPoolIdOutput,
+          COGNITO_CLIENT_ID: stack.postmanClientIdOutput,
+          COGNITO_DOMAIN: stack.cognitoDomainOutput
+        },
+        // Execute your integration test
+        commands: [
+          'echo $PYTHON_API_URL',
+          'echo $APOLLO_API_URL',
+          'echo $USER_POOL_ID',
+          'echo $COGNITO_CLIENT_ID',
+          'echo $COGNITO_DOMAIN',
+          'ls',
+          'npm install -g npm@latest',
+          'npm i',
+          // Execute Jest Integration Tests
+          'npm run test:integration --w packages/infrastructure',
+          // Execute Python Integration Tests
+          '. ./python-microservices/local/tests.sh'
+        ]
+      })
+    );
 
     return pipelineStage;
   }

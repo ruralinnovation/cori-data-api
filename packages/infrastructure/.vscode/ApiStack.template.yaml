@@ -59,8 +59,8 @@ Resources:
         Version: 2012-10-17
       ManagedPolicyArns:
         - Fn::Join:
-            - ""
-            - - "arn:"
+            - ''
+            - - 'arn:'
               - Ref: AWS::Partition
               - :iam::aws:policy/service-role/AWSAppSyncPushToCloudWatchLogs
     Metadata:
@@ -151,7 +151,7 @@ Resources:
       HttpConfig:
         Endpoint:
           Fn::Join:
-            - ""
+            - ''
             - - https://
               - Ref: ApiRestApiE35FEAFE
               - .execute-api.us-east-1.
@@ -221,7 +221,7 @@ Resources:
                   - ec2:AssignPrivateIpAddresses
                   - ec2:UnassignPrivateIpAddresses
                 Effect: Allow
-                Resource: "*"
+                Resource: '*'
               - Action:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
@@ -305,8 +305,8 @@ Resources:
         Type: AWS_PROXY
         Uri:
           Fn::Join:
-            - ""
-            - - "arn:"
+            - ''
+            - - 'arn:'
               - Ref: AWS::Partition
               - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
               - Fn::GetAtt:
@@ -320,7 +320,7 @@ Resources:
     Properties:
       ParentId:
         Ref: ApiRestApiapihelloC10476C9
-      PathPart: "{name}"
+      PathPart: '{name}'
       RestApiId:
         Ref: ApiRestApiE35FEAFE
     Metadata:
@@ -339,8 +339,8 @@ Resources:
         Type: AWS_PROXY
         Uri:
           Fn::Join:
-            - ""
-            - - "arn:"
+            - ''
+            - - 'arn:'
               - Ref: AWS::Partition
               - :apigateway:us-east-1:lambda:path/2015-03-31/functions/
               - Fn::GetAtt:
@@ -412,7 +412,7 @@ Resources:
                   - S3CanonicalUserId
             Resource:
               Fn::Join:
-                - ""
+                - ''
                 - - Fn::GetAtt:
                       - HostingBucketDB108620
                       - Arn
@@ -498,7 +498,7 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity:
                 Fn::Join:
-                  - ""
+                  - ''
                   - - origin-access-identity/cloudfront/
                     - Ref: HostingOriginAccessIdentityDEE81F7A
           - ConnectionAttempts: 3
@@ -513,7 +513,7 @@ Resources:
                 - TLSv1.2
             DomainName:
               Fn::Join:
-                - ""
+                - ''
                 - - Ref: ApiRestApiE35FEAFE
                   - .execute-api.us-east-1.amazonaws.com
             Id: origin2
@@ -537,9 +537,9 @@ Resources:
         InviteMessageTemplate:
           EmailMessage:
             Fn::Join:
-              - ""
-              - - "Your username is {username} and temporary password is {####}.
-                  The CORI API address is: https://"
+              - ''
+              - - 'Your username is {username} and temporary password is {####}.
+                  The CORI API address is: https://'
                 - Fn::GetAtt:
                     - ClientCloudFrontDistro
                     - DomainName
@@ -583,7 +583,7 @@ Resources:
         - profile
       CallbackURLs:
         - Fn::Join:
-            - ""
+            - ''
             - - https://
               - Fn::GetAtt:
                   - ClientCloudFrontDistro
@@ -592,7 +592,7 @@ Resources:
       GenerateSecret: false
       LogoutURLs:
         - Fn::Join:
-            - ""
+            - ''
             - - https://
               - Fn::GetAtt:
                   - ClientCloudFrontDistro
@@ -616,7 +616,7 @@ Resources:
         Variables:
           LOGGING_LEVEL: info
           STAGE: dev
-          ALLOWED_ORIGINS_CSV: ""
+          ALLOWED_ORIGINS_CSV: ''
           SECRET:
             Ref: SECRET
           DB_USER: read_only_user
@@ -626,8 +626,8 @@ Resources:
       Handler: index.handler
       Layers:
         - Fn::Join:
-            - ""
-            - - "arn:aws:lambda:"
+            - ''
+            - - 'arn:aws:lambda:'
               - Ref: AWS::Region
               - :017000801446:layer:AWSLambdaPowertoolsPython:17
       Runtime: python3.8
@@ -667,7 +667,7 @@ Resources:
     Properties:
       LogGroupName:
         Fn::Join:
-          - ""
+          - ''
           - - /aws/lambda/
             - Ref: TestApiFunction7B5ABB5C
       RetentionInDays: 14
@@ -685,7 +685,7 @@ Outputs:
   ApiRestApiEndpoint4DEFB5CC:
     Value:
       Fn::Join:
-        - ""
+        - ''
         - - https://
           - Ref: ApiRestApiE35FEAFE
           - .execute-api.us-east-1.
@@ -707,11 +707,11 @@ Rules:
       - Assert:
           Fn::Not:
             - Fn::Contains:
-                - - "1"
-                  - "2"
-                  - "3"
-                  - "4"
-                  - "5"
+                - - '1'
+                  - '2'
+                  - '3'
+                  - '4'
+                  - '5'
                 - Ref: BootstrapVersion
         AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk
           bootstrap' with a recent version of the CDK CLI.

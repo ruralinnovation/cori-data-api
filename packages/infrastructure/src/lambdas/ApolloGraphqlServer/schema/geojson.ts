@@ -1,15 +1,34 @@
-// @ts-nocheck -
-const {
-  GraphQLString: Str,
-  GraphQLFloat: Float,
-  GraphQLList: List,
-  GraphQLEnumType: EnumType,
-  GraphQLObjectType: ObjectType,
-  GraphQLScalarType: ScalarType,
-  GraphQLInterfaceType: InterfaceType,
-  GraphQLUnionType: UnionType,
-  GraphQLNonNull: NonNull,
-} = require('graphql');
+import {
+  GraphQLString as Str,
+  GraphQLList as List,
+  GraphQLEnumType as EnumType,
+  GraphQLObjectType as ObjectType,
+  GraphQLScalarType as ScalarType,
+  GraphQLInterfaceType as InterfaceType,
+  GraphQLUnionType as UnionType,
+  GraphQLNonNull as NonNull,
+  GraphQLFloat as Float
+} from 'graphql';
+
+function coerceCoordinates(value) {
+  return value;
+}
+
+function parseCoordinates(valueAST) {
+  return valueAST.value;
+}
+
+function coerceObject(value) {
+  try {
+    return JSON.parse(value);
+  } catch (err) {
+    return value;
+  }
+}
+
+function parseObject(valueAST) {
+  return JSON.stringify(valueAST.value);
+}
 
 const GeoJSON = {
   TypeEnum: new EnumType({
@@ -24,8 +43,8 @@ const GeoJSON = {
       MultiPolygon: { value: 'MultiPolygon' },
       GeometryCollection: { value: 'GeometryCollection' },
       Feature: { value: 'Feature' },
-      FeatureCollection: { value: 'FeatureCollection' },
-    },
+      FeatureCollection: { value: 'FeatureCollection' }
+    }
   }),
 
   CoordinatesScalar: new ScalarType({
@@ -33,7 +52,7 @@ const GeoJSON = {
     description: 'A (multidimensional) set of coordinates following x, y, z order.',
     serialize: coerceCoordinates,
     parseValue: coerceCoordinates,
-    parseLiteral: parseCoordinates,
+    parseLiteral: parseCoordinates
   }),
 
   JsonScalar: new ScalarType({
@@ -41,20 +60,19 @@ const GeoJSON = {
     description: 'Arbitrary JSON value',
     serialize: coerceObject,
     parseValue: coerceObject,
-    parseLiteral: parseObject,
+    parseLiteral: parseObject
   }),
 
   PointObject: new ObjectType({
     name: 'GeoJSONPoint',
-    type: 'GeoJSONPoint',
     description: 'Object describing a single geographical point.',
     interfaces: () => [GeoJSON.GeoJSONInterface, GeoJSON.GeometryInterface],
     fields: () => ({
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.CoordinatesScalar },
-    }),
+      coordinates: { type: GeoJSON.CoordinatesScalar }
+    })
   }),
 
   MultiPointObject: new ObjectType({
@@ -65,8 +83,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.CoordinatesScalar },
-    }),
+      coordinates: { type: GeoJSON.CoordinatesScalar }
+    })
   }),
 
   LineStringObject: new ObjectType({
@@ -77,8 +95,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.CoordinatesScalar },
-    }),
+      coordinates: { type: GeoJSON.CoordinatesScalar }
+    })
   }),
 
   MultiLineStringObject: new ObjectType({
@@ -89,8 +107,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.CoordinatesScalar },
-    }),
+      coordinates: { type: GeoJSON.CoordinatesScalar }
+    })
   }),
 
   PolygonObject: new ObjectType({
@@ -101,21 +119,20 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.CoordinatesScalar },
-    }),
+      coordinates: { type: GeoJSON.CoordinatesScalar }
+    })
   }),
 
   MultiPolygonObject: new ObjectType({
     name: 'GeoJSONMultiPolygon',
-    type: 'MultiPolygonObject',
     description: 'Object describing multiple shapes formed by sets of geographical points.',
     interfaces: () => [GeoJSON.GeoJSONInterface, GeoJSON.GeometryInterface],
     fields: () => ({
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.CoordinatesScalar },
-    }),
+      coordinates: { type: GeoJSON.CoordinatesScalar }
+    })
   }),
 
   GeometryCollectionObject: new ObjectType({
@@ -126,8 +143,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      geometries: { type: new NonNull(new List(new NonNull(GeoJSON.GeometryInterface))) },
-    }),
+      geometries: { type: new NonNull(new List(new NonNull(GeoJSON.GeometryInterface))) }
+    })
   }),
 
   FeatureObject: new ObjectType({
@@ -140,8 +157,8 @@ const GeoJSON = {
       bbox: { type: new List(Float) },
       geometry: { type: GeoJSON.GeometryInterface },
       properties: { type: GeoJSON.JsonScalar },
-      id: { type: Str },
-    }),
+      id: { type: Str }
+    })
   }),
 
   FeatureCollectionObject: new ObjectType({
@@ -152,8 +169,8 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      features: { type: new NonNull(new List(new NonNull(GeoJSON.FeatureObject))) },
-    }),
+      features: { type: new NonNull(new List(new NonNull(GeoJSON.FeatureObject))) }
+    })
   }),
 
   CRSTypeEnum: new EnumType({
@@ -161,16 +178,16 @@ const GeoJSON = {
     description: 'Enumeration of all GeoJSON CRS object types.',
     values: {
       name: { value: 'name' },
-      link: { value: 'link' },
-    },
+      link: { value: 'link' }
+    }
   }),
 
   NamedCRSPropertiesObject: new ObjectType({
     name: 'GeoJSONNamedCRSProperties',
     description: 'Properties for name based CRS object.',
     fields: () => ({
-      name: { type: new NonNull(Str) },
-    }),
+      name: { type: new NonNull(Str) }
+    })
   }),
 
   LinkedCRSPropertiesObject: new ObjectType({
@@ -178,18 +195,22 @@ const GeoJSON = {
     description: 'Properties for link based CRS object.',
     fields: () => ({
       href: { type: new NonNull(Str) },
-      type: { type: Str },
-    }),
+      type: { type: Str }
+    })
   }),
 
   CRSPropertiesUnion: new UnionType({
     name: 'GeoJSONCRSProperties',
     description: 'CRS object properties.',
     types: () => [GeoJSON.NamedCRSPropertiesObject, GeoJSON.LinkedCRSPropertiesObject],
-    resolveType: (value: any) => {
-      if (value.name) return GeoJSON.NamedCRSPropertiesObject;
-      if (value.href) return GeoJSON.LinkedCRSPropertiesObject;
-    },
+    resolveType: value => {
+      if (value.name) {
+        return GeoJSON.NamedCRSPropertiesObject;
+      }
+      if (value.href) {
+        return GeoJSON.LinkedCRSPropertiesObject;
+      }
+    }
   }),
 
   CoordinateReferenceSystemObject: new ObjectType({
@@ -197,8 +218,8 @@ const GeoJSON = {
     description: 'Coordinate Reference System (CRS) object.',
     fields: () => ({
       type: { type: new NonNull(GeoJSON.CRSTypeEnum) },
-      properties: { type: new NonNull(GeoJSON.CRSPropertiesUnion) },
-    }),
+      properties: { type: new NonNull(GeoJSON.CRSPropertiesUnion) }
+    })
   }),
 
   GeoJSONInterface: new InterfaceType({
@@ -206,9 +227,9 @@ const GeoJSON = {
     fields: () => ({
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
-      bbox: { type: new List(Float) },
+      bbox: { type: new List(Float) }
     }),
-    resolveType: (value: any) => GeoJSON[`${value.type}Object`],
+    resolveType: value => GeoJSON[`${value.type}Object`]
   }),
 
   GeometryInterface: new InterfaceType({
@@ -217,9 +238,9 @@ const GeoJSON = {
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },
-      coordinates: { type: GeoJSON.CoordinatesScalar },
+      coordinates: { type: GeoJSON.CoordinatesScalar }
     }),
-    resolveType: value => GeoJSON[`${value.type}Object`].name,
+    resolveType: value => GeoJSON[`${value.type}Object`].name
     // resolveType: value => value.type,
   }),
 
@@ -248,38 +269,32 @@ const GeoJSON = {
       GeoJSON.LineStringObject,
       GeoJSON.PolygonObject,
       GeoJSON.MultiPointObject,
-      GeoJSON.MultiPolygonObject,
+      GeoJSON.MultiPolygonObject
     ],
-    resolveType: (value: any) => {
-      if (value.value === GeoJSON.TypeEnum.Point.value) return GeoJSON.PointObject.name;
-      if (value.value === GeoJSON.TypeEnum.MultiLineString.value) return GeoJSON.MultiLineStringObject.name;
-      if (value.value === GeoJSON.TypeEnum.LineString.value) return GeoJSON.LineStringObject.name;
-      if (value.value === GeoJSON.TypeEnum.MultiPoint.value) return GeoJSON.MultiPointObject.name;
-      if (value.value === GeoJSON.TypeEnum.Polygon.value) return GeoJSON.PolygonObject.name;
-      if (value.value === GeoJSON.TypeEnum.MultiPolygon.value) return GeoJSON.MultiPolygonObject.name;
-      if (value.value === GeoJSON.TypeEnum.MultiPoint.value) return GeoJSON.MultiPointObject.name;
-    },
-  }),
+    resolveType: value => {
+      if (value.value === GeoJSON.TypeEnum.Point.value) {
+        return GeoJSON.PointObject.name;
+      }
+      if (value.value === GeoJSON.TypeEnum.MultiLineString.value) {
+        return GeoJSON.MultiLineStringObject.name;
+      }
+      if (value.value === GeoJSON.TypeEnum.LineString.value) {
+        return GeoJSON.LineStringObject.name;
+      }
+      if (value.value === GeoJSON.TypeEnum.MultiPoint.value) {
+        return GeoJSON.MultiPointObject.name;
+      }
+      if (value.value === GeoJSON.TypeEnum.Polygon.value) {
+        return GeoJSON.PolygonObject.name;
+      }
+      if (value.value === GeoJSON.TypeEnum.MultiPolygon.value) {
+        return GeoJSON.MultiPolygonObject.name;
+      }
+      if (value.value === GeoJSON.TypeEnum.MultiPoint.value) {
+        return GeoJSON.MultiPointObject.name;
+      }
+    }
+  })
 };
-
-function coerceCoordinates(value) {
-  return value;
-}
-
-function parseCoordinates(valueAST) {
-  return valueAST.value;
-}
-
-function coerceObject(value) {
-  try {
-    return JSON.parse(value);
-  } catch (err) {
-    return value;
-  }
-}
-
-function parseObject(valueAST) {
-  return JSON.stringify(valueAST.value);
-}
 
 export default GeoJSON;

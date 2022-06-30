@@ -1,5 +1,4 @@
 import { Construct } from 'constructs';
-import { Token } from 'aws-cdk-lib';
 import {
   IResource as ApiGatewayResource,
   RestApi,
@@ -7,21 +6,17 @@ import {
   PassthroughBehavior,
   ResponseType,
   CognitoUserPoolsAuthorizer,
-  IRestApi,
   AwsIntegration,
   IntegrationOptions,
   MethodOptions,
-  IApiKey,
-  ApiKey,
-  TokenAuthorizer,
+  TokenAuthorizer
 } from 'aws-cdk-lib/aws-apigateway';
-import { LambdasAndLogGroups } from './LambdasAndLogGroups';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { Function as BASE_FUNCTION } from 'aws-cdk-lib/aws-lambda';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { toPascal, toKebab } from './naming';
 import { Mutable, HttpMethod } from '../interfaces';
-import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { Aws } from 'aws-cdk-lib';
 
 interface GatewayResponse {
   type: ResponseType;
@@ -37,29 +32,25 @@ export interface ApiProps {
    * Automatically configure configure CloudWatch role
    */
   cloudWatchRole?: boolean;
-  apiKey?: Secret;
   binaryMediaTypes?: string[];
 }
 
 export class Api extends Construct {
-  public api: RestApi;
-  public stage: string;
+  public readonly api: RestApi;
   public authorizer?: CognitoUserPoolsAuthorizer;
   public tokenAuthorizer?: TokenAuthorizer;
+  public apiDomain: string;
 
   constructor(scope: Construct, id: string, private props: ApiProps) {
     super(scope, id);
 
-    // CDK does not like unresolved tokens for stage
-    this.stage = !props.stage || Token.isUnresolved(props.stage) ? 'prod' : props.stage;
-
     this.api = new RestApi(this, 'RestApi', {
       restApiName: toKebab(props.prefix),
       deployOptions: {
-        stageName: this.stage,
+        stageName: this.props.stage
       },
       cloudWatchRole: props.cloudWatchRole,
-      binaryMediaTypes: props.binaryMediaTypes || undefined,
+      binaryMediaTypes: props.binaryMediaTypes || undefined
     });
 
     this.addGatewayResponses();
@@ -67,33 +58,21 @@ export class Api extends Construct {
     if (props.userPool) {
       this.attachCognitoAuthorizer(props.userPool);
     }
-    if (props.apiKey) {
-      const plan = this.api.addUsagePlan('ApiUsagePlan', {
-        name: 'Development',
-        throttle: {
-          rateLimit: 10000,
-          burstLimit: 100,
-        },
-      });
-      const key = this.api.addApiKey('ApiKey', {
-        apiKeyName: this.props.prefix + 'api-key',
-        value: props.apiKey.secretValue.toString(),
-      });
-      plan.addApiKey(key);
-    }
+
+    this.apiDomain = `${this.api.restApiId}.execute-api.${Aws.REGION}.amazonaws.com`;
   }
 
   public attachCognitoAuthorizer(userPool: IUserPool) {
     this.authorizer = new CognitoUserPoolsAuthorizer(this, 'CognitoAuthorizer', {
       cognitoUserPools: [userPool],
-      authorizerName: 'Cognito',
+      authorizerName: 'Cognito'
     });
     this.authorizer._attachToApi(this.api);
   }
 
   public attachLambdaAuthorizer(handler: BASE_FUNCTION) {
     this.tokenAuthorizer = new TokenAuthorizer(this, 'TokenAuthorizer', {
-      handler,
+      handler
     });
     this.tokenAuthorizer._attachToApi(this.api);
   }
@@ -102,7 +81,7 @@ export class Api extends Construct {
     method,
     path,
     lambda,
-    options = {},
+    options = {}
   }: {
     method: HttpMethod;
     path: string;
@@ -114,7 +93,7 @@ export class Api extends Construct {
       proxy: true,
       service: 'lambda',
       path: `2015-03-31/functions/${lambda.functionArn}/invocations`,
-      options,
+      options
     });
 
     const _options = options;
@@ -132,40 +111,24 @@ export class Api extends Construct {
     }
   }
 
-  /**
-   * @deprecated
-   */
-  public addLambdasAndLogGroups({ apiResources }: LambdasAndLogGroups) {
-    if (!apiResources?.size) {
-      throw new Error('no resources to passed into Api construct');
-    }
-    for (const [{ method, path }, lambda] of apiResources) {
-      this.addLambda({ method, path, lambda });
-    }
-  }
-
   private addGatewayResponses() {
     const defaultResponses: GatewayResponse[] = [
       { type: ResponseType.UNAUTHORIZED, statusCode: '401' },
       { type: ResponseType.ACCESS_DENIED, statusCode: '403' },
       { type: ResponseType.RESOURCE_NOT_FOUND, statusCode: '404' },
-      { type: ResponseType.DEFAULT_5XX, statusCode: '500' },
+      { type: ResponseType.DEFAULT_5XX, statusCode: '500' }
     ] as GatewayResponse[];
     const responses = [...defaultResponses, ...(this.props.gatewayResponses || [])];
-    // eslint-disable-next-line quotes
     const origin = this.props.allowedOrigins?.length ? this.props.allowedOrigins.join(' ') : "'*'";
     for (const { type, statusCode } of responses) {
-      // If prefix contains a token, use base name.
-      const responseId = Token.isUnresolved(this.props.prefix)
-        ? toPascal(`GatewayResponse-${type.responseType}`)
-        : toPascal(`${this.props.prefix}-GatewayResponse-${type.responseType}`);
+      const responseId = toPascal(`${this.props.prefix}-GatewayResponse-${type.responseType}`);
 
       (this.api as RestApi).addGatewayResponse(responseId, {
         type,
         statusCode,
         responseHeaders: {
-          'Access-Control-Allow-Origin': origin,
-        },
+          'Access-Control-Allow-Origin': origin
+        }
       });
     }
   }
@@ -178,20 +141,18 @@ export class Api extends Construct {
           {
             statusCode: '204',
             responseParameters: {
-              /* eslint-disable quotes */
               'method.response.header.Access-Control-Allow-Headers':
                 "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
               'method.response.header.Access-Control-Allow-Origin': "'*'",
               'method.response.header.Access-Control-Allow-Credentials': "'true'",
-              'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
-              /* eslint-enable quotes */
-            },
-          },
+              'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+            }
+          }
         ],
         passthroughBehavior: PassthroughBehavior.NEVER,
         requestTemplates: {
-          'application/json': '{"statusCode": 200}',
-        },
+          'application/json': '{"statusCode": 200}'
+        }
       }),
       {
         methodResponses: [
@@ -201,10 +162,10 @@ export class Api extends Construct {
               'method.response.header.Access-Control-Allow-Headers': true,
               'method.response.header.Access-Control-Allow-Methods': true,
               'method.response.header.Access-Control-Allow-Credentials': true,
-              'method.response.header.Access-Control-Allow-Origin': true,
-            },
-          },
-        ],
+              'method.response.header.Access-Control-Allow-Origin': true
+            }
+          }
+        ]
       }
     );
   }

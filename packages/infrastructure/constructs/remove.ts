@@ -5,7 +5,7 @@ import {
   CognitoUserPoolsAuthorizer,
   IResource,
   ApiKey,
-  IApiKey,
+  IApiKey
 } from 'aws-cdk-lib/aws-apigateway';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { v4 as uuidv4 } from 'uuid';
@@ -35,7 +35,7 @@ export class Api extends Construct {
 
     this.api = new RestApi(this, 'RestApi', {
       restApiName: props.prefix,
-      cloudWatchRole: props.cloudWatchRole,
+      cloudWatchRole: props.cloudWatchRole
     });
 
     if (props.apiKey) {
@@ -43,12 +43,12 @@ export class Api extends Construct {
         name: 'Development',
         throttle: {
           rateLimit: 10,
-          burstLimit: 2,
-        },
+          burstLimit: 2
+        }
       });
       const key = this.api.addApiKey('ApiKey', {
         apiKeyName: this.props.prefix + 'api-key',
-        value: props.apiKey.secretValueFromJson(props.prefix + '-api-key').toString(),
+        value: props.apiKey.secretValueFromJson(props.prefix + '-api-key').toString()
       });
       plan.addApiKey(key);
     }
@@ -57,7 +57,7 @@ export class Api extends Construct {
   attachCognitoAuthorizer(userPool: IUserPool) {
     this.authorizer = new CognitoUserPoolsAuthorizer(this, 'cognitoAuth', {
       cognitoUserPools: [userPool],
-      authorizerName: 'CognitoAuth',
+      authorizerName: 'CognitoAuth'
     });
     this.authorizer._attachToApi(this.api);
   }
@@ -68,7 +68,7 @@ export class Api extends Construct {
     const integration = new AwsIntegration({
       proxy: true,
       service: 'lambda',
-      path: `2015-03-31/functions/${functionArn}/invocations`,
+      path: `2015-03-31/functions/${functionArn}/invocations`
     });
 
     if (this.authorizer && method !== 'OPTIONS') {
