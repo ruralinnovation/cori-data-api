@@ -9,7 +9,7 @@ import {
   AwsIntegration,
   IntegrationOptions,
   MethodOptions,
-  TokenAuthorizer
+  TokenAuthorizer,
 } from 'aws-cdk-lib/aws-apigateway';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { Function as BASE_FUNCTION } from 'aws-cdk-lib/aws-lambda';
@@ -47,10 +47,10 @@ export class Api extends Construct {
     this.api = new RestApi(this, 'RestApi', {
       restApiName: toKebab(props.prefix),
       deployOptions: {
-        stageName: this.props.stage
+        stageName: props.stage,
       },
       cloudWatchRole: props.cloudWatchRole,
-      binaryMediaTypes: props.binaryMediaTypes || undefined
+      binaryMediaTypes: props.binaryMediaTypes || undefined,
     });
 
     this.addGatewayResponses();
@@ -65,14 +65,14 @@ export class Api extends Construct {
   public attachCognitoAuthorizer(userPool: IUserPool) {
     this.authorizer = new CognitoUserPoolsAuthorizer(this, 'CognitoAuthorizer', {
       cognitoUserPools: [userPool],
-      authorizerName: 'Cognito'
+      authorizerName: 'Cognito',
     });
     this.authorizer._attachToApi(this.api);
   }
 
   public attachLambdaAuthorizer(handler: BASE_FUNCTION) {
     this.tokenAuthorizer = new TokenAuthorizer(this, 'TokenAuthorizer', {
-      handler
+      handler,
     });
     this.tokenAuthorizer._attachToApi(this.api);
   }
@@ -81,7 +81,7 @@ export class Api extends Construct {
     method,
     path,
     lambda,
-    options = {}
+    options = {},
   }: {
     method: HttpMethod;
     path: string;
@@ -93,7 +93,7 @@ export class Api extends Construct {
       proxy: true,
       service: 'lambda',
       path: `2015-03-31/functions/${lambda.functionArn}/invocations`,
-      options
+      options,
     });
 
     const _options = options;
@@ -116,7 +116,7 @@ export class Api extends Construct {
       { type: ResponseType.UNAUTHORIZED, statusCode: '401' },
       { type: ResponseType.ACCESS_DENIED, statusCode: '403' },
       { type: ResponseType.RESOURCE_NOT_FOUND, statusCode: '404' },
-      { type: ResponseType.DEFAULT_5XX, statusCode: '500' }
+      { type: ResponseType.DEFAULT_5XX, statusCode: '500' },
     ] as GatewayResponse[];
     const responses = [...defaultResponses, ...(this.props.gatewayResponses || [])];
     const origin = this.props.allowedOrigins?.length ? this.props.allowedOrigins.join(' ') : "'*'";
@@ -127,8 +127,8 @@ export class Api extends Construct {
         type,
         statusCode,
         responseHeaders: {
-          'Access-Control-Allow-Origin': origin
-        }
+          'Access-Control-Allow-Origin': origin,
+        },
       });
     }
   }
@@ -145,14 +145,14 @@ export class Api extends Construct {
                 "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
               'method.response.header.Access-Control-Allow-Origin': "'*'",
               'method.response.header.Access-Control-Allow-Credentials': "'true'",
-              'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
-            }
-          }
+              'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+            },
+          },
         ],
         passthroughBehavior: PassthroughBehavior.NEVER,
         requestTemplates: {
-          'application/json': '{"statusCode": 200}'
-        }
+          'application/json': '{"statusCode": 200}',
+        },
       }),
       {
         methodResponses: [
@@ -162,10 +162,10 @@ export class Api extends Construct {
               'method.response.header.Access-Control-Allow-Headers': true,
               'method.response.header.Access-Control-Allow-Methods': true,
               'method.response.header.Access-Control-Allow-Credentials': true,
-              'method.response.header.Access-Control-Allow-Origin': true
-            }
-          }
-        ]
+              'method.response.header.Access-Control-Allow-Origin': true,
+            },
+          },
+        ],
       }
     );
   }
