@@ -110,7 +110,7 @@ export const Config: IConfigs = {
   'refactor/ibliskavka-integration-test': {
     ...mfDefaults,
     client: 'ib',
-    stage: 'multi-api',
+    stage: 'int-test',
     testing: {
       username: 'int-test@yopmail.com',
       password: 'P@ssw0rd1',
