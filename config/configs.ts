@@ -115,9 +115,9 @@ export const Config: IConfigs = {
       username: 'int-test@yopmail.com',
       password: 'P@ssw0rd1',
       region: 'us-east-1',
-      userPoolId: 'us-east-1_VCOJIG6El',
-      apiEndpoint: 'https://4hw0kb39xi.execute-api.us-east-1.amazonaws.com/multi-api/',
-      cognitoClientId: '3au6c2jjloltaugrpgd7a1jjnk'
+      userPoolId: 'us-east-1_YAVNg5RG5',
+      apiEndpoint: 'https://jmlwqri0wa.execute-api.us-east-1.amazonaws.com/dev/',
+      cognitoClientId: '4bca4rr1caiebj24dqodhironq'
     }
   },
   'mf-dev': {
