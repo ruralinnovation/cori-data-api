@@ -2,7 +2,8 @@ import { ApiStackProps } from '../packages/infrastructure/lib/ApiStack';
 
 export interface TestEnvConfig {
   region: string;
-  apiEndpoint: string;
+  apolloEndpoint: string;
+  pythonEndpoint: string;
   userPoolId: string;
   cognitoClientId: string;
   username: string;
@@ -116,7 +117,8 @@ export const Config: IConfigs = {
       password: 'P@ssw0rd1',
       region: 'us-east-1',
       userPoolId: 'us-east-1_YAVNg5RG5',
-      apiEndpoint: 'https://jmlwqri0wa.execute-api.us-east-1.amazonaws.com/dev/',
+      pythonEndpoint: 'https://jmlwqri0wa.execute-api.us-east-1.amazonaws.com/dev/',
+      apolloEndpoint: 'https://a4qnp6dav5.execute-api.us-east-1.amazonaws.com/dev/',
       cognitoClientId: '4bca4rr1caiebj24dqodhironq'
     }
   },

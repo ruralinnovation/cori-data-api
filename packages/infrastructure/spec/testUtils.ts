@@ -9,7 +9,8 @@ export const getTestConfig = async (): Promise<TestEnvConfig> => {
 
       region: process.env.AWS_REGION!,
       userPoolId: process.env.USER_POOL_ID!,
-      apiEndpoint: process.env.PYTHON_API_URL!,
+      apolloEndpoint: process.env.APOLLO_API_URL!,
+      pythonEndpoint: process.env.PYTHON_API_URL!,
       cognitoClientId: process.env.COGNITO_CLIENT_ID!
     };
     console.log('Test Config', cfg);
