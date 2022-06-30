@@ -16,7 +16,7 @@ export interface EnvConfigVars {
 /**
  * Gets environment variable and throws meaningful message when null
  */
-function getEnv(key: string, fallback: string = '') {
+function getEnv(key: string, fallback = '') {
   const val: string = (process.env[key] as string) || fallback;
   if (!val) {
     throw new Error(`Expected environment variable ${key} to not be null`);
@@ -32,5 +32,5 @@ export const EnvConfig: EnvConfigVars = {
   CACHE_HOST: getEnv('CACHE_HOST'),
   CACHE_PORT: getEnv('CACHE_PORT'),
   CACHE_USERNAME: getEnv('CACHE_USERNAME'),
-  CACHE_PASSWORD: getEnv('CACHE_PASSWORD'),
+  CACHE_PASSWORD: getEnv('CACHE_PASSWORD')
 };

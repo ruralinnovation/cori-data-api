@@ -55,13 +55,15 @@ Downloading the AWS CDK CLI Toolkit for local use.
 CDK Bootstrapping
 CDK CICD Pipelines
 
-# CICD Setup
+## CICD Setup
 
 ### Github Setup
 
 1. Create a new user in Github for CICD
 2. Create a Personal Access Token for this user
 3. Store the Personal Access Token in AWS Secrets Manager with the name `github-token`
+
+
 
 ### DB Setup
 
@@ -70,25 +72,54 @@ CDK CICD Pipelines
 1. Log in as admin with psql;
 2. Create read only role and new user with:
 
-```SQL
-CREATE ROLE read_only_access;
+    ```SQL
+    CREATE ROLE read_only_access;
 
-GRANT CONNECT ON DATABASE (DB_NAME} TO read_only_access;
+    GRANT CONNECT ON DATABASE (DB_NAME} TO read_only_access;
 
-GRANT USAGE ON SCHEMA public TO read_only_access;
+    GRANT USAGE ON SCHEMA public TO read_only_access;
 
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO read_only_access;
+    GRANT SELECT ON ALL TABLES IN SCHEMA public TO read_only_access;
 
-GRANT SELECT ON ALL TABLES IN SCHEMA bcat TO read_only_access;
+    GRANT SELECT ON ALL TABLES IN SCHEMA bcat TO read_only_access;
 
-CREATE USER read_only_user WITH PASSWORD  ________________;
+    CREATE USER read_only_user WITH PASSWORD  ________________;
 
-GRANT read_only_access TO read_only_user;
-
-
-```
+    GRANT read_only_access TO read_only_user;
+    ```
 
 3. Save password in AWS Parameter store (keep note of parameter name)
+
+### Pipeline deployment
+
+#### Bootstrapping
+
+1. In the main pipeline account
+
+    ```bash
+    npm run bootstrap:pipeline -- aws://{ACCOUNT-NUMBER}/{REGION} [--profile {PROFILE}]
+    ```
+
+2. In any other accounts (if using cross-account deploy)
+
+    ```bash
+    npm run bootstrap:pipeline -- aws://{ACCOUNT-NUMBER}/{REGION} --trust {PIPELINE-ACCOUNT-NUMBER} [--profile {PROFILE}]
+    ```
+
+#### Deploy the Pipeline
+
+Each pipeline is associated with a branch and an environment.
+
+1. Check out the associated branch.
+2. Create a entry for the branch in `config/configs`
+3. Deploy the pipeline
+
+    ```bash
+    cd packages/infrastructure
+    npm run deploy:pipeline -- [--profile {PROFILE}]
+    ```
+
+Once deployed, the pipeline will trigger on new commits to the associated branch.
 
 ## Python Lambdas / Microservices
 

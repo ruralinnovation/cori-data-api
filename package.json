@@ -6,30 +6,50 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:schema": "npm run play -w schemas",
-    "start:api": "npm run start -w infrastructure",
+    "start": "npm run start -w infrastructure",
     "build": "npm run build --ws",
     "build:infra": "npm run build -w infrastructure",
-    "build:cicd": "npm run build -w cicd",
     "build:schemas": "npm run build -w schemas",
-    "build:all": "npm run build:schemas && npm run build:infra && npm run build:cicd",
-    "deploy:cicd": "npm run build -w cicd && npm run deploy -w cicd",
-    "deploy": "npm run build:all && npm run deploy -w infrastructure",
-    "synth": "npm run build:all && npm run synth -w infrastructure",
-    "synth:cicd": "npm run synth -w cicd",
+    "deploy": "npm run build && npm run deploy -w infrastructure",
+    "synth": "npm run build && npm run synth -w infrastructure",
     "publish:schemas": "npm run build:schemas && npm run hive-publish -w schemas",
     "diff": "npm run diff --w packages/infrastructure",
     "ts": "npm run node -- -r ts-node/register",
-    "build:python-layer": "bash ./buildPythonDependencyLayer.sh"
+    "build:python-layer": "bash ./buildPythonDependencyLayer.sh",
+    "lint": "eslint ./packages ./config",
+    "lint:debug": "PARSER_NO_WATCH=true NODE_OPTIONS=--max-old-space-size=4096 DEBUG=* npx eslint ./packages/infrastructure",
+    "lint:fix": "eslint --fix ./packages ./config",
+    "format": "prettier --write ./packages ./config"
   },
   "author": "Merging Futures LLC.",
   "license": "ISC",
   "workspaces": [
     "packages/schemas",
-    "packages/infrastructure",
-    "packages/cicd"
+    "packages/infrastructure"
   ],
-  "dependencies": {
+  "devDependencies": {
+    "@types/jest": "^26.0.10",
+    "@types/ncp": "^2.0.5",
+    "@types/rimraf": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "aws-amplify": "^4.3.26",
+    "aws-sdk": "^2.1164.0",
+    "axios": "^0.27.2",
+    "cd": "^0.3.3",
     "cdk": "2.20.0",
+    "esbuild": "^0.14.47",
+    "eslint": "^8.18.0",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-import-resolver-typescript": "^3.1.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^26.4.2",
+    "ncp": "^2.0.0",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.2.0",
+    "ts-node": "^9.1.1",
     "typescript": "^4.6.3"
   }
 }

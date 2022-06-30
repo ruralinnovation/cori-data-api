@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import { App } from 'aws-cdk-lib';
-import { ApiStack, ApiStackProps, ApiStackBaseProps } from '../lib';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as YAML from 'yaml';
-import { Code } from 'aws-cdk-lib/aws-lambda';
-import { getConfig } from '../config/config';
-import * as ssm from 'aws-cdk-lib/aws-ssm';
+import { getConfig } from '../../../config/configs';
+import { ApiStack, ApiStackProps } from '../lib';
 
 // Grab environment specific ENV VARS file for DB access
 
@@ -18,39 +16,9 @@ import * as ssm from 'aws-cdk-lib/aws-ssm';
 // console.log(process.env);
 
 /**
- * This is the local development entry-point when using `npm start`
- * See `./example.ts` or `./index.ts` for common configurations
- *
- * This setup is a little different because we must synth and run the ApiStack locally.
- * Typically those resources are included as a Nested Stack.
- */
-const main = async () => {
-  const app = new App();
-
-  const config = getConfig(app.node.tryGetContext('config'));
-  const prefix = `${config.client}-data-api-${config.stage}`;
-
-  /**
-   * This is the local api stack
-   */
-  const apiProps: ApiStackBaseProps = {
-    ...config,
-    userPoolId: config.startApiUserPoolId as string,
-    // assets: Code.fromAsset('./dist/assets'),
-    loggingLevel: 'debug',
-  };
-
-  new ApiStack(app, `${prefix}`, apiProps);
-
-  createSamTemplate(app, {
-    ...apiProps,
-  });
-};
-
-/**
  * This generates a SAM compatible template so that you can debug locally with `npm start`.
  */
-const createSamTemplate = (app: App, options: ApiStackBaseProps) => {
+const createSamTemplate = (app: App, options: ApiStackProps) => {
   console.log('Creating template');
   // Generate a template.yaml and local.json to be used with `npm start`
   const stacks = app.synth().stacks;
@@ -62,7 +30,7 @@ const createSamTemplate = (app: App, options: ApiStackBaseProps) => {
 
   console.log(functions);
 
-  const env = {} as any;
+  const env = {} as Record<string, unknown>;
   functions.forEach(f => {
     env[f] = {
       LOGGING_LEVEL: options.loggingLevel,
@@ -70,11 +38,42 @@ const createSamTemplate = (app: App, options: ApiStackBaseProps) => {
       DB_USER: options.databaseConfig.dbuser,
       REGION: options.env.region,
       DB_HOST: options.databaseConfig.host,
-      DB_NAME: options.databaseConfig.dbname,
+      DB_NAME: options.databaseConfig.dbname
     };
   });
 
   fs.writeFileSync(path.resolve('./cdk.out/env.json'), JSON.stringify(env, null, 2));
+};
+
+/**
+ * This is the local development entry-point when using `npm start`
+ * See `./example.ts` or `./index.ts` for common configurations
+ *
+ * This setup is a little different because we must synth and run the ApiStack locally.
+ * Typically those resources are included as a Nested Stack.
+ */
+const main = () => {
+  const app = new App();
+
+  const config = getConfig('local');
+  const prefix = `${config.client}-data-api-${config.stage}`;
+
+  /**
+   * This is the local api stack
+   */
+  const apiProps: ApiStackProps = {
+    ...config,
+    // Allow use to auth to an existing pool during testing.
+    existingUserPoolId: config.testing?.userPoolId as string,
+    // assets: Code.fromAsset('./dist/assets'),
+    loggingLevel: 'debug'
+  };
+
+  new ApiStack(app, `${prefix}`, apiProps);
+
+  createSamTemplate(app, {
+    ...apiProps
+  });
 };
 
 main();

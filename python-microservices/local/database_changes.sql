@@ -3,6 +3,28 @@
 
 
 /*
+some tables have columns with "." in them which is a big no no
+name.x, name.y in bcat_county_rural_dev_broadband_protected_borrowers
+
+*/
+
+
+/*
+add id columns
+*/
+
+alter table bcat.bcat_auction_904_subsidy_awards add column if not exists fid serial;
+alter table bcat.bcat_broadband_unserved_blocks add column if not exists fid serial;
+alter table bcat.bcat_county_broadband_farm_bill_eligibility add column if not exists fid serial;
+alter table bcat.bcat_county_broadband_pending_rural_dev add column if not exists fid serial;
+alter table bcat.bcat_county_ilecs_geo add column if not exists fid serial;
+alter table bcat.bcat_county_rural_dev_broadband_protected_borrowers add column if not exists fid serial;
+alter table bcat.bcat_county_summary add column if not exists fid serial;
+alter table bcat.bcat_fiber_cable_unserved_blocks add column if not exists fid serial;
+alter table bcat.bcat_incumbent_electric_providers_geo add column if not exists fid serial;
+alter table bcat.county_adjacency_crosswalk add column if not exists fid serial;
+
+/*
 return bounding box geometry for a given tile in the desired coordinate system
 with an optional buffer in epsg:3857 meters
 

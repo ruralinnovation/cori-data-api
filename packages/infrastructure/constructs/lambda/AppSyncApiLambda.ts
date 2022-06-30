@@ -1,7 +1,6 @@
 import { Construct } from 'constructs';
 import { ApiLambda, ApiLambdaProps } from './ApiLambda';
 import { MappingTemplate, HttpDataSource } from '@aws-cdk/aws-appsync-alpha';
-import { join, resolve } from 'path';
 
 type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS';
 
@@ -10,7 +9,7 @@ interface ApiPathResolverConfig {
   methods: HttpMethod[];
   typeName: string;
   fieldName: string;
-  body?: any;
+  body?: string;
 }
 
 export interface AppSyncApiLambdaProps extends ApiLambdaProps {
@@ -33,7 +32,7 @@ export class AppSyncApiLambda extends ApiLambda {
 
   createResourcePath(path: string): string {
     let p = `/dev${path}`;
-    // @ts-ignore
+
     const matches = path.matchAll(this.paramsRegex);
     if (matches) {
       [...matches].forEach(match => {
@@ -46,7 +45,6 @@ export class AppSyncApiLambda extends ApiLambda {
   }
   // createResourcePath(path: string): string {
   //   let p = `${path}`;
-  //   // @ts-ignore
   //   const matches = path.matchAll(this.paramsRegex);
   //   if (matches) {
   //     [...matches].forEach(match => {
@@ -69,12 +67,12 @@ export class AppSyncApiLambda extends ApiLambda {
           resourcePath: resourcePath,
           params: {
             headers: {
-              'Content-Type': 'application/json',
-            },
-          },
+              'Content-Type': 'application/json'
+            }
+          }
         })
       ),
-      responseMappingTemplate: MappingTemplate.fromString('$ctx.result.body'),
+      responseMappingTemplate: MappingTemplate.fromString('$ctx.result.body')
     });
   }
   private attachUpdateResolver(
@@ -94,13 +92,13 @@ export class AppSyncApiLambda extends ApiLambda {
           resourcePath: resourcePath,
           params: {
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
-            body,
-          },
+            body
+          }
         })
       ),
-      responseMappingTemplate: MappingTemplate.fromString('$ctx.result.body'),
+      responseMappingTemplate: MappingTemplate.fromString('$ctx.result.body')
     });
   }
 

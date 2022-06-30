@@ -3,6 +3,9 @@ import { Construct } from 'constructs';
 import * as redis from 'aws-cdk-lib/aws-elasticache';
 
 import { ISecurityGroup, ISubnet, IVpc } from 'aws-cdk-lib/aws-ec2';
+import { RedisSubnetGroup } from './RedisSubnetGroup';
+import { RedisSecurityGroup } from './RedisSecurityGroup';
+import { CfnCacheCluster } from 'aws-cdk-lib/aws-elasticache';
 
 interface RedisStackProps {
   vpc: IVpc;
@@ -17,34 +20,25 @@ export class RedisCluster extends Construct {
   constructor(scope: Construct, id: string, props: RedisStackProps) {
     super(scope, id);
 
-    // Get the vpc and redisSecurityGroup from vpc and security stack
-    const { vpc, redisSecurityGroup } = props;
+    const redisSecurityGroup = new RedisSecurityGroup(this, 'RedisSecurityGroup', {
+      vpc: props.vpc,
+      securityGroupName: `${props.prefix}-redis-sg`
+    });
 
-    // Get all private subnet ids
-    if (props.private) {
-      this.subnets = vpc.privateSubnets.map(subnet => {
-        return subnet.subnetId;
-      });
-    } else {
-      this.subnets = vpc.publicSubnets.map(subnet => {
-        return subnet.subnetId;
-      });
-    }
-    // Create redis subnet group from private subnet ids
-    const redisSubnetGroup = new redis.CfnSubnetGroup(this, 'RedisSubnetGroup', {
-      subnetIds: this.subnets,
-      description: 'Subnet group for redis',
+    const redisSubnetGroup = new RedisSubnetGroup(this, 'RedisSubnetGroup', {
+      vpc: props.vpc,
+      private: props.private
     });
 
     // Create Redis Cluster
-    this.redisCache = new redis.CfnCacheCluster(this, 'RedisCluster', {
+    this.redisCache = new CfnCacheCluster(this, 'RedisCluster', {
       autoMinorVersionUpgrade: true,
       cacheNodeType: 'cache.t2.small',
       engine: 'redis',
       numCacheNodes: 1,
       cacheSubnetGroupName: redisSubnetGroup.ref,
       clusterName: props.prefix + 'redis-cluster',
-      vpcSecurityGroupIds: [redisSecurityGroup.securityGroupId],
+      vpcSecurityGroupIds: [redisSecurityGroup.securityGroupId]
     });
 
     // Define this redis cluster is depends on redis subnet group created first

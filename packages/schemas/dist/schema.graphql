@@ -1,7 +1,26 @@
-type Query {
+schema {
+  query: RootQueryType
+}
+
+type RootQueryType {
   setup: GeoJSONGeometryTypes
-  hello: GeoJSONFeatureCollection
-  auction_904_subsidy_awards: GeoJSONFeatureCollection
+  feature_collection(table: String, counties: [String], state_abbr: String, skipCache: Boolean): GeoJSONFeatureCollection
+  county_feature(table: String, county: String): GeoJSONFeatureCollection
+  auction_904_subsidy_awards_geojson(counties: [String], skipCache: Boolean): GeoJSONFeatureCollection
+  auction_904_subsidy_awards_county_geojson(county: String, skipCache: Boolean): GeoJSONFeatureCollection
+  broadband_unserved_blocks_geojson(counties: [String], skipCache: Boolean): GeoJSONFeatureCollection
+  broadband_unserved_blocks_county_geojson(county: String, skipCache: Boolean): GeoJSONFeatureCollection
+  county_broadband_farm_bill_eligibility_geojson(state_abbr: String, skipCache: Boolean): GeoJSONFeatureCollection
+  county_broadband_pending_rural_dev_geojson(state_abbr: String, skipCache: Boolean): GeoJSONFeatureCollection
+  county_ilecs_geo_geojson(state_abbr: String, skipCache: Boolean): GeoJSONFeatureCollection
+  county_rural_dev_broadband_protected_borrowers_geojson(state_abbr: String, skipCache: Boolean): GeoJSONFeatureCollection
+  county_summary_geojson(counties: [String], skipCache: Boolean): GeoJSONFeatureCollection
+  county_summary_county_geojson(county: String, skipCache: Boolean): GeoJSONFeatureCollection
+  fiber_cable_unserved_blocks_geojson(counties: [String], skipCache: Boolean): GeoJSONFeatureCollection
+  fiber_cable_unserved_blocks_county_geojson(county: String, skipCache: Boolean): GeoJSONFeatureCollection
+  incumbent_electric_providers_geo_geojson(state_abbr: String, skipCache: Boolean): GeoJSONFeatureCollection
+  county_adjacency_crosswalk_geojson(counties: [String], skipCache: Boolean): GeoJSONFeatureCollection
+  county_adjacency_crosswalk_county_geojson(county: String, skipCache: Boolean): GeoJSONFeatureCollection
 }
 
 """Geometry Types"""
@@ -12,7 +31,7 @@ type GeoJSONPoint implements GeoJSONInterface & GeoJSONGeometryInterface {
   type: GeoJSONType!
   crs: GeoJSONCoordinateReferenceSystem
   bbox: [Float]
-  coordinates: AWSJSON
+  coordinates: GeoJSONCoordinates
 }
 
 interface GeoJSONInterface {
@@ -64,17 +83,18 @@ interface GeoJSONGeometryInterface {
   type: GeoJSONType!
   crs: GeoJSONCoordinateReferenceSystem
   bbox: [Float]
-  coordinates: AWSJSON
+  coordinates: GeoJSONCoordinates
 }
 
-scalar AWSJSON
+"""A (multidimensional) set of coordinates following x, y, z order."""
+scalar GeoJSONCoordinates
 
 """Object describing multiple connected sequences of geographical points."""
 type GeoJSONMultiLineString implements GeoJSONInterface & GeoJSONGeometryInterface {
   type: GeoJSONType!
   crs: GeoJSONCoordinateReferenceSystem
   bbox: [Float]
-  coordinates: AWSJSON
+  coordinates: GeoJSONCoordinates
 }
 
 """Object describing a single connected sequence of geographical points."""
@@ -82,7 +102,7 @@ type GeoJSONLineString implements GeoJSONInterface & GeoJSONGeometryInterface {
   type: GeoJSONType!
   crs: GeoJSONCoordinateReferenceSystem
   bbox: [Float]
-  coordinates: AWSJSON
+  coordinates: GeoJSONCoordinates
 }
 
 """
@@ -92,7 +112,7 @@ type GeoJSONPolygon implements GeoJSONInterface & GeoJSONGeometryInterface {
   type: GeoJSONType!
   crs: GeoJSONCoordinateReferenceSystem
   bbox: [Float]
-  coordinates: AWSJSON
+  coordinates: GeoJSONCoordinates
 }
 
 """Object describing multiple geographical points."""
@@ -100,7 +120,7 @@ type GeoJSONMultiPoint implements GeoJSONInterface & GeoJSONGeometryInterface {
   type: GeoJSONType!
   crs: GeoJSONCoordinateReferenceSystem
   bbox: [Float]
-  coordinates: AWSJSON
+  coordinates: GeoJSONCoordinates
 }
 
 """
@@ -110,7 +130,7 @@ type GeoJSONMultiPolygon implements GeoJSONInterface & GeoJSONGeometryInterface 
   type: GeoJSONType!
   crs: GeoJSONCoordinateReferenceSystem
   bbox: [Float]
-  coordinates: AWSJSON
+  coordinates: GeoJSONCoordinates
 }
 
 """A set of multiple features."""
@@ -129,6 +149,9 @@ type GeoJSONFeature implements GeoJSONInterface {
   crs: GeoJSONCoordinateReferenceSystem
   bbox: [Float]
   geometry: GeoJSONGeometryInterface
-  properties: AWSJSON
+  properties: JSONObject
   id: String
 }
+
+"""Arbitrary JSON value"""
+scalar JSONObject

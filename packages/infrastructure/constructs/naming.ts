@@ -1,5 +1,3 @@
-import { Token } from 'aws-cdk-lib';
-
 function splitString(str: string): string[] {
   const normalized = str
     // sanitize characters that cannot be included
@@ -17,17 +15,9 @@ function lowercaseFirstLetter(segment: string): string {
   return segment[0].toLowerCase() + segment.slice(1);
 }
 function toKebab(str: string): string {
-  if (Token.isUnresolved(str)) {
-    // Dont modify tokenized values
-    return str;
-  }
   return splitString(str).join('-').toLowerCase();
 }
 function toPascal(str: string): string {
-  if (Token.isUnresolved(str)) {
-    // Dont modify tokenized values
-    return str;
-  }
   return splitString(str).map(capitalizeFirstLetter).join('');
 }
 function toCamel(str: string): string {
