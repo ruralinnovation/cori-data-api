@@ -1,7 +1,10 @@
+import { join } from 'path';
 import * as pkgJson from '../package.json';
 
-export const VERSION = pkgJson.version;
-export const PROJECT_ROOT = __dirname;
+export const version = pkgJson.version;
+export const projectRoot = __dirname;
+
+export const microservicesDirectory = join(projectRoot, '../../../python-microservices');
 
 /**
  * Type-safe way to access object keys
