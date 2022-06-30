@@ -17,6 +17,7 @@
     "ts": "npm run node -- -r ts-node/register",
     "build:python-layer": "bash ./buildPythonDependencyLayer.sh",
     "lint": "eslint ./packages ./config",
+    "lint:debug": "PARSER_NO_WATCH=true NODE_OPTIONS=--max-old-space-size=4096 DEBUG=* npx eslint ./packages/infrastructure",
     "lint:fix": "eslint --fix ./packages ./config",
     "format": "prettier --write ./packages ./config"
   },

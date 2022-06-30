@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PythonRestApi } from './datasources';
 import { mergeSchemas } from '@graphql-tools/schema';
 import GeoJSON from './schema/geojson';
-import { Cache, checkCache } from './cache';
-import { GraphQLBoolean, GraphQLList, GraphQLString } from 'graphql';
+import { Cache } from './cache';
+import { GraphQLBoolean, GraphQLList, GraphQLString, GraphQLObjectType, GraphQLSchema } from 'graphql';
 import { bcatQueries } from './schema/bcatQueries';
-const { ApolloServer, gql, cac } = require('apollo-server-lambda');
-const { GraphQLObjectType, GraphQLSchema } = require('graphql');
-const compression = require('compression');
-const express = require('express');
+import { ApolloServer } from 'apollo-server-lambda';
+import compression from 'compression';
+import * as express from 'express';
 
 const cache = new Cache();
 
@@ -16,8 +17,9 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     setup: {
       type: GeoJSON.GeometryTypeUnion,
-      args: null,
-      resolve: async (_: any, __: any, { dataSources }: any) => {
+      args: undefined,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      resolve: (_: any, __: any, { dataSources }: any) => {
         return true;
       }
     },
@@ -25,6 +27,7 @@ const RootQuery = new GraphQLObjectType({
       type: GeoJSON.FeatureCollectionObject,
       args: {
         table: {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           type: GraphQLString!
         },
         counties: {
@@ -82,14 +85,15 @@ const RootQuery = new GraphQLObjectType({
       type: GeoJSON.FeatureCollectionObject,
       args: {
         table: {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           type: GraphQLString!
         },
         county: {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           type: GraphQLString!
         }
       },
       resolve: async (_: any, { table, county }: any, { dataSources, redisClient }: any, info: any) => {
-        return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
         return await redisClient.checkCache(`${table}-${county}`, async () => {
           return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
         });
@@ -108,10 +112,12 @@ const schema = mergeSchemas({
 
 /**
  * Custom Plugin Development
+ * Tap into lifecycle hooks and add your custom code
  */
 
-const customPlugin = {
+const customServerPlugin = {
   // Fires whenever a GraphQL request is received from a client.
+  // eslint-disable-next-line require-await
   async requestDidStart(requestContext: any) {
     console.log('Request started! Query:\n' + requestContext.request.query);
     console.log('Request :\n' + JSON.stringify(requestContext.request));
@@ -119,12 +125,14 @@ const customPlugin = {
     return {
       // Fires whenever Apollo Server will parse a GraphQL
       // request to create its associated document AST.
+      // eslint-disable-next-line require-await
       async parsingDidStart(requestContext: any) {
         console.log('Parsing started!');
       },
 
       // Fires whenever Apollo Server will validate a
       // request's document AST against your GraphQL schema.
+      // eslint-disable-next-line require-await
       async validationDidStart(requestContext: any) {
         console.log('Validation started!');
       }
@@ -141,8 +149,8 @@ export const apolloConfig = {
   dataSources: () => ({
     pythonApi: new PythonRestApi()
   }),
-  plugins: [customPlugin],
-  context: ({ event, context, express, req }: any) => {
+  plugins: [customServerPlugin],
+  context: ({ event, context, express }: any) => {
     return {
       headers: event.headers,
       functionName: context.functionName,
