@@ -145,8 +145,10 @@ export class PipelineStack extends Stack {
           'ls',
           'npm install -g npm@latest',
           'npm i',
-          // @todo: Execute Python Integration test
-          'npm run test:integration --w packages/infrastructure'
+          // Execute Jest Integration Tests
+          'npm run test:integration --w packages/infrastructure',
+          // Execute Python Integration Tests
+          '. ./python-microservices/local/tests.sh'
         ]
       })
     );
