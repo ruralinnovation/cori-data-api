@@ -107,17 +107,17 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
 };
 
 export const Config: IConfigs = {
-  'refactor/ibliskavka-multi-api': {
+  'refactor/ibliskavka-integration-test': {
     ...mfDefaults,
     client: 'ib',
     stage: 'multi-api',
     testing: {
+      username: 'int-test@yopmail.com',
+      password: 'P@ssw0rd1',
       region: 'us-east-1',
       userPoolId: 'us-east-1_VCOJIG6El',
       apiEndpoint: 'https://4hw0kb39xi.execute-api.us-east-1.amazonaws.com/multi-api/',
-      cognitoClientId: '3au6c2jjloltaugrpgd7a1jjnk',
-      username: 'int-test@yopmail.com',
-      password: 'P@ssw0rd1'
+      cognitoClientId: '3au6c2jjloltaugrpgd7a1jjnk'
     }
   },
   'mf-dev': {
