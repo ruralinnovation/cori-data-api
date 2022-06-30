@@ -1,30 +1,41 @@
-import { Aws, Duration, RemovalPolicy } from 'aws-cdk-lib';
-import { PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { Duration } from 'aws-cdk-lib';
 import { Function as LambdaFunction, Runtime } from 'aws-cdk-lib/aws-lambda';
-import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 import { EnvConfigVars } from './EnvConfig';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { IUserPool } from 'aws-cdk-lib/aws-cognito';
+import { Api } from '../../../constructs/Api';
 
 interface ApolloGraphqlServerProps {
   prefix: string;
+  stage: string;
+  userPool: IUserPool;
   logRetention: RetentionDays;
   environment: EnvConfigVars;
 }
 
 export class ApolloGraphqlServer extends Construct {
-  function: LambdaFunction;
-  role: Role;
+  readonly apiGw: Api;
+  readonly function: LambdaFunction;
+
   constructor(scope: Construct, id: string, props: ApolloGraphqlServerProps) {
     super(scope, id);
 
-    const { prefix, logRetention, environment } = props;
+    const { prefix, stage, userPool, logRetention, environment } = props;
+
+    /**
+     * Typescript Apollo Server GraphQL Api
+     */
+    this.apiGw = new Api(this, 'ApolloApi', {
+      prefix: prefix + '-apollo-api',
+      stage,
+      // cloudWatchRole: this.iam.roles === undefined,
+      cloudWatchRole: true,
+      userPool,
+    });
 
     const functionName = `${prefix}-apollo-server`;
-
-    this.role = new Role(this, 'Role', {
-      assumedBy: new ServicePrincipal('lambda.amazonaws.com')
-    });
 
     this.function = new NodejsFunction(this, 'handler', {
       ...props,
@@ -32,24 +43,14 @@ export class ApolloGraphqlServer extends Construct {
       runtime: Runtime.NODEJS_14_X,
       environment,
       functionName,
-      timeout: Duration.seconds(40)
+      timeout: Duration.seconds(40),
+      logRetention: logRetention,
     });
 
-    new LogGroup(this, 'LogGroup', {
-      logGroupName: `/aws/lambda/${functionName}`,
-      removalPolicy: RemovalPolicy.DESTROY,
-      retention: logRetention
+    this.apiGw.addLambda({
+      method: 'POST',
+      path: '/graphql',
+      lambda: this.function,
     });
-
-    this.function.addToRolePolicy(
-      new PolicyStatement({
-        sid: 'cloudwatch',
-        actions: ['logs:CreateLogStream', 'logs:PutLogEvents'],
-        resources: [
-          `arn:aws:logs:${Aws.REGION}:${Aws.ACCOUNT_ID}:log-group:/aws/lambda/${functionName}:*`,
-          `arn:aws:logs:${Aws.REGION}:${Aws.ACCOUNT_ID}:log-group:/aws/lambda/${functionName}:*:*`
-        ]
-      })
-    );
   }
 }
