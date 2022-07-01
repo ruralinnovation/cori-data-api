@@ -1,10 +1,8 @@
-import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
-import { HasIdOverride } from '../../models';
 
-export interface MFNodejsFunctionProps extends NodejsFunctionProps, HasIdOverride {
+export interface MFNodejsFunctionProps extends NodejsFunctionProps {
   /**
    * Must provide at least logging level
    */
@@ -27,15 +25,11 @@ export interface MFNodejsFunctionProps extends NodejsFunctionProps, HasIdOverrid
  */
 export class MFNodejsFunction extends NodejsFunction {
   constructor(scope: Construct, id: string, props: MFNodejsFunctionProps) {
-    const { logRetention, logicalIdOverride } = props;
+    const { logRetention } = props;
 
     super(scope, id, {
       ...props,
-      logRetention: logRetention || RetentionDays.TWO_WEEKS
+      logRetention: logRetention || RetentionDays.TWO_WEEKS,
     });
-
-    if (logicalIdOverride) {
-      (this.node.defaultChild as CfnFunction).overrideLogicalId(logicalIdOverride);
-    }
   }
 }

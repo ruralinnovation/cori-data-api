@@ -2,12 +2,12 @@ import { Construct } from 'constructs';
 import { AwsIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { PythonLambda, PythonLambdaProps } from './PythonLambda';
-import { Api } from '../Api';
+import { ApiGw } from '../api/ApiGw';
 
 type HttpMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS';
 
 export interface ApiLambdaProps extends PythonLambdaProps {
-  api: Api;
+  api: ApiGw;
 }
 
 /**
@@ -28,11 +28,11 @@ export class ApiLambda extends PythonLambda {
     const integration = new AwsIntegration({
       proxy: true,
       service: 'lambda',
-      path: `2015-03-31/functions/${this.function.functionArn}/invocations`
+      path: `2015-03-31/functions/${this.function.functionArn}/invocations`,
     });
 
     resource.addMethod(method, integration, {
-      authorizer: this.props.api.authorizer
+      authorizer: this.props.api.authorizer,
     });
 
     return this;

@@ -8,6 +8,7 @@ import {
   OriginProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { Retainable } from '../models';
 
 export interface ApiOriginConfig {
   domain: string;
@@ -15,10 +16,9 @@ export interface ApiOriginConfig {
   behaviorPathPattern: string;
   default: boolean;
 }
-export interface HostingProps {
+export interface HostingProps extends Retainable {
   prefix: string;
   apiOriginConfigs: ApiOriginConfig[];
-  retain?: boolean;
 }
 
 export class Hosting extends Construct {

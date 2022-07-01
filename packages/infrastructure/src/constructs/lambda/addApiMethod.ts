@@ -1,5 +1,5 @@
 import { AwsIntegration, CognitoUserPoolsAuthorizer, IResource } from 'aws-cdk-lib/aws-apigateway';
-import { HttpMethod } from '../../interfaces';
+import { HttpMethod } from '../../models/interfaces';
 
 /**
  * Configure the path/method integration for an API Lambda.
@@ -15,7 +15,7 @@ export const addApiMethod = (
   const integration = new AwsIntegration({
     proxy: true,
     service: 'lambda',
-    path: `2015-03-31/functions/${functionArn}/invocations`
+    path: `2015-03-31/functions/${functionArn}/invocations`,
   });
 
   if (method === 'OPTIONS') {

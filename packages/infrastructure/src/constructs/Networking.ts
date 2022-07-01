@@ -1,6 +1,6 @@
 import { ISecurityGroup, IVpc, Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Construct } from 'constructs';
-import { DatabaseConfig } from '../lib/ApiStack';
+import { DatabaseConfig } from '../stacks/ApiStack';
 
 interface NetworkingProps {
   prefix: string;

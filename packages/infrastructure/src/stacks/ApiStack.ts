@@ -1,11 +1,11 @@
 import { Stack, StackProps, CfnOutput, Tags, Aws } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Hosting } from '../constructs/Hosting';
-import { Cognito, ExistingCognitoConfig } from '../constructs/cognito';
+import { Cognito, ExistingCognitoConfig } from '../constructs/Cognito';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
-import { ApolloGraphqlServer } from '../src/lambdas/ApolloGraphqlServer/ApolloGraphqlServer';
+import { ApolloGraphqlServer } from '../constructs/api/ApolloGraphqlServer/ApolloGraphqlServer';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { BcatServer } from '../constructs/BcatServer';
+import { BcatServer } from '../constructs/api/BcatServer';
 import { Networking } from '../constructs/Networking';
 
 export interface DatabaseConfig {

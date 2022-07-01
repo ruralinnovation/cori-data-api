@@ -3,10 +3,10 @@ import { IVpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import { LayerVersion, Code, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
 import { join } from 'path';
-import { Api } from './Api';
-import { PythonLambda } from './lambda';
-import { microservicesDirectory } from '../src/util';
+import { PythonLambda } from '../lambda';
+import { microservicesDirectory } from '../../util';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
+import { ApiGw } from './ApiGw';
 
 interface BcatServerProps {
   prefix: string;
@@ -28,7 +28,7 @@ interface BcatServerProps {
   };
 }
 export class BcatServer extends Construct {
-  readonly apiGw: Api;
+  readonly apiGw: ApiGw;
   constructor(scope: Construct, id: string, props: BcatServerProps) {
     super(scope, id);
 
@@ -37,7 +37,7 @@ export class BcatServer extends Construct {
     /**
      * Python Data RESTApi
      */
-    this.apiGw = new Api(this, 'PythonApi', {
+    this.apiGw = new ApiGw(this, 'PythonApi', {
       prefix: prefix + '-python-gis-api',
       stage,
       // cloudWatchRole: this.iam.roles === undefined,

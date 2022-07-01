@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as YAML from 'yaml';
 import { getConfig } from '../../../config/configs';
-import { ApiStack, ApiStackProps } from '../lib';
+import { ApiStack, ApiStackProps } from '../src/stacks';
 
 // Grab environment specific ENV VARS file for DB access
 

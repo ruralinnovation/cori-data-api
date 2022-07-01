@@ -14,8 +14,8 @@ import {
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { Function as BASE_FUNCTION } from 'aws-cdk-lib/aws-lambda';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { toPascal, toKebab } from './naming';
-import { Mutable, HttpMethod } from '../interfaces';
+import { toPascal, toKebab } from '../../naming';
+import { Mutable, HttpMethod } from '../../models/interfaces';
 import { Aws } from 'aws-cdk-lib';
 
 interface GatewayResponse {
@@ -35,7 +35,7 @@ export interface ApiProps {
   binaryMediaTypes?: string[];
 }
 
-export class Api extends Construct {
+export class ApiGw extends Construct {
   readonly api: RestApi;
   authorizer?: CognitoUserPoolsAuthorizer;
   tokenAuthorizer?: TokenAuthorizer;

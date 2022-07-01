@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { PipelineStack } from '../lib/PipelineStack';
+import { PipelineStack } from '../src/stacks/PipelineStack';
 import { getConfig, getLocalGitBranch } from '../../../config';
 
 const app = new cdk.App();
@@ -11,7 +11,7 @@ const app = new cdk.App();
  */
 const sourceConfig = {
   repo: 'mergingfutures/cori-data-api',
-  authentication: cdk.SecretValue.secretsManager('github-token')
+  authentication: cdk.SecretValue.secretsManager('github-token'),
 };
 
 const main = async () => {
@@ -26,9 +26,9 @@ const main = async () => {
     artifactBucketName,
     source: {
       ...sourceConfig,
-      branch
+      branch,
     },
-    ApiConfig: config
+    ApiConfig: config,
   });
 };
 

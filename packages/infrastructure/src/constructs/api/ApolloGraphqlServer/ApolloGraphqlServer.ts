@@ -5,7 +5,7 @@ import { Construct } from 'constructs';
 import { EnvConfigVars } from './EnvConfig';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
-import { Api } from '../../../constructs/Api';
+import { ApiGw } from '../ApiGw';
 
 interface ApolloGraphqlServerProps {
   prefix: string;
@@ -16,7 +16,7 @@ interface ApolloGraphqlServerProps {
 }
 
 export class ApolloGraphqlServer extends Construct {
-  readonly apiGw: Api;
+  readonly apiGw: ApiGw;
   readonly function: LambdaFunction;
 
   constructor(scope: Construct, id: string, props: ApolloGraphqlServerProps) {
@@ -27,7 +27,7 @@ export class ApolloGraphqlServer extends Construct {
     /**
      * Typescript Apollo Server GraphQL Api
      */
-    this.apiGw = new Api(this, 'ApolloApi', {
+    this.apiGw = new ApiGw(this, 'ApolloApi', {
       prefix: prefix + '-apollo-api',
       stage,
       // cloudWatchRole: this.iam.roles === undefined,
