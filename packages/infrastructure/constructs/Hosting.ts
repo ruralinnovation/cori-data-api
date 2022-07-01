@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { Duration } from 'aws-cdk-lib';
+import { Duration, RemovalPolicy } from 'aws-cdk-lib';
 import {
   CloudFrontWebDistribution,
   SourceConfiguration,
@@ -18,12 +18,13 @@ export interface ApiOriginConfig {
 export interface HostingProps {
   prefix: string;
   apiOriginConfigs: ApiOriginConfig[];
+  retain?: boolean;
 }
 
 export class Hosting extends Construct {
-  distribution: CloudFrontWebDistribution;
-  loggingBucket: Bucket;
-  url: string;
+  readonly distribution: CloudFrontWebDistribution;
+  readonly loggingBucket: Bucket;
+  readonly url: string;
 
   private buildApiOrigin(config: ApiOriginConfig): SourceConfiguration {
     return {
@@ -52,26 +53,16 @@ export class Hosting extends Construct {
 
   constructor(scope: Construct, id: string, props: HostingProps) {
     super(scope, id);
+
     this.loggingBucket = new Bucket(this, 'LogBucket', {
       bucketName: props.prefix + '-cloudfront-log-bucket',
+      removalPolicy: props.retain ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
     });
 
     this.distribution = new CloudFrontWebDistribution(this, 'Distribution', {
       comment: props.prefix,
       originConfigs: props.apiOriginConfigs.map(x => this.buildApiOrigin(x)),
       defaultRootObject: 'index.html',
-      errorConfigurations: [
-        {
-          errorCode: 403,
-          responseCode: 200,
-          errorCachingMinTtl: 0,
-        },
-        {
-          errorCode: 404,
-          responseCode: 200,
-          errorCachingMinTtl: 0,
-        },
-      ],
       loggingConfig: {
         bucket: this.loggingBucket,
         prefix: 'cloudfront-logs/',

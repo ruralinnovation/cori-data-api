@@ -8,8 +8,13 @@ import {
   IUserPool,
   CfnUserPoolDomain,
   OAuthScope,
-  CfnUserPool
+  CfnUserPool,
 } from 'aws-cdk-lib/aws-cognito';
+
+export interface ExistingCognitoConfig {
+  userPoolId: string;
+  userPoolDomain: string;
+}
 
 export interface CognitoConstructProps {
   prefix: string;
@@ -25,14 +30,9 @@ export interface CognitoConstructProps {
   retain: boolean;
 
   /**
-   * Optional. When provided, will attach to existing user pool
+   * Optional. When provided, will attach to existing Cognito for authentication.
    */
-  userPoolId?: string;
-
-  /**
-   * Optional. When provided, will re-use existing user pool domain
-   */
-  existingUserPoolDomain?: string;
+  existingCognito?: ExistingCognitoConfig;
 }
 
 export class Cognito extends Construct {
@@ -44,32 +44,32 @@ export class Cognito extends Construct {
   constructor(scope: Construct, id: string, private props: CognitoConstructProps) {
     super(scope, id);
     this.prefix = props.prefix;
-    if (props.userPoolId) {
-      this.userPool = UserPool.fromUserPoolId(this, 'UserPool', props.userPoolId);
+    if (props.existingCognito?.userPoolId) {
+      this.userPool = UserPool.fromUserPoolId(this, 'UserPool', props.existingCognito.userPoolId);
     } else {
       this.userPool = new UserPool(this, 'UserPool', {
         userPoolName: this.props.prefix,
         userInvitation: {
           emailSubject: 'Your CORI Data API temporary password',
           emailBody: `Your username is {username} and temporary password is {####}.`,
-          smsMessage: 'Your username is {username} and temporary password is {####}.'
+          smsMessage: 'Your username is {username} and temporary password is {####}.',
         },
         autoVerify: {
-          email: true
+          email: true,
         },
         selfSignUpEnabled: false,
-        removalPolicy: this.props.retain ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY
+        removalPolicy: this.props.retain ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
       });
       // Override logical name for backwards compatibility
       (this.userPool.node.defaultChild as CfnUserPool).overrideLogicalId('CognitoUserPool');
     }
 
-    if (props.existingUserPoolDomain) {
-      this.userPoolDomain = props.existingUserPoolDomain;
+    if (props.existingCognito?.userPoolDomain) {
+      this.userPoolDomain = props.existingCognito.userPoolDomain;
     } else {
       const domain = new CfnUserPoolDomain(this, 'CognitoDomain', {
         userPoolId: this.userPool.userPoolId,
-        domain: this.props.userPoolDomainName
+        domain: this.props.userPoolDomainName,
       });
       domain.overrideLogicalId('CognitoDomain');
 
@@ -98,16 +98,16 @@ export class Cognito extends Construct {
       oAuth: {
         flows: {
           implicitCodeGrant: true,
-          authorizationCodeGrant: true
+          authorizationCodeGrant: true,
         },
         scopes: [OAuthScope.EMAIL, OAuthScope.OPENID, OAuthScope.PROFILE],
         callbackUrls: callbackUrls,
-        logoutUrls: logoutUrls
+        logoutUrls: logoutUrls,
       },
       authFlows: {
         userPassword: true,
-        userSrp: true
-      }
+        userSrp: true,
+      },
     });
   }
 }

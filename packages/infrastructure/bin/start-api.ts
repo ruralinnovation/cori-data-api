@@ -38,7 +38,7 @@ const createSamTemplate = (app: App, options: ApiStackProps) => {
       DB_USER: options.databaseConfig.dbuser,
       REGION: options.env.region,
       DB_HOST: options.databaseConfig.host,
-      DB_NAME: options.databaseConfig.dbname
+      DB_NAME: options.databaseConfig.dbname,
     };
   });
 
@@ -64,15 +64,20 @@ const main = () => {
   const apiProps: ApiStackProps = {
     ...config,
     // Allow use to auth to an existing pool during testing.
-    existingUserPoolId: config.testing?.userPoolId as string,
+    existingCognito: config.testing?.userPoolId
+      ? {
+          userPoolId: config.testing.userPoolId,
+          userPoolDomain: '',
+        }
+      : undefined,
     // assets: Code.fromAsset('./dist/assets'),
-    loggingLevel: 'debug'
+    loggingLevel: 'debug',
   };
 
   new ApiStack(app, `${prefix}`, apiProps);
 
   createSamTemplate(app, {
-    ...apiProps
+    ...apiProps,
   });
 };
 
