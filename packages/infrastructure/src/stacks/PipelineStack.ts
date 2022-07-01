@@ -148,7 +148,7 @@ export class PipelineStack extends Stack {
           // Execute Jest Integration Tests
           'npm run test:integration --w packages/infrastructure',
           // Execute Python Integration Tests
-          '. ./python-microservices/local/tests.sh',
+          '. ./python-microservices/bcat/tests.sh',
         ],
       })
     );
