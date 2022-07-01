@@ -131,16 +131,14 @@ export class PipelineStack extends Stack {
       new ShellStep('IntegrationTest', {
         // Add environment specific outputs here
         envFromCfnOutputs: {
-          PYTHON_API_URL: stack.cloudFrontUrl,
-          APOLLO_API_URL: stack.cloudFrontUrl,
+          API_URL: stack.cloudFrontUrl,
           USER_POOL_ID: stack.userPoolIdOutput,
           COGNITO_CLIENT_ID: stack.postmanClientIdOutput,
           COGNITO_DOMAIN: stack.cognitoDomainOutput,
         },
         // Execute your integration test
         commands: [
-          'echo $PYTHON_API_URL',
-          'echo $APOLLO_API_URL',
+          'echo $API_URL',
           'echo $USER_POOL_ID',
           'echo $COGNITO_CLIENT_ID',
           'echo $COGNITO_DOMAIN',

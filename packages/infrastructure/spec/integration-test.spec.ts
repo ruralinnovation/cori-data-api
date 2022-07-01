@@ -10,8 +10,8 @@ import { getTestConfig } from './testUtils';
 const logger = console;
 
 describe('ApiIntegrationTests', () => {
-  let pythonClient: AxiosInstance;
-  let apolloClient: AxiosInstance;
+  let apiClient: AxiosInstance;
+
   /**
    * Sign in test user and define Axios
    */
@@ -28,9 +28,9 @@ describe('ApiIntegrationTests', () => {
           redirectSignIn: '',
           redirectSignOut: '',
           responseType: 'code',
-          mandatorySignIn: true
-        }
-      }
+          mandatorySignIn: true,
+        },
+      },
     });
 
     const response = await Auth.signIn(config.username, config.password);
@@ -40,26 +40,19 @@ describe('ApiIntegrationTests', () => {
       fail('Test user was not authenticated.');
     }
 
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    };
-
-    pythonClient = axios.create({
-      baseURL: config.pythonEndpoint,
-      headers
-    });
-
-    apolloClient = axios.create({
-      baseURL: config.apolloEndpoint,
-      headers
+    apiClient = axios.create({
+      baseURL: config.apiUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
     });
   });
 
   describe('Python API', () => {
     it('broadband_unserved_blocks', async () => {
       try {
-        const response = await pythonClient.get('/bcat/broadband_unserved_blocks/geojson?geoid_co=47001,47003');
+        const response = await apiClient.get('/bcat/broadband_unserved_blocks/geojson?geoid_co=47001,47003');
 
         // Axios has an extra data wrapper
         const result = response.data;
@@ -94,10 +87,10 @@ describe('ApiIntegrationTests', () => {
           variables: `{
               "counties": ["47167", "47017"],
               "skipCache": true
-          }`
+          }`,
         };
 
-        const response = await apolloClient.post('/graphql', request);
+        const response = await apiClient.post('/graphql', request);
 
         // Axios has an extra data wrapper
         const result = response.data?.data?.broadband_unserved_blocks_geojson;
@@ -105,7 +98,7 @@ describe('ApiIntegrationTests', () => {
 
         logger.info({
           type: result.type,
-          features: result.features?.length
+          features: result.features?.length,
         });
       } catch (error) {
         logger.error(error);

@@ -2,8 +2,7 @@ import { ApiStackProps } from '../packages/infrastructure/src/stacks/ApiStack';
 
 export interface TestEnvConfig {
   region: string;
-  apolloEndpoint: string;
-  pythonEndpoint: string;
+  apiUrl: string;
   userPoolId: string;
   cognitoClientId: string;
   username: string;
@@ -114,10 +113,9 @@ export const Config: IConfigs = {
       username: 'int-test@yopmail.com',
       password: 'P@ssw0rd1',
       region: 'us-east-1',
-      userPoolId: 'us-east-1_YAVNg5RG5',
-      pythonEndpoint: 'https://jmlwqri0wa.execute-api.us-east-1.amazonaws.com/dev/',
-      apolloEndpoint: 'https://a4qnp6dav5.execute-api.us-east-1.amazonaws.com/dev/',
-      cognitoClientId: '4bca4rr1caiebj24dqodhironq',
+      userPoolId: 'us-east-1_7DCdD4Cgd',
+      apiUrl: 'https://d52lkk2qfx1z9.cloudfront.net',
+      cognitoClientId: '4uims9844lfb2efacb684g2s6e',
     },
   },
   'mf-dev': {
