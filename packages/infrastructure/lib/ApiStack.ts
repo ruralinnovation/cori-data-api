@@ -1,16 +1,13 @@
 import { Stack, StackProps, CfnOutput, Tags, Aws } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { GraphqlApi } from '@aws-cdk/aws-appsync-alpha';
-import * as ec2 from 'aws-cdk-lib/aws-ec2';
-import { Hosting } from '../constructs/hosting';
+import { Hosting } from '../constructs/Hosting';
 import { Cognito } from '../constructs/cognito';
-import { Vpc, SecurityGroup, IVpc, ISecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { ApolloGraphqlServer } from '../src/lambdas/ApolloGraphqlServer/ApolloGraphqlServer';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { Api } from '../constructs/Api';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { BcatServer } from '../constructs/BcatServer';
+import { Networking } from '../constructs/Networking';
 
 export interface DatabaseConfig {
   vpcId: string;
@@ -87,15 +84,13 @@ export interface ApiStackProps extends StackProps {
 export class ApiStack extends Stack {
   props: ApiStackProps;
   prefix: string;
-  pythonApi: Api;
-  apolloApi: Api;
-  hosting: Hosting;
-  cognito: Cognito;
-  graphqlApi: GraphqlApi;
+
   apiKey: Secret;
-  vpc: IVpc;
-  lambdaSecurityGroup: SecurityGroup;
-  rdsSecurityGroup: ISecurityGroup;
+  networking: Networking;
+
+  cognito: Cognito;
+
+  hosting: Hosting;
 
   /**
    * Used to connect values to integration test
@@ -117,37 +112,11 @@ export class ApiStack extends Stack {
 
     this.buildResources();
 
-    this.buildOutputs();
-
     Tags.of(this).add('client', this.props.client);
     Tags.of(this).add('project', this.props.project);
     Tags.of(this).add('environment', this.props.stage);
 
     return this;
-  }
-
-  private buildNetworkingResources() {
-    const { databaseConfig } = this.props;
-
-    this.vpc = Vpc.fromLookup(this, 'CoriDbVpc', {
-      vpcId: databaseConfig.vpcId,
-    });
-
-    this.lambdaSecurityGroup = new SecurityGroup(this, 'OutboundPythonLambdaSecurityGroup', {
-      securityGroupName: `${this.prefix}-vpc-python-lambda-sg`,
-      vpc: this.vpc,
-      allowAllOutbound: false,
-      description: 'Security group for RDS access',
-    });
-
-    this.rdsSecurityGroup = SecurityGroup.fromLookupById(
-      this,
-      'RDSSecurityGroup',
-      databaseConfig.databaseSecurityGroupId
-    );
-
-    this.lambdaSecurityGroup.addEgressRule(this.rdsSecurityGroup, ec2.Port.tcp(5432), 'Allow Egress to PostgreSQL');
-    this.rdsSecurityGroup.addIngressRule(this.lambdaSecurityGroup, ec2.Port.tcp(5432), 'Allow Ingress from Lambda');
   }
 
   private buildResources() {
@@ -156,25 +125,10 @@ export class ApiStack extends Stack {
     const dbPassword = ssm.StringParameter.valueFromLookup(this, databaseConfig.parameterName);
     const cachePassword = ssm.StringParameter.valueFromLookup(this, cacheConfig.parameterName);
 
-    const vpc = Vpc.fromLookup(this, 'CoriDbVpc', {
-      vpcId: databaseConfig.vpcId,
+    this.networking = new Networking(this, 'Networking', {
+      prefix: this.prefix,
+      databaseConfig,
     });
-
-    const lambdaSecurityGroup = new SecurityGroup(this, 'OutboundPythonLambdaSecurityGroup', {
-      securityGroupName: `${this.prefix}-vpc-python-lambda-sg`,
-      vpc,
-      allowAllOutbound: false,
-      description: 'Security group for RDS access',
-    });
-
-    const rdsSecurityGroup = SecurityGroup.fromLookupById(
-      this,
-      'RDSSecurityGroup',
-      databaseConfig.databaseSecurityGroupId
-    );
-
-    lambdaSecurityGroup.addEgressRule(rdsSecurityGroup, ec2.Port.tcp(5432), 'Allow Egress to PostgreSQL');
-    rdsSecurityGroup.addIngressRule(lambdaSecurityGroup, ec2.Port.tcp(5432), 'Allow Ingress from Lambda');
 
     this.cognito = new Cognito(this, 'Cognito', {
       userPoolId: this.props.existingUserPoolId,
@@ -187,12 +141,12 @@ export class ApiStack extends Stack {
     /**
      * Python API Handler
      */
-    new BcatServer(this, 'BcatServer', {
+    const bcat = new BcatServer(this, 'BcatServer', {
       prefix: this.prefix,
       stage: this.props.stage,
       userPool: this.cognito.userPool,
-      vpc,
-      securityGroups: [lambdaSecurityGroup],
+      vpc: this.networking.vpc,
+      securityGroups: [this.networking.lambdaSecurityGroup],
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: this.props.stage,
@@ -207,7 +161,7 @@ export class ApiStack extends Stack {
     /**
      * Apollo V3 GraphQL Api Handler
      */
-    new ApolloGraphqlServer(this, 'ApolloServer', {
+    const appolo = new ApolloGraphqlServer(this, 'ApolloServer', {
       prefix: this.prefix,
       stage: this.props.stage,
       userPool: this.cognito.userPool,
@@ -225,29 +179,27 @@ export class ApiStack extends Stack {
       },
     });
 
-  //   this.hosting = new Hosting(this, 'Hosting', {
-  //     prefix: this.prefix + '-hosting',
-  //     apiOriginConfigs: [
-  //       {
-  //         default: true,
-  //         domain: this.pythonApi.apiDomain,
-  //         originPath: `/${this.props.stage}`,
-  //         behaviorPathPattern: '/data/*'
-  //       },
-  //       {
-  //         default: false,
-  //         domain: this.apolloApi.apiDomain,
-  //         originPath: `/${this.props.stage}`,
-  //         behaviorPathPattern: '/gql/*'
-  //       }
-  //     ]
-  //   });
-  // }
+    //   this.hosting = new Hosting(this, 'Hosting', {
+    //     prefix: this.prefix + '-hosting',
+    //     apiOriginConfigs: [
+    //       {
+    //         default: true,
+    //         domain: this.pythonApi.apiDomain,
+    //         originPath: `/${this.props.stage}`,
+    //         behaviorPathPattern: '/data/*'
+    //       },
+    //       {
+    //         default: false,
+    //         domain: this.apolloApi.apiDomain,
+    //         originPath: `/${this.props.stage}`,
+    //         behaviorPathPattern: '/gql/*'
+    //       }
+    //     ]
+    //   });
 
-  private buildOutputs() {
     new CfnOutput(this, 'Region', { value: Aws.REGION });
-    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: this.pythonApi.api.url });
-    this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: this.pythonApi.api.url });
+    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: bcat.apiGw.apiDomain });
+    this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: appolo.apiGw.apiDomain });
     this.userPoolIdOutput = new CfnOutput(this, 'UserPoolId', {
       value: this.cognito.userPool.userPoolId,
     });
