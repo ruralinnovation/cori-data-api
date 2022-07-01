@@ -36,10 +36,11 @@ export interface ApiProps {
 }
 
 export class Api extends Construct {
-  public readonly api: RestApi;
-  public authorizer?: CognitoUserPoolsAuthorizer;
-  public tokenAuthorizer?: TokenAuthorizer;
-  public apiDomain: string;
+  readonly api: RestApi;
+  authorizer?: CognitoUserPoolsAuthorizer;
+  tokenAuthorizer?: TokenAuthorizer;
+  readonly apiDomain: string;
+  readonly apiEndpoint: string;
 
   constructor(scope: Construct, id: string, private props: ApiProps) {
     super(scope, id);
@@ -60,6 +61,7 @@ export class Api extends Construct {
     }
 
     this.apiDomain = `${this.api.restApiId}.execute-api.${Aws.REGION}.amazonaws.com`;
+    this.apiEndpoint = `https://${this.apiDomain}/${props.stage}/`;
   }
 
   public attachCognitoAuthorizer(userPool: IUserPool) {

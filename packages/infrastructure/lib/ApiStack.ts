@@ -8,6 +8,7 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { BcatServer } from '../constructs/BcatServer';
 import { Networking } from '../constructs/Networking';
+import { apolloConfig } from '../src/lambdas/ApolloGraphqlServer/ApolloGraphqlServer.handler';
 
 export interface DatabaseConfig {
   vpcId: string;
@@ -82,7 +83,6 @@ export interface ApiStackProps extends StackProps {
 }
 
 export class ApiStack extends Stack {
-  props: ApiStackProps;
   prefix: string;
 
   apiKey: Secret;
@@ -104,55 +104,56 @@ export class ApiStack extends Stack {
   /**
    * Call build() to synth this construct when ready.
    */
-  constructor(scope: Construct, id: string, props: ApiStackProps) {
+  constructor(scope: Construct, id: string, private props: ApiStackProps) {
     super(scope, id, props);
-    this.props = props;
+    const { client, project, stage } = props;
 
-    this.prefix = `${props.client}-data-api-${props.stage}`;
+    this.prefix = `${client}-data-api-${stage}`;
 
     this.buildResources();
 
-    Tags.of(this).add('client', this.props.client);
-    Tags.of(this).add('project', this.props.project);
-    Tags.of(this).add('environment', this.props.stage);
+    Tags.of(this).add('client', client);
+    Tags.of(this).add('project', project);
+    Tags.of(this).add('environment', stage);
 
     return this;
   }
 
   private buildResources() {
-    const { databaseConfig, cacheConfig, cacheEnabled } = this.props;
+    const { prefix } = this;
+    const { stage, existingUserPoolId, userPoolDomain, databaseConfig, cacheConfig, cacheEnabled, retain } = this.props;
 
     const dbPassword = ssm.StringParameter.valueFromLookup(this, databaseConfig.parameterName);
     const cachePassword = ssm.StringParameter.valueFromLookup(this, cacheConfig.parameterName);
 
     this.networking = new Networking(this, 'Networking', {
-      prefix: this.prefix,
+      prefix,
       databaseConfig,
     });
 
     this.cognito = new Cognito(this, 'Cognito', {
-      userPoolId: this.props.existingUserPoolId,
-      existingUserPoolDomain: this.props.userPoolDomain,
-      prefix: this.prefix,
-      userPoolDomainName: this.prefix,
-      retain: this.props.retain,
+      userPoolId: existingUserPoolId,
+      existingUserPoolDomain: userPoolDomain,
+      prefix,
+      userPoolDomainName: prefix,
+      retain,
     });
 
     /**
      * Python API Handler
      */
     const bcat = new BcatServer(this, 'BcatServer', {
-      prefix: this.prefix,
-      stage: this.props.stage,
+      prefix,
+      stage,
       userPool: this.cognito.userPool,
       vpc: this.networking.vpc,
       securityGroups: [this.networking.lambdaSecurityGroup],
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
-        STAGE: this.props.stage,
+        STAGE: stage,
         SECRET: dbPassword,
         DB_USER: databaseConfig.dbuser,
-        REGION: this.props.env.region || '',
+        REGION: Aws.REGION,
         DB_HOST: databaseConfig.host,
         DB_NAME: databaseConfig.dbname,
       },
@@ -161,16 +162,16 @@ export class ApiStack extends Stack {
     /**
      * Apollo V3 GraphQL Api Handler
      */
-    const appolo = new ApolloGraphqlServer(this, 'ApolloServer', {
-      prefix: this.prefix,
-      stage: this.props.stage,
+    const apollo = new ApolloGraphqlServer(this, 'ApolloServer', {
+      prefix,
+      stage,
       userPool: this.cognito.userPool,
       logRetention: RetentionDays.FOUR_MONTHS,
       environment: {
         LOGGING_LEVEL: 'debug',
-        PYTHON_API_URL: 'this.apiGw.api.url',
-        PYTHON_API_STAGE: this.props.stage,
-        // CF_URL: this.hosting.url,
+        PYTHON_API_URL: bcat.apiGw.apiEndpoint,
+        PYTHON_API_STAGE: stage,
+        // CF_URL: this.hosting.url,   // Circular dep
         CACHE_ENABLED: cacheEnabled ? 'true' : 'false',
         CACHE_HOST: cacheConfig.host,
         CACHE_PORT: '' + cacheConfig.port,
@@ -179,27 +180,27 @@ export class ApiStack extends Stack {
       },
     });
 
-    //   this.hosting = new Hosting(this, 'Hosting', {
-    //     prefix: this.prefix + '-hosting',
-    //     apiOriginConfigs: [
-    //       {
-    //         default: true,
-    //         domain: this.pythonApi.apiDomain,
-    //         originPath: `/${this.props.stage}`,
-    //         behaviorPathPattern: '/data/*'
-    //       },
-    //       {
-    //         default: false,
-    //         domain: this.apolloApi.apiDomain,
-    //         originPath: `/${this.props.stage}`,
-    //         behaviorPathPattern: '/gql/*'
-    //       }
-    //     ]
-    //   });
+    // this.hosting = new Hosting(this, 'Hosting', {
+    //   prefix,
+    //   apiOriginConfigs: [
+    //     {
+    //       default: true,
+    //       domain: bcat.apiGw.apiDomain,
+    //       originPath: `/${stage}`,
+    //       behaviorPathPattern: '/bcat/*',
+    //     },
+    //     {
+    //       default: false,
+    //       domain: apollo.apiGw.apiDomain,
+    //       originPath: `/${stage}`,
+    //       behaviorPathPattern: '/graphql*',
+    //     },
+    //   ],
+    // });
 
     new CfnOutput(this, 'Region', { value: Aws.REGION });
-    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: bcat.apiGw.apiDomain });
-    this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: appolo.apiGw.apiDomain });
+    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: bcat.apiGw.apiEndpoint });
+    this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: apollo.apiGw.apiEndpoint });
     this.userPoolIdOutput = new CfnOutput(this, 'UserPoolId', {
       value: this.cognito.userPool.userPoolId,
     });
