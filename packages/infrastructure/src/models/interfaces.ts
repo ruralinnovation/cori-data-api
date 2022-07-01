@@ -7,3 +7,11 @@ export function isHttpMethod(value: unknown): value is HttpMethod {
 export type Mutable<T extends object> = {
   -readonly [K in keyof T]: T[K];
 };
+
+export interface Retainable {
+  /**
+   * Retain data buckets, keys, tables, and logs on delete
+   * Should only set the to `true` in production
+   */
+  retain?: boolean;
+}
