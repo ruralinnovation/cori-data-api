@@ -7,38 +7,50 @@ import { Auth } from 'aws-amplify';
 import axios, { AxiosInstance } from 'axios';
 import { getTestConfig } from './testUtils';
 
+jest.setTimeout(30000);
+
 const logger = console;
 
 const pythonIntegrationEndpoints = {
   broadband_unserved_blocks: {
-    url: '/bcat/broadband_unserved_blocks/geojson?geoid_co=47001,47003',
+    geo: '/bcat/broadband_unserved_blocks/geojson?geoid_co=47001,47003',
+    mvt: '/bcat/broadband_unserved_blocks/tiles/10/278/408.pbf',
   },
   auction_904_subsidy_awards: {
-    url: '/bcat/auction_904_subsidy_awards/geojson?geoid_co=47001,47003,47011',
+    geo: '/bcat/auction_904_subsidy_awards/geojson?geoid_co=47001,47003,47011',
+    mvt: '/bcat/auction_904_subsidy_awards/tiles/10/278/408.pbf',
   },
   county_broadband_farm_bill_eligibility: {
-    url: '/bcat/county_broadband_farm_bill_eligibility/geojson?state_abbr=TN',
+    geo: '/bcat/county_broadband_farm_bill_eligibility/geojson?state_abbr=TN',
+    mvt: '/bcat/county_broadband_farm_bill_eligibility/tiles/10/278/408.pbf',
   },
   county_broadband_pending_rural_dev: {
-    url: '/bcat/county_broadband_pending_rural_dev/geojson?state_abbr=TN',
+    geo: '/bcat/county_broadband_pending_rural_dev/geojson?state_abbr=TN',
+    mvt: '/bcat/county_broadband_pending_rural_dev/tiles/10/278/408.pbf',
   },
   county_ilecs_geo: {
-    url: '/bcat/county_ilecs_geo/geojson?state_abbr=TN',
+    geo: '/bcat/county_ilecs_geo/geojson?state_abbr=TN',
+    mvt: '/bcat/county_ilecs_geo/tiles/10/278/408.pbf',
   },
   county_rural_dev_broadband_protected_borrowers: {
-    url: '/bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=TN',
+    geo: '/bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=TN',
+    mvt: '/bcat/county_rural_dev_broadband_protected_borrowers/tiles/10/278/408.pbf',
   },
   county_summary: {
-    url: '/bcat/county_summary/geojson?geoid_co=47001,47003',
+    geo: '/bcat/county_summary/geojson?geoid_co=47001,47003',
+    mvt: null,
   },
   fiber_cable_unserved_blocks: {
-    url: '/bcat/fiber_cable_unserved_blocks/geojson?geoid_co=47001,47003',
+    geo: '/bcat/fiber_cable_unserved_blocks/geojson?geoid_co=47001,47003',
+    mvt: '/bcat/fiber_cable_unserved_blocks/tiles/10/278/408.pbf',
   },
   incumbent_electric_providers_geo: {
-    url: '/bcat/incumbent_electric_providers_geo/geojson?state_abbr=TN',
+    geo: '/bcat/incumbent_electric_providers_geo/geojson?state_abbr=TN',
+    mvt: '/bcat/incumbent_electric_providers_geo/tiles/10/278/408.pbf',
   },
   county_adjacency_crosswalk: {
-    url: '/bcat/county_adjacency_crosswalk/geojson?geoid_co=47001,47003',
+    geo: '/bcat/county_adjacency_crosswalk/geojson?geoid_co=47001,47003',
+    mvt: null,
   },
 };
 
@@ -133,7 +145,7 @@ describe('ApiIntegrationTests', () => {
     Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
       it(name, async () => {
         try {
-          const response = await apiClient.get(val.url);
+          const response = await apiClient.get(val.geo);
 
           // Axios has an extra data wrapper
           const result = response.data;
@@ -152,7 +164,7 @@ describe('ApiIntegrationTests', () => {
     Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
       it(name, async () => {
         try {
-          const response = await apiClient.get(val.url);
+          const response = await apiClient.get(val.geo);
 
           // Axios has an extra data wrapper
           const result = response.data;
@@ -172,6 +184,24 @@ describe('ApiIntegrationTests', () => {
           fail(error);
         }
       });
+    });
+  });
+
+  describe('Python API Response MVT Tiles', () => {
+    Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
+      if (val.mvt) {
+        it(name, async () => {
+          try {
+            const response = await apiClient.get(pythonIntegrationEndpoints.auction_904_subsidy_awards.mvt);
+
+            expect(response.status).toEqual(200);
+            expect(response.headers['content-type']).toEqual('application/x-protobuf');
+          } catch (error) {
+            logger.error(error);
+            fail(error);
+          }
+        });
+      }
     });
   });
 

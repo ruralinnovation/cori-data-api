@@ -131,6 +131,19 @@ export const Config: IConfigs = {
       cognitoClientId: '4uims9844lfb2efacb684g2s6e',
     },
   },
+  'mf/dev1': {
+    ...mfDefaults,
+    client: 'ib',
+    stage: 'dev',
+    testing: {
+      username: 'int-test@yopmail.com',
+      password: 'P@ssw0rd1',
+      region: 'us-east-1',
+      userPoolId: 'us-east-1_7DCdD4Cgd',
+      apiUrl: 'https://d52lkk2qfx1z9.cloudfront.net',
+      cognitoClientId: '4uims9844lfb2efacb684g2s6e',
+    },
+  },
   'mf/dev': {
     ...mfDefaults,
     client: 'mf',
