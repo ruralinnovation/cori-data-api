@@ -20,7 +20,7 @@ export class Networking extends Construct {
     });
 
     this.lambdaSecurityGroup = new SecurityGroup(this, 'OutboundPythonLambdaSecurityGroup', {
-      securityGroupName: `${prefix}-vpc-python-lambda-sg`,
+      securityGroupName: `${prefix}-vpc-microservices-sg`,
       vpc: this.vpc,
       allowAllOutbound: false,
       description: 'Security group for RDS access',
