@@ -1,7 +1,7 @@
 import { Construct } from 'constructs';
 import { Stack } from 'aws-cdk-lib';
 import { PolicyDocument, PolicyDocumentProps } from 'aws-cdk-lib/aws-iam';
-import { CannedStatements } from '../CannedStatement';
+import { CannedStatements } from '../../CannedStatement';
 
 /**
  * Document builder using a fluent API.

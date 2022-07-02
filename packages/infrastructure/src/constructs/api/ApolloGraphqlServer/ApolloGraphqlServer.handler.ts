@@ -8,7 +8,10 @@ import { GraphQLBoolean, GraphQLList, GraphQLString, GraphQLObjectType, GraphQLS
 import { bcatQueries } from './schema/bcatQueries';
 import { ApolloServer } from 'apollo-server-lambda';
 import compression from 'compression';
-import * as express from 'express';
+
+// Using "import * as express from 'express';" results in "express is not a function" once deployed
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const express = require('express');
 
 const cache = new Cache();
 

@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { MFNodejsFunction, MFNodejsFunctionProps } from './MFNodejsFunction';
-import { HttpMethod } from '../../interfaces';
+import { HttpMethod } from '../../models/interfaces';
 import { CognitoUserPoolsAuthorizer, IRestApi } from 'aws-cdk-lib/aws-apigateway';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { addApiMethod } from './addApiMethod';

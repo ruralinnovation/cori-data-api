@@ -64,7 +64,9 @@ export class PipelineStack extends Stack {
     const _pipeline = new Pipeline(this, 'Pipeline', {
       pipelineName: `${id}-pipeline`,
       restartExecutionOnUpdate: true,
-      artifactBucket: artifactBucketName ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName) : undefined
+      artifactBucket: artifactBucketName
+        ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName)
+        : undefined,
     });
 
     this.pipeline = new CodePipeline(this, `CodePipeline`, {
@@ -75,39 +77,39 @@ export class PipelineStack extends Stack {
         rolePolicy: [
           new PolicyStatement({
             actions: ['sts:AssumeRole'],
-            resources: ['*']
-          })
+            resources: ['*'],
+          }),
         ],
         buildEnvironment: {
           environmentVariables: {
             GIT_BRANCH: {
-              value: source.branch
+              value: source.branch,
             },
             // @todo: Move to param store
             TEST_USER: {
-              value: 'int-test@yopmail.com'
+              value: 'int-test@yopmail.com',
             },
             // @todo: Move to param store
             TEST_PASSWORD: {
-              value: 'P@ssw0rd1'
-            }
-          }
-        }
+              value: 'P@ssw0rd1',
+            },
+          },
+        },
       },
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub(source.repo, source.branch, {
           authentication: source.authentication,
-          trigger: source.trigger
+          trigger: source.trigger,
         }),
         commands: [
           'npm install -g npm@latest',
           'npm --version',
           'npm i',
           'npm run build',
-          'npm run synth:pipeline -w infrastructure'
+          'npm run synth:pipeline -w infrastructure',
         ],
-        primaryOutputDirectory: 'packages/infrastructure/cdk.out'
-      })
+        primaryOutputDirectory: 'packages/infrastructure/cdk.out',
+      }),
     });
 
     this.addApiStage(props.ApiConfig);
@@ -120,7 +122,7 @@ export class PipelineStack extends Stack {
     const stage = new Stage(this, 'Deploy');
     const stack = new ApiStack(stage, 'App', {
       ...config,
-      stackName: `${config.client}-data-api-${config.stage}`
+      stackName: `${config.client}-data-api-${config.stage}`,
     });
 
     const pipelineStage = this.pipeline.addStage(stage);
@@ -129,16 +131,14 @@ export class PipelineStack extends Stack {
       new ShellStep('IntegrationTest', {
         // Add environment specific outputs here
         envFromCfnOutputs: {
-          PYTHON_API_URL: stack.pythonApiUrlOutput,
-          APOLLO_API_URL: stack.apolloApiUrlOutput,
+          API_URL: stack.cloudFrontUrl,
           USER_POOL_ID: stack.userPoolIdOutput,
           COGNITO_CLIENT_ID: stack.postmanClientIdOutput,
-          COGNITO_DOMAIN: stack.cognitoDomainOutput
+          COGNITO_DOMAIN: stack.cognitoDomainOutput,
         },
         // Execute your integration test
         commands: [
-          'echo $PYTHON_API_URL',
-          'echo $APOLLO_API_URL',
+          'echo $API_URL',
           'echo $USER_POOL_ID',
           'echo $COGNITO_CLIENT_ID',
           'echo $COGNITO_DOMAIN',
@@ -148,8 +148,11 @@ export class PipelineStack extends Stack {
           // Execute Jest Integration Tests
           'npm run test:integration --w packages/infrastructure',
           // Execute Python Integration Tests
-          '. ./python-microservices/local/tests.sh'
-        ]
+          'pip install robotframework',
+          'pip install robotframework-requests',
+          'export PATH="$HOME/.local/bin:$PATH"',
+          '. ./python-microservices/bcat/tests.sh',
+        ],
       })
     );
 
