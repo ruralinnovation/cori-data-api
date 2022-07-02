@@ -148,6 +148,9 @@ export class PipelineStack extends Stack {
           // Execute Jest Integration Tests
           'npm run test:integration --w packages/infrastructure',
           // Execute Python Integration Tests
+          'pip install robotframework',
+          'pip install robotframework-requests',
+          'export PATH="$HOME/.local/bin:$PATH"',
           '. ./python-microservices/bcat/tests.sh',
         ],
       })
