@@ -63,8 +63,6 @@ CDK CICD Pipelines
 2. Create a Personal Access Token for this user
 3. Store the Personal Access Token in AWS Secrets Manager with the name `github-token`
 
-
-
 ### DB Setup
 
 #### Create a READ_ONLY user
@@ -72,21 +70,21 @@ CDK CICD Pipelines
 1. Log in as admin with psql;
 2. Create read only role and new user with:
 
-    ```SQL
-    CREATE ROLE read_only_access;
+   ```SQL
+   CREATE ROLE read_only_access;
 
-    GRANT CONNECT ON DATABASE (DB_NAME} TO read_only_access;
+   GRANT CONNECT ON DATABASE (DB_NAME} TO read_only_access;
 
-    GRANT USAGE ON SCHEMA public TO read_only_access;
+   GRANT USAGE ON SCHEMA public TO read_only_access;
 
-    GRANT SELECT ON ALL TABLES IN SCHEMA public TO read_only_access;
+   GRANT SELECT ON ALL TABLES IN SCHEMA public TO read_only_access;
 
-    GRANT SELECT ON ALL TABLES IN SCHEMA bcat TO read_only_access;
+   GRANT SELECT ON ALL TABLES IN SCHEMA bcat TO read_only_access;
 
-    CREATE USER read_only_user WITH PASSWORD  ________________;
+   CREATE USER read_only_user WITH PASSWORD  ________________;
 
-    GRANT read_only_access TO read_only_user;
-    ```
+   GRANT read_only_access TO read_only_user;
+   ```
 
 3. Save password in AWS Parameter store (keep note of parameter name)
 
@@ -96,15 +94,15 @@ CDK CICD Pipelines
 
 1. In the main pipeline account
 
-    ```bash
-    npm run bootstrap:pipeline -- aws://{ACCOUNT-NUMBER}/{REGION} [--profile {PROFILE}]
-    ```
+   ```bash
+   npm run bootstrap:pipeline -- aws://{ACCOUNT-NUMBER}/{REGION} [--profile {PROFILE}]
+   ```
 
 2. In any other accounts (if using cross-account deploy)
 
-    ```bash
-    npm run bootstrap:pipeline -- aws://{ACCOUNT-NUMBER}/{REGION} --trust {PIPELINE-ACCOUNT-NUMBER} [--profile {PROFILE}]
-    ```
+   ```bash
+   npm run bootstrap:pipeline -- aws://{ACCOUNT-NUMBER}/{REGION} --trust {PIPELINE-ACCOUNT-NUMBER} [--profile {PROFILE}]
+   ```
 
 #### Deploy the Pipeline
 
@@ -114,10 +112,10 @@ Each pipeline is associated with a branch and an environment.
 2. Create a entry for the branch in `config/configs`
 3. Deploy the pipeline
 
-    ```bash
-    cd packages/infrastructure
-    npm run deploy:pipeline -- [--profile {PROFILE}]
-    ```
+   ```bash
+   cd packages/infrastructure
+   npm run deploy:pipeline -- [--profile {PROFILE}]
+   ```
 
 Once deployed, the pipeline will trigger on new commits to the associated branch.
 
@@ -128,6 +126,32 @@ Once deployed, the pipeline will trigger on new commits to the associated branch
 We leverage AWS Lambda Powertools library which is a suite of utilities for AWS Lambda functions to ease adopting best practices such as tracing, structured logging, custom metrics, idempotency, batching, and more.
 
 For more infomration [READ THE DOCS](https://awslabs.github.io/aws-lambda-powertools-python/latest/)
+
+### Dependency Layer
+
+The dependencies for the Python Microservices are packaged and zipped in the `python-microservices/dependency-layer` directory.
+
+This zipped filed is then deployed as a labda layer dependency for all python lambdas. This will cut down on container start time by sharing these resources across many lambdas.
+
+#### Adding New Dependencies to the Layer
+
+```bash
+# Change into the Python Microservices directory
+cd python-microservices
+
+# Activate the Python environment
+source .env/bin/activate
+
+# Add new packages
+pip install package1, package2
+
+# Copy Packages directory into the Dist directory
+cp -r ./.env/lib/python3.8/site-packages ./dist/python
+
+# Zip up the dist directory packages
+
+
+```
 
 ### BCAT Service
 
