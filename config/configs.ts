@@ -83,24 +83,23 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   loggingLevel: 'info',
   retain: true,
   env: {
-    account: '190686435752',
+    account: '312512371189',
     region: 'us-east-1',
   },
   databaseConfig: {
-    vpcId: 'vpc-0499b35a2f5231aae',
-    databaseSecurityGroupId: 'sg-0cdb6d6c66b8e6a4a',
-    host: 'cori-testing-db.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
+    vpcId: 'vpc-08f5e17f5b75ccee9',
+    databaseSecurityGroupId: 'sg-01ddcc192d814136f',
+    host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
     dbname: 'postgres',
-    parameterName: 'cori-data-api-read_only_user_password',
+    parameterName: '/postgresql/read_only_user_credentials',
     dbuser: 'read_only_user',
   },
   cacheEnabled: true,
-  //@todo: this is pointing at the MF environment
   cacheConfig: {
-    host: 'redis-17358.c273.us-east-1-2.ec2.cloud.redislabs.com',
+    host: 'redis-19416.c283.us-east-1-4.ec2.cloud.redislabs.com:19416',
     port: 17358,
     username: 'default',
-    parameterName: '/cori/redis-cluster-credentials',
+    parameterName: '/redis/default_user_credentials',
   },
 };
 
