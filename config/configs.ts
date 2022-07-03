@@ -148,6 +148,14 @@ export const Config: IConfigs = {
     ...mfDefaults,
     client: 'mf',
     stage: 'dev',
+    testing: {
+      username: 'mf-int-test@yopmail.com',
+      password: 'k^ynPg*JDkzW3MKy6Kh&tcD9',
+      region: 'us-east-1',
+      userPoolId: 'us-east-1_NE91zaapX',
+      apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
+      cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
+    },
   },
   'local': {
     ...mfDefaults,

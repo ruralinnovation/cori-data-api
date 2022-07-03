@@ -60,14 +60,16 @@ export class PipelineStack extends Stack {
 
     const { source, artifactBucketName } = props;
 
+    const artifactBucket = artifactBucketName
+      ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName)
+      : undefined;
+
     // This allows a more fine-grained control of the underlying pipeline
     const _pipeline = new Pipeline(this, 'Pipeline', {
       pipelineName: `${id}-pipeline`,
       restartExecutionOnUpdate: true,
       crossAccountKeys: false,
-      artifactBucket: artifactBucketName
-        ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName)
-        : undefined,
+      artifactBucket,
     });
 
     this.pipeline = new CodePipeline(this, `CodePipeline`, {
