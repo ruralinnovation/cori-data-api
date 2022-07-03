@@ -75,7 +75,8 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   /**
    * @todo: create a bucket with a prettier name
    */
-  artifactBucketName: 'mf-data-pipeline-artifact-bucket',
+  artifactBucketName: 'coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm',
+  //coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm
 };
 
 const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {

@@ -64,6 +64,7 @@ export class PipelineStack extends Stack {
     const _pipeline = new Pipeline(this, 'Pipeline', {
       pipelineName: `${id}-pipeline`,
       restartExecutionOnUpdate: true,
+      crossAccountKeys: false,
       artifactBucket: artifactBucketName
         ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName)
         : undefined,
@@ -81,6 +82,10 @@ export class PipelineStack extends Stack {
           }),
           new PolicyStatement({
             actions: ['kms:*'],
+            resources: ['*'],
+          }),
+          new PolicyStatement({
+            actions: ['s3:*'],
             resources: ['*'],
           }),
         ],
