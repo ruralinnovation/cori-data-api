@@ -75,7 +75,8 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   /**
    * @todo: create a bucket with a prettier name
    */
-  artifactBucketName: 'coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm',
+  //artifactBucketName: 'coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm',
+  //coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm
 };
 
 const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
@@ -83,24 +84,23 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   loggingLevel: 'info',
   retain: true,
   env: {
-    account: '190686435752',
+    account: '312512371189',
     region: 'us-east-1',
   },
   databaseConfig: {
-    vpcId: 'vpc-0499b35a2f5231aae',
-    databaseSecurityGroupId: 'sg-0cdb6d6c66b8e6a4a',
-    host: 'cori-testing-db.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
+    vpcId: 'vpc-08f5e17f5b75ccee9',
+    databaseSecurityGroupId: 'sg-01ddcc192d814136f',
+    host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
     dbname: 'postgres',
-    parameterName: 'cori-data-api-read_only_user_password',
+    parameterName: '/postgresql/read_only_user_credentials',
     dbuser: 'read_only_user',
   },
   cacheEnabled: true,
-  //@todo: this is pointing at the MF environment
   cacheConfig: {
-    host: 'redis-17358.c273.us-east-1-2.ec2.cloud.redislabs.com',
+    host: 'redis-19416.c283.us-east-1-4.ec2.cloud.redislabs.com:19416',
     port: 17358,
     username: 'default',
-    parameterName: '/cori/redis-cluster-credentials',
+    parameterName: '/redis/default_user_credentials',
   },
 };
 
@@ -131,10 +131,31 @@ export const Config: IConfigs = {
       cognitoClientId: '4uims9844lfb2efacb684g2s6e',
     },
   },
+  'mf/dev1': {
+    ...mfDefaults,
+    client: 'ib',
+    stage: 'dev',
+    testing: {
+      username: 'int-test@yopmail.com',
+      password: 'P@ssw0rd1',
+      region: 'us-east-1',
+      userPoolId: 'us-east-1_7DCdD4Cgd',
+      apiUrl: 'https://d52lkk2qfx1z9.cloudfront.net',
+      cognitoClientId: '4uims9844lfb2efacb684g2s6e',
+    },
+  },
   'mf/dev': {
     ...mfDefaults,
     client: 'mf',
     stage: 'dev',
+    testing: {
+      username: 'mf-int-test@yopmail.com',
+      password: 'k^ynPg*JDkzW3MKy6Kh&tcD9',
+      region: 'us-east-1',
+      userPoolId: 'us-east-1_NE91zaapX',
+      apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
+      cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
+    },
   },
   'local': {
     ...mfDefaults,

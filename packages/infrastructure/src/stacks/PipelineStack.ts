@@ -60,13 +60,16 @@ export class PipelineStack extends Stack {
 
     const { source, artifactBucketName } = props;
 
+    const artifactBucket = artifactBucketName
+      ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName)
+      : undefined;
+
     // This allows a more fine-grained control of the underlying pipeline
     const _pipeline = new Pipeline(this, 'Pipeline', {
       pipelineName: `${id}-pipeline`,
       restartExecutionOnUpdate: true,
-      artifactBucket: artifactBucketName
-        ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName)
-        : undefined,
+      crossAccountKeys: false,
+      artifactBucket,
     });
 
     this.pipeline = new CodePipeline(this, `CodePipeline`, {
@@ -87,11 +90,11 @@ export class PipelineStack extends Stack {
             },
             // @todo: Move to param store
             TEST_USER: {
-              value: 'int-test@yopmail.com',
+              value: 'mf-int-test@yopmail.com',
             },
             // @todo: Move to param store
             TEST_PASSWORD: {
-              value: 'P@ssw0rd1',
+              value: 'k^ynPg*JDkzW3MKy6Kh&tcD9',
             },
           },
         },
@@ -147,11 +150,16 @@ export class PipelineStack extends Stack {
           'npm i',
           // Execute Jest Integration Tests
           'npm run test:integration --w packages/infrastructure',
+          /**
+           * The below will run Python Robot Framework Integration tests
+           * We will need to hook up an authentication mechanism to pass in a token to these tests
+           * For now only run them locally
+           */
           // Execute Python Integration Tests
-          'pip install robotframework',
-          'pip install robotframework-requests',
-          'export PATH="$HOME/.local/bin:$PATH"',
-          '. ./python-microservices/bcat/tests.sh',
+          // 'pip install robotframework',
+          // 'pip install robotframework-requests',
+          // 'export PATH="$HOME/.local/bin:$PATH"',
+          // '. ./python-microservices/bcat/tests.sh',
         ],
       })
     );

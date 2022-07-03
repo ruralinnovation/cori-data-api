@@ -6,88 +6,10 @@
 import { Auth } from 'aws-amplify';
 import axios, { AxiosInstance } from 'axios';
 import { getTestConfig } from './testUtils';
+import { apolloIntegrationEndpoints, pythonIntegrationEndpoints } from './integrationConfigurations';
+jest.setTimeout(30000);
 
 const logger = console;
-
-const pythonIntegrationEndpoints = {
-  broadband_unserved_blocks: {
-    url: '/bcat/broadband_unserved_blocks/geojson?geoid_co=47001,47003',
-  },
-  auction_904_subsidy_awards: {
-    url: '/bcat/auction_904_subsidy_awards/geojson?geoid_co=47001,47003,47011',
-  },
-  county_broadband_farm_bill_eligibility: {
-    url: '/bcat/county_broadband_farm_bill_eligibility/geojson?state_abbr=TN',
-  },
-  county_broadband_pending_rural_dev: {
-    url: '/bcat/county_broadband_pending_rural_dev/geojson?state_abbr=TN',
-  },
-  county_ilecs_geo: {
-    url: '/bcat/county_ilecs_geo/geojson?state_abbr=TN',
-  },
-  county_rural_dev_broadband_protected_borrowers: {
-    url: '/bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=TN',
-  },
-  county_summary: {
-    url: '/bcat/county_summary/geojson?geoid_co=47001,47003',
-  },
-  fiber_cable_unserved_blocks: {
-    url: '/bcat/fiber_cable_unserved_blocks/geojson?geoid_co=47001,47003',
-  },
-  incumbent_electric_providers_geo: {
-    url: '/bcat/incumbent_electric_providers_geo/geojson?state_abbr=TN',
-  },
-  county_adjacency_crosswalk: {
-    url: '/bcat/county_adjacency_crosswalk/geojson?geoid_co=47001,47003',
-  },
-};
-
-const apolloIntegrationEndpoints = {
-  broadband_unserved_blocks_geojson: {
-    request: {
-      query: `query ($counties: [String], $skipCache: Boolean) {
-                broadband_unserved_blocks_geojson (counties: $counties, skipCache: $skipCache) {
-                    type
-                    features {
-                        type
-                        id
-                        properties
-                        geometry {
-                            coordinates
-                            type
-                        }
-                    }
-                }
-              }`,
-      variables: `{
-              "counties": ["47167", "47017"],
-              "skipCache": true
-          }`,
-    },
-  },
-  auction_904_subsidy_awards_geojson: {
-    request: {
-      query: `query ($counties: [String]!, $skipCache: Boolean) {
-                auction_904_subsidy_awards_geojson (counties: $counties, skipCache: $skipCache) {
-                    type
-                    features {
-                        type
-                        id
-                        properties
-                        geometry {
-                            coordinates
-                            type
-                        }
-                    }
-                }
-            }`,
-      variables: `{
-                      "counties": ["47167", "47017"],
-                      "skipCache": true
-                  }`,
-    },
-  },
-};
 
 describe('ApiIntegrationTests', () => {
   let apiClient: AxiosInstance;
@@ -133,7 +55,7 @@ describe('ApiIntegrationTests', () => {
     Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
       it(name, async () => {
         try {
-          const response = await apiClient.get(val.url);
+          const response = await apiClient.get(val.geo);
 
           // Axios has an extra data wrapper
           const result = response.data;
@@ -152,7 +74,7 @@ describe('ApiIntegrationTests', () => {
     Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
       it(name, async () => {
         try {
-          const response = await apiClient.get(val.url);
+          const response = await apiClient.get(val.geo);
 
           // Axios has an extra data wrapper
           const result = response.data;
@@ -172,6 +94,24 @@ describe('ApiIntegrationTests', () => {
           fail(error);
         }
       });
+    });
+  });
+
+  describe('Python API Response MVT Tiles', () => {
+    Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
+      if (val.mvt) {
+        it(name, async () => {
+          try {
+            const response = await apiClient.get(pythonIntegrationEndpoints.auction_904_subsidy_awards.mvt);
+
+            expect(response.status).toEqual(200);
+            expect(response.headers['content-type']).toEqual('application/x-protobuf');
+          } catch (error) {
+            logger.error(error);
+            fail(error);
+          }
+        });
+      }
     });
   });
 
