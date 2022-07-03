@@ -4,6 +4,9 @@ from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver, Response
 from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 
+from bcat_config import CONFIG
+from bcat_connection import execute
+
 logger = Logger(service="BCAT")
 tracer = Tracer(service="BCAT")
 app = APIGatewayRestResolver(strip_prefixes=["/bcat"])
