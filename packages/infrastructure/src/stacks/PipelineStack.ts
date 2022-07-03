@@ -80,14 +80,6 @@ export class PipelineStack extends Stack {
             actions: ['sts:AssumeRole'],
             resources: ['*'],
           }),
-          new PolicyStatement({
-            actions: ['kms:*'],
-            resources: ['*'],
-          }),
-          new PolicyStatement({
-            actions: ['s3:*'],
-            resources: ['*'],
-          }),
         ],
         buildEnvironment: {
           environmentVariables: {
