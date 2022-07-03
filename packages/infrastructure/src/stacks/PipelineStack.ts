@@ -90,11 +90,11 @@ export class PipelineStack extends Stack {
             },
             // @todo: Move to param store
             TEST_USER: {
-              value: 'int-test@yopmail.com',
+              value: 'mf-int-test@yopmail.com',
             },
             // @todo: Move to param store
             TEST_PASSWORD: {
-              value: 'P@ssw0rd1',
+              value: 'k^ynPg*JDkzW3MKy6Kh&tcD9',
             },
           },
         },
