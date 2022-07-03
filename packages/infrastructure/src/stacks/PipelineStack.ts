@@ -79,6 +79,10 @@ export class PipelineStack extends Stack {
             actions: ['sts:AssumeRole'],
             resources: ['*'],
           }),
+          new PolicyStatement({
+            actions: ['kms:*'],
+            resources: ['*'],
+          }),
         ],
         buildEnvironment: {
           environmentVariables: {
