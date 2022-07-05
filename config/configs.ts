@@ -22,6 +22,12 @@ export interface IMixedConfig extends ApiStackProps {
   artifactBucketName?: string;
 
   /**
+   * Source Repo Name in Github
+   */
+
+  repo: string;
+
+  /**
    * Re-use an existing user pool
    */
   existingUserPoolId?: string;
@@ -57,6 +63,7 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     account: '190686435752',
     region: 'us-east-1',
   },
+  repo: 'mergingfutures/cori-data-api',
   databaseConfig: {
     vpcId: 'vpc-0499b35a2f5231aae',
     databaseSecurityGroupId: 'sg-0be66ca1818bcc0e0',
@@ -83,6 +90,7 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   project: 'data-api',
   loggingLevel: 'info',
   retain: true,
+  repo: 'ruralinnovation/cori-data-api',
   env: {
     account: '312512371189',
     region: 'us-east-1',
@@ -120,28 +128,15 @@ export const Config: IConfigs = {
   },
   'dev': {
     ...mfDefaults,
-    client: 'ib',
+    client: 'mf',
     stage: 'dev',
     testing: {
-      username: 'int-test@yopmail.com',
-      password: 'P@ssw0rd1',
+      username: '/cori/int-test-user-name',
+      password: '/cori/int-test-user-pw',
       region: 'us-east-1',
-      userPoolId: 'us-east-1_7DCdD4Cgd',
-      apiUrl: 'https://d52lkk2qfx1z9.cloudfront.net',
-      cognitoClientId: '4uims9844lfb2efacb684g2s6e',
-    },
-  },
-  'mf/dev1': {
-    ...mfDefaults,
-    client: 'ib',
-    stage: 'dev',
-    testing: {
-      username: 'int-test@yopmail.com',
-      password: 'P@ssw0rd1',
-      region: 'us-east-1',
-      userPoolId: 'us-east-1_7DCdD4Cgd',
-      apiUrl: 'https://d52lkk2qfx1z9.cloudfront.net',
-      cognitoClientId: '4uims9844lfb2efacb684g2s6e',
+      userPoolId: 'us-east-1_NE91zaapX',
+      apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
+      cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
     },
   },
   'mf/dev': {
@@ -149,8 +144,8 @@ export const Config: IConfigs = {
     client: 'mf',
     stage: 'dev',
     testing: {
-      username: 'mf-int-test@yopmail.com',
-      password: 'k^ynPg*JDkzW3MKy6Kh&tcD9',
+      username: '/cori/int-test-user-name',
+      password: '/cori/int-test-user-pw',
       region: 'us-east-1',
       userPoolId: 'us-east-1_NE91zaapX',
       apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
@@ -161,21 +156,5 @@ export const Config: IConfigs = {
     ...mfDefaults,
     client: 'mf',
     stage: 'local',
-  },
-  'dev1': {
-    ...coriDefaults,
-    client: 'cori',
-    stage: 'dev',
-    retain: false,
-  },
-  'dev2': {
-    ...mfDefaults,
-    client: 'cori',
-    stage: 'dev',
-  },
-  'prod': {
-    ...coriDefaults,
-    client: 'cori',
-    stage: 'prod',
   },
 };
