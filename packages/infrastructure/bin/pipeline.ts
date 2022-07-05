@@ -9,15 +9,22 @@ const app = new cdk.App();
 /**
  * @todo: Change this when handing over to client, or read it from configs
  */
-const sourceConfig = {
-  repo: 'mergingfutures/cori-data-api',
-  authentication: cdk.SecretValue.secretsManager('github-token'),
-};
 
 const main = async () => {
   const branch = await getLocalGitBranch();
   const config = getConfig(branch);
-  const { client, stage, artifactBucketName } = config;
+  const { client, stage, artifactBucketName, repo, testing } = config;
+
+  const sourceConfig = {
+    repo,
+    authentication: cdk.SecretValue.secretsManager('github-token'),
+  };
+
+  const integrationConfig = {
+    userName: cdk.SecretValue.secretsManager('/cori/int-test-user-name').toString(),
+    password: cdk.SecretValue.secretsManager('/cori/int-test-user-pw').toString(),
+  };
+
   new PipelineStack(app, `${client}-CoriDataApiPipeline-${stage}`, {
     /**
      * Where to deploy the pipeline.
@@ -29,6 +36,7 @@ const main = async () => {
       branch,
     },
     ApiConfig: config,
+    integrationConfig,
   });
 };
 

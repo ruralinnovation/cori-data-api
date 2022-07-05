@@ -1,4 +1,5 @@
 import { getConfig, getLocalGitBranch, TestEnvConfig } from '../../../config';
+require('dotenv').config();
 
 export const getTestConfig = async (): Promise<TestEnvConfig> => {
   if (process.env.GIT_BRANCH) {
@@ -23,6 +24,11 @@ export const getTestConfig = async (): Promise<TestEnvConfig> => {
     throw new Error('Testing endpoint is undefined');
   }
 
+  console.log('config', config.testing);
   // * @todo: Should clean this up and move it to .dotenv file or something
-  return config.testing;
+  return {
+    ...config.testing,
+    username: process.env.INTEGRATION_TESTING_USERNAME!,
+    password: process.env.INTEGRATION_TESTING_PASSWORD!,
+  };
 };

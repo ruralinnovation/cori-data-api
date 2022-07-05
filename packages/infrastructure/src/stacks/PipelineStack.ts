@@ -46,6 +46,14 @@ export interface PipelineStackProps extends StackProps {
    * Configures the api to be deployed by the pipeline
    */
   ApiConfig: ApiStackProps;
+
+  /**
+   * Credentials for Integration Testing
+   */
+  integrationConfig: {
+    userName: string;
+    password: string;
+  };
 }
 
 /**
@@ -58,7 +66,7 @@ export class PipelineStack extends Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
-    const { source, artifactBucketName } = props;
+    const { source, artifactBucketName, integrationConfig } = props;
 
     const artifactBucket = artifactBucketName
       ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName)
@@ -90,11 +98,11 @@ export class PipelineStack extends Stack {
             },
             // @todo: Move to param store
             TEST_USER: {
-              value: 'mf-int-test@yopmail.com',
+              value: integrationConfig.userName,
             },
             // @todo: Move to param store
             TEST_PASSWORD: {
-              value: 'k^ynPg*JDkzW3MKy6Kh&tcD9',
+              value: integrationConfig.password,
             },
           },
         },
