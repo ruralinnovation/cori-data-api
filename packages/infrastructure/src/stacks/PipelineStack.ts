@@ -6,6 +6,7 @@ import { GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { ApiStack, ApiStackProps } from '.';
 import { Pipeline } from 'aws-cdk-lib/aws-codepipeline';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
+import * as ssm from 'aws-cdk-lib/aws-ssm';
 
 export interface PipelineStackProps extends StackProps {
   /**
@@ -68,6 +69,9 @@ export class PipelineStack extends Stack {
 
     const { source, artifactBucketName, integrationConfig } = props;
 
+    const userName = ssm.StringParameter.valueFromLookup(this, integrationConfig.userName);
+    const password = ssm.StringParameter.valueFromLookup(this, integrationConfig.password);
+
     const artifactBucket = artifactBucketName
       ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName)
       : undefined;
@@ -98,11 +102,11 @@ export class PipelineStack extends Stack {
             },
             // @todo: Move to param store
             TEST_USER: {
-              value: integrationConfig.userName,
+              value: userName,
             },
             // @todo: Move to param store
             TEST_PASSWORD: {
-              value: integrationConfig.password,
+              value: password,
             },
           },
         },

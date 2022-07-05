@@ -20,11 +20,6 @@ const main = async () => {
     authentication: cdk.SecretValue.secretsManager('github-token'),
   };
 
-  const integrationConfig = {
-    userName: cdk.SecretValue.secretsManager('/cori/int-test-user-name').toString(),
-    password: cdk.SecretValue.secretsManager('/cori/int-test-user-pw').toString(),
-  };
-
   new PipelineStack(app, `${client}-CoriDataApiPipeline-${stage}`, {
     /**
      * Where to deploy the pipeline.
@@ -36,7 +31,10 @@ const main = async () => {
       branch,
     },
     ApiConfig: config,
-    integrationConfig,
+    integrationConfig: {
+      userName: testing?.username || '',
+      password: testing?.password || '',
+    },
   });
 };
 

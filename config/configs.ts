@@ -144,8 +144,8 @@ export const Config: IConfigs = {
     client: 'mf',
     stage: 'dev',
     testing: {
-      username: '/cori/api/dev/int-test-user-name',
-      password: '/cori/api/dev/int-test-user-pw',
+      username: '/cori/int-test-user-name',
+      password: '/cori/int-test-user-pw',
       region: 'us-east-1',
       userPoolId: 'us-east-1_NE91zaapX',
       apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
