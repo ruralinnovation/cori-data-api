@@ -69,8 +69,12 @@ export class PipelineStack extends Stack {
 
     const { source, artifactBucketName, integrationConfig } = props;
 
-    const userName = ssm.StringParameter.valueFromLookup(this, integrationConfig.userName);
-    const password = ssm.StringParameter.valueFromLookup(this, integrationConfig.password);
+    const userName = integrationConfig.userName
+      ? ssm.StringParameter.valueFromLookup(this, integrationConfig.userName)
+      : 'NOT_SET';
+    const password = integrationConfig.password
+      ? ssm.StringParameter.valueFromLookup(this, integrationConfig.password)
+      : 'NOT_SET';
 
     const artifactBucket = artifactBucketName
       ? Bucket.fromBucketName(this, 'ArtifactBucket', artifactBucketName)
