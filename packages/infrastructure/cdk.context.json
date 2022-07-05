@@ -58,5 +58,7 @@
     "securityGroupId": "sg-0be66ca1818bcc0e0",
     "allowAllOutbound": false
   },
-  "ssm:account=190686435752:parameterName=/cori/redis-cluster-credentials:region=us-east-1": "erwLAwDVzdkm0Vp07tSf8dZwtx6KfMMK"
+  "ssm:account=190686435752:parameterName=/cori/redis-cluster-credentials:region=us-east-1": "erwLAwDVzdkm0Vp07tSf8dZwtx6KfMMK",
+  "ssm:account=190686435752:parameterName=/cori/int-test-user-name:region=us-east-1": "mf-int-test@yopmail.com",
+  "ssm:account=190686435752:parameterName=/cori/int-test-user-pw:region=us-east-1": "k^ynPg*JDkzW3MKy6Kh&tcD9"
 }

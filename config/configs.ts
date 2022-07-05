@@ -117,6 +117,7 @@ export const Config: IConfigs = {
     ...mfDefaults,
     client: 'ib',
     stage: 'dev',
+    repo: 'mergingfutures/cori-data-api',
     testing: {
       username: 'int-test@yopmail.com',
       password: 'P@ssw0rd1',
