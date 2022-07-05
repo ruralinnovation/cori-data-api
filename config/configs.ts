@@ -128,15 +128,15 @@ export const Config: IConfigs = {
   },
   'dev': {
     ...mfDefaults,
-    client: 'ib',
+    client: 'mf',
     stage: 'dev',
     testing: {
-      username: '/cori/api/dev/int-test-user-name',
-      password: '/cori/api/dev/int-test-user-pw',
+      username: '/cori/int-test-user-name',
+      password: '/cori/int-test-user-pw',
       region: 'us-east-1',
-      userPoolId: 'us-east-1_7DCdD4Cgd',
-      apiUrl: 'https://d52lkk2qfx1z9.cloudfront.net',
-      cognitoClientId: '4uims9844lfb2efacb684g2s6e',
+      userPoolId: 'us-east-1_NE91zaapX',
+      apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
+      cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
     },
   },
   'mf/dev': {
