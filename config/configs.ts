@@ -101,7 +101,10 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     username: 'default',
     parameterName: '/redis/default_user_credentials',
   },
-  existingUserPoolId: 'us-east-1_QeA4600FA',
+  existingCognito: {
+    userPoolId: 'us-east-1_QeA4600FA',
+    userPoolDomain: 'authcori',
+  },
 };
 
 export const Config: IConfigs = {
