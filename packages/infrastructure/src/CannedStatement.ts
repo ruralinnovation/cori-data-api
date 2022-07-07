@@ -20,12 +20,12 @@ export class CannedStatements {
         'dynamodb:Scan',
         'dynamodb:Query',
         'dynamodb:BatchGetItem',
-        'dynamodb:DescribeTable'
+        'dynamodb:DescribeTable',
       ],
       resources: [
         `arn:${stack.partition}:dynamodb:${stack.region}:${stack.account}:table/${tableName}`,
-        `arn:${stack.partition}:dynamodb:${stack.region}:${stack.account}:table/${tableName}/index/*`
-      ]
+        `arn:${stack.partition}:dynamodb:${stack.region}:${stack.account}:table/${tableName}/index/*`,
+      ],
     });
   }
 
@@ -36,8 +36,8 @@ export class CannedStatements {
       actions: ['dynamodb:PutItem', 'dynamodb:UpdateItem', 'dynamodb:BatchWriteItem'],
       resources: [
         `arn:${stack.partition}:dynamodb:${stack.region}:${stack.account}:table/${tableName}`,
-        `arn:${stack.partition}:dynamodb:${stack.region}:${stack.account}:table/${tableName}/index/*`
-      ]
+        `arn:${stack.partition}:dynamodb:${stack.region}:${stack.account}:table/${tableName}/index/*`,
+      ],
     });
   }
 
@@ -55,12 +55,12 @@ export class CannedStatements {
         'dynamodb:BatchWriteItem',
         'dynamodb:BatchGetItem',
         'dynamodb:DescribeTable',
-        'dynamodb:ConditionCheckItem'
+        'dynamodb:ConditionCheckItem',
       ],
       resources: [
         `arn:${stack.partition}:dynamodb:${stack.region}:${stack.account}:table/${tableName}`,
-        `arn:${stack.partition}:dynamodb:${stack.region}:${stack.account}:table/${tableName}/index/*`
-      ]
+        `arn:${stack.partition}:dynamodb:${stack.region}:${stack.account}:table/${tableName}/index/*`,
+      ],
     });
   }
 
@@ -87,16 +87,16 @@ export class CannedStatements {
           'kms:Delete*',
           'kms:ScheduleKeyDeletion',
           'kms:CancelKeyDeletion',
-          'kms:TagResource'
+          'kms:TagResource',
         ],
-        resources: ['*']
+        resources: ['*'],
       }),
       new PolicyStatement({
         sid: 'Allow access for all principals in the account that are authorized to use KMS',
         effect: Effect.ALLOW,
         principals: [accountPrincipal],
         actions: ['kms:Encrypt', 'kms:Decrypt', 'kms:ReEncrypt*', 'kms:GenerateDataKey*', 'kms:DescribeKey'],
-        resources: ['*']
+        resources: ['*'],
       }),
       new PolicyStatement({
         sid: 'Allow principle to manage grants',
@@ -106,10 +106,10 @@ export class CannedStatements {
         resources: ['*'],
         conditions: {
           Bool: {
-            'kms:GrantIsForAWSResource': true
-          }
-        }
-      })
+            'kms:GrantIsForAWSResource': true,
+          },
+        },
+      }),
     ];
   }
 
@@ -126,9 +126,9 @@ export class CannedStatements {
         's3:PutObjectAcl',
         's3:GetLifecycleConfiguration',
         's3:PutLifecycleConfiguration',
-        's3:DeleteObject'
+        's3:DeleteObject',
       ],
-      resources: [`arn:${stack.partition}:s3:::${bucketName}`, `arn:${stack.partition}:s3:::${bucketName}/*`]
+      resources: [`arn:${stack.partition}:s3:::${bucketName}`, `arn:${stack.partition}:s3:::${bucketName}/*`],
     });
   }
 
@@ -143,9 +143,9 @@ export class CannedStatements {
         'ec2:DescribeNetworkInterfaces',
         'ec2:DeleteNetworkInterface',
         'ec2:AssignPrivateIpAddresses',
-        'ec2:UnassignPrivateIpAddresses'
+        'ec2:UnassignPrivateIpAddresses',
       ],
-      resources: ['*']
+      resources: ['*'],
     });
   }
 
@@ -153,7 +153,7 @@ export class CannedStatements {
     return new PolicyStatement({
       effect: Effect.ALLOW,
       actions: typeof actions === 'string' ? [actions] : actions,
-      resources: typeof resource === 'string' ? [resource] : resource
+      resources: typeof resource === 'string' ? [resource] : resource,
     });
   }
 }

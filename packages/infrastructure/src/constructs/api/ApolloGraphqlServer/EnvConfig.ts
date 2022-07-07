@@ -32,5 +32,5 @@ export const EnvConfig: EnvConfigVars = {
   CACHE_HOST: getEnv('CACHE_HOST'),
   CACHE_PORT: getEnv('CACHE_PORT'),
   CACHE_USERNAME: getEnv('CACHE_USERNAME'),
-  CACHE_PASSWORD: getEnv('CACHE_PASSWORD')
+  CACHE_PASSWORD: getEnv('CACHE_PASSWORD'),
 };
