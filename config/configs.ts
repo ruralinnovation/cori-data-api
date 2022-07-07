@@ -46,15 +46,6 @@ interface IConfigs {
   [name: string]: IMixedConfig;
 }
 
-export const getConfig = (name: string): IMixedConfig => {
-  const config = Config[name];
-
-  if (!config) {
-    throw new Error(`Unknown config: ${name}`);
-  }
-  return config;
-};
-
 const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   project: 'data-api',
   loggingLevel: 'info',
@@ -110,6 +101,7 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     username: 'default',
     parameterName: '/redis/default_user_credentials',
   },
+  existingUserPoolId: 'us-east-1_QeA4600FA',
 };
 
 export const Config: IConfigs = {
@@ -144,4 +136,13 @@ export const Config: IConfigs = {
     client: 'mf',
     stage: 'local',
   },
+};
+
+export const getConfig = (name: string): IMixedConfig => {
+  const config = Config[name];
+
+  if (!config) {
+    throw new Error(`Unknown config: ${name}`);
+  }
+  return config;
 };
