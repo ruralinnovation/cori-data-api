@@ -21,13 +21,13 @@ export class PythonLambda extends Construct {
     super(scope, id);
 
     this.function = new PythonFunction(this, 'Function', {
-      ...props
+      ...props,
     });
 
     new LogGroup(this, 'LogGroup', {
       logGroupName: `/aws/lambda/${this.function.functionName}`,
       removalPolicy: props.logRemovalPolicy || RemovalPolicy.DESTROY,
-      retention: props.logRetention || RetentionDays.TWO_WEEKS
+      retention: props.logRetention || RetentionDays.TWO_WEEKS,
     });
   }
 }

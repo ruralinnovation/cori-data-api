@@ -12,7 +12,7 @@ export class RedisSubnetGroup extends CfnSubnetGroup {
 
     super(scope, id, {
       subnetIds: subnets.map(x => x.subnetId),
-      description: 'Subnet group for redis'
+      description: 'Subnet group for redis',
     });
   }
 }

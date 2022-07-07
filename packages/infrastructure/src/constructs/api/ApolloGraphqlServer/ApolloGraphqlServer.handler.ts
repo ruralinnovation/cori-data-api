@@ -24,24 +24,24 @@ const RootQuery = new GraphQLObjectType({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       resolve: (_: any, __: any, { dataSources }: any) => {
         return true;
-      }
+      },
     },
     feature_collection: {
       type: GeoJSON.FeatureCollectionObject,
       args: {
         table: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          type: GraphQLString!
+          type: GraphQLString!,
         },
         counties: {
-          type: new GraphQLList(GraphQLString)
+          type: new GraphQLList(GraphQLString),
         },
         state_abbr: {
-          type: GraphQLString
+          type: GraphQLString,
         },
         skipCache: {
-          type: GraphQLBoolean
-        }
+          type: GraphQLBoolean,
+        },
       },
       resolve: async (
         _: any,
@@ -70,7 +70,7 @@ const RootQuery = new GraphQLObjectType({
               if (res) {
                 return {
                   ...featureCollection,
-                  features: featureCollection.features.concat(res.features)
+                  features: featureCollection.features.concat(res.features),
                 };
               } else {
                 return featureCollection;
@@ -78,39 +78,39 @@ const RootQuery = new GraphQLObjectType({
             },
             Promise.resolve({
               type: 'FeatureCollection',
-              features: []
+              features: [],
             })
           );
         }
-      }
+      },
     },
     county_feature: {
       type: GeoJSON.FeatureCollectionObject,
       args: {
         table: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          type: GraphQLString!
+          type: GraphQLString!,
         },
         county: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          type: GraphQLString!
-        }
+          type: GraphQLString!,
+        },
       },
       resolve: async (_: any, { table, county }: any, { dataSources, redisClient }: any, info: any) => {
         return await redisClient.checkCache(`${table}-${county}`, async () => {
           return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
         });
-      }
+      },
     },
-    ...bcatQueries
-  }
+    ...bcatQueries,
+  },
 });
 const schema = mergeSchemas({
   schemas: [
     new GraphQLSchema({
-      query: RootQuery
-    })
-  ]
+      query: RootQuery,
+    }),
+  ],
 });
 
 /**
@@ -138,19 +138,19 @@ const customServerPlugin = {
       // eslint-disable-next-line require-await
       async validationDidStart(requestContext: any) {
         console.log('Validation started!');
-      }
+      },
     };
-  }
+  },
 };
 
 export const apolloConfig = {
   schema,
   csrfPrevention: false,
   playground: {
-    endpoint: '/playground'
+    endpoint: '/playground',
   },
   dataSources: () => ({
-    pythonApi: new PythonRestApi()
+    pythonApi: new PythonRestApi(),
   }),
   plugins: [customServerPlugin],
   context: ({ event, context, express }: any) => {
@@ -163,17 +163,17 @@ export const apolloConfig = {
         headers: {
           'Authorization': event.headers ? event.headers.Authorization : '',
           'credentials': 'same-origin',
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       },
       expressRequest: express.req,
-      redisClient: cache
+      redisClient: cache,
     };
   },
   cors: {
     origin: ['*'],
-    credentials: true
-  }
+    credentials: true,
+  },
 };
 
 export const server = new ApolloServer(apolloConfig);
@@ -185,5 +185,5 @@ export const handler = server.createHandler({
     app.use(compression());
     app.use(middleware);
     return app;
-  }
+  },
 });

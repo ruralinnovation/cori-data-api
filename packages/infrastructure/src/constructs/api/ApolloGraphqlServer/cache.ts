@@ -30,8 +30,8 @@ export const defaultCacheOptions: CacheOptions = {
     host: EnvConfig.CACHE_HOST,
     port: parseInt(EnvConfig.CACHE_PORT),
     username: EnvConfig.CACHE_USERNAME,
-    password: EnvConfig.CACHE_PASSWORD
-  }
+    password: EnvConfig.CACHE_PASSWORD,
+  },
 };
 
 export class Cache {
@@ -50,7 +50,7 @@ export class Cache {
         host: this.cacheOptions.redisOptions?.host,
         port: this.cacheOptions.redisOptions?.port,
         username: this.cacheOptions.redisOptions?.username,
-        password: this.cacheOptions.redisOptions?.password
+        password: this.cacheOptions.redisOptions?.password,
       });
       return this.rawCache;
     }
@@ -60,7 +60,7 @@ export class Cache {
       return this.cache;
     } else {
       this.cache = new BaseRedisCache({
-        client: this.getRawCache() as RedisClient
+        client: this.getRawCache() as RedisClient,
       });
       return this.cache;
     }

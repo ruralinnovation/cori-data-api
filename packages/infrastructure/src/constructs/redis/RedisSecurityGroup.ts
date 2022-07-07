@@ -10,7 +10,7 @@ export class RedisSecurityGroup extends SecurityGroup {
     super(scope, id, {
       securityGroupName: props.securityGroupName,
       description: 'Security group for redis',
-      vpc: props.vpc
+      vpc: props.vpc,
     });
 
     this.addIngressRule(Peer.anyIpv4(), Port.tcp(6379), 'Redis from any where');
