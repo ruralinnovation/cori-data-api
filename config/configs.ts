@@ -90,7 +90,7 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     vpcId: 'vpc-08f5e17f5b75ccee9',
     databaseSecurityGroupId: 'sg-01ddcc192d814136f',
     host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
-    dbname: 'postgres',
+    dbname: 'data',
     parameterName: '/postgresql/read_only_user_credentials',
     dbuser: 'read_only_user',
   },
