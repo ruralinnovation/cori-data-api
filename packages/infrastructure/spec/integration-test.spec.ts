@@ -42,6 +42,8 @@ describe('ApiIntegrationTests', () => {
       fail('Test user was not authenticated.');
     }
 
+    logger.info('Token ', accessToken);
+
     apiClient = axios.create({
       baseURL: config.apiUrl,
       headers: {
@@ -51,6 +53,22 @@ describe('ApiIntegrationTests', () => {
     });
   });
 
+  // describe('Python API Request 200 Status & Defined Response', () => {
+  //   it('Test', async () => {
+  //     try {
+  //       const response = await apiClient.get('/bcat/auction_904_subsidy_awards/geojson?geoid_co=47001,47003,47011');
+
+  //       // Axios has an extra data wrapper
+  //       const result = response.data;
+
+  //       expect(response.status).toEqual(200);
+  //       expect(result).toBeDefined();
+  //     } catch (error) {
+  //       logger.error(error);
+  //       fail(error);
+  //     }
+  //   });
+  // });
   describe('Python API Request 200 Status & Defined Response', () => {
     Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
       it(name, async () => {

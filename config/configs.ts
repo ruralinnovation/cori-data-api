@@ -126,9 +126,9 @@ export const Config: IConfigs = {
     client: 'cori',
     stage: 'dev',
     testing: {
-      username: '',
-      password: '',
-      region: '',
+      username: '/cori/api/integration-test-username',
+      password: '/cori/api/integration-test-password',
+      region: 'us-east-1',
       userPoolId: '',
       apiUrl: '',
       cognitoClientId: '',
