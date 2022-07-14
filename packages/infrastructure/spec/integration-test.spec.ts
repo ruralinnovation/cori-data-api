@@ -20,6 +20,8 @@ describe('ApiIntegrationTests', () => {
   beforeAll(async () => {
     const config = await getTestConfig();
 
+    logger.info('User: ', config.username);
+    logger.info('PW: ', config.password);
     Auth.configure({
       Auth: {
         region: config.region,
@@ -41,8 +43,6 @@ describe('ApiIntegrationTests', () => {
       logger.info(`Response from amplify: ${JSON.stringify(response)}`);
       fail('Test user was not authenticated.');
     }
-
-    logger.info('Token ', accessToken);
 
     apiClient = axios.create({
       baseURL: config.apiUrl,
