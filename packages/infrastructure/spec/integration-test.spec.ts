@@ -20,6 +20,8 @@ describe('ApiIntegrationTests', () => {
   beforeAll(async () => {
     const config = await getTestConfig();
 
+    logger.info('User: ', config.username);
+    logger.info('PW: ', config.password);
     Auth.configure({
       Auth: {
         region: config.region,
@@ -51,6 +53,22 @@ describe('ApiIntegrationTests', () => {
     });
   });
 
+  // describe('Python API Request 200 Status & Defined Response', () => {
+  //   it('Test', async () => {
+  //     try {
+  //       const response = await apiClient.get('/bcat/auction_904_subsidy_awards/geojson?geoid_co=47001,47003,47011');
+
+  //       // Axios has an extra data wrapper
+  //       const result = response.data;
+
+  //       expect(response.status).toEqual(200);
+  //       expect(result).toBeDefined();
+  //     } catch (error) {
+  //       logger.error(error);
+  //       fail(error);
+  //     }
+  //   });
+  // });
   describe('Python API Request 200 Status & Defined Response', () => {
     Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
       it(name, async () => {
@@ -97,23 +115,23 @@ describe('ApiIntegrationTests', () => {
     });
   });
 
-  describe('Python API Response MVT Tiles', () => {
-    Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
-      if (val.mvt) {
-        it(name, async () => {
-          try {
-            const response = await apiClient.get(pythonIntegrationEndpoints.auction_904_subsidy_awards.mvt);
+  // describe('Python API Response MVT Tiles', () => {
+  //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
+  //     if (val.mvt) {
+  //       it(name, async () => {
+  //         try {
+  //           const response = await apiClient.get(pythonIntegrationEndpoints.auction_904_subsidy_awards.mvt);
 
-            expect(response.status).toEqual(200);
-            expect(response.headers['content-type']).toEqual('application/x-protobuf');
-          } catch (error) {
-            logger.error(error);
-            fail(error);
-          }
-        });
-      }
-    });
-  });
+  //           expect(response.status).toEqual(200);
+  //           expect(response.headers['content-type']).toEqual('application/x-protobuf');
+  //         } catch (error) {
+  //           logger.error(error);
+  //           fail(error);
+  //         }
+  //       });
+  //     }
+  //   });
+  // });
 
   describe('Apollo GraphQL API Request Status 200 and Defined Response', () => {
     Object.entries(apolloIntegrationEndpoints).forEach(([name, val]) => {

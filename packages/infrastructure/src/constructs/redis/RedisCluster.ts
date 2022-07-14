@@ -22,12 +22,12 @@ export class RedisCluster extends Construct {
 
     const redisSecurityGroup = new RedisSecurityGroup(this, 'RedisSecurityGroup', {
       vpc: props.vpc,
-      securityGroupName: `${props.prefix}-redis-sg`
+      securityGroupName: `${props.prefix}-redis-sg`,
     });
 
     const redisSubnetGroup = new RedisSubnetGroup(this, 'RedisSubnetGroup', {
       vpc: props.vpc,
-      private: props.private
+      private: props.private,
     });
 
     // Create Redis Cluster
@@ -38,7 +38,7 @@ export class RedisCluster extends Construct {
       numCacheNodes: 1,
       cacheSubnetGroupName: redisSubnetGroup.ref,
       clusterName: props.prefix + 'redis-cluster',
-      vpcSecurityGroupIds: [redisSecurityGroup.securityGroupId]
+      vpcSecurityGroupIds: [redisSecurityGroup.securityGroupId],
     });
 
     // Define this redis cluster is depends on redis subnet group created first

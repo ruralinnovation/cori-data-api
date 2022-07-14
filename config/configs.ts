@@ -46,15 +46,6 @@ interface IConfigs {
   [name: string]: IMixedConfig;
 }
 
-export const getConfig = (name: string): IMixedConfig => {
-  const config = Config[name];
-
-  if (!config) {
-    throw new Error(`Unknown config: ${name}`);
-  }
-  return config;
-};
-
 const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   project: 'data-api',
   loggingLevel: 'info',
@@ -99,7 +90,7 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     vpcId: 'vpc-08f5e17f5b75ccee9',
     databaseSecurityGroupId: 'sg-01ddcc192d814136f',
     host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
-    dbname: 'postgres',
+    dbname: 'data',
     parameterName: '/postgresql/read_only_user_credentials',
     dbuser: 'read_only_user',
   },
@@ -109,6 +100,10 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     port: 17358,
     username: 'default',
     parameterName: '/redis/default_user_credentials',
+  },
+  existingCognito: {
+    userPoolId: 'us-east-1_QeA4600FA',
+    userPoolDomain: 'authcori',
   },
 };
 
@@ -128,29 +123,29 @@ export const Config: IConfigs = {
     },
   },
   'dev': {
-    ...mfDefaults,
-    client: 'mf',
+    ...coriDefaults,
+    client: 'cori',
     stage: 'dev',
     testing: {
-      username: '/cori/int-test-user-name',
-      password: '/cori/int-test-user-pw',
-      region: 'us-east-1',
-      userPoolId: 'us-east-1_NE91zaapX',
-      apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
-      cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
+      username: '',
+      password: '',
+      region: '',
+      userPoolId: '',
+      apiUrl: '',
+      cognitoClientId: '',
     },
   },
-  'mf/dev': {
-    ...mfDefaults,
-    client: 'mf',
+  'cori/dev': {
+    ...coriDefaults,
+    client: 'cori',
     stage: 'dev',
     testing: {
-      username: '/cori/int-test-user-name',
-      password: '/cori/int-test-user-pw',
+      username: '/cori/api/integration-test-username',
+      password: '/cori/api/integration-test-password',
       region: 'us-east-1',
-      userPoolId: 'us-east-1_NE91zaapX',
-      apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
-      cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
+      userPoolId: 'us-east-1_QeA4600FA',
+      apiUrl: 'https://d6q5pgqgx5oy5.cloudfront.net',
+      cognitoClientId: '70o6i77h1orcnvonb9ua3fh58e',
     },
   },
   'local': {
@@ -158,4 +153,13 @@ export const Config: IConfigs = {
     client: 'mf',
     stage: 'local',
   },
+};
+
+export const getConfig = (name: string): IMixedConfig => {
+  const config = Config[name];
+
+  if (!config) {
+    throw new Error(`Unknown config: ${name}`);
+  }
+  return config;
 };
