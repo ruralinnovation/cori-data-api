@@ -113,12 +113,12 @@ export const Config: IConfigs = {
     client: 'cori',
     stage: 'dev',
     testing: {
-      username: '',
-      password: '',
-      region: '',
-      userPoolId: '',
-      apiUrl: '',
-      cognitoClientId: '',
+      username: '/cori/api/integration-test-username',
+      password: '/cori/api/integration-test-password',
+      region: 'us-east-1',
+      userPoolId: 'us-east-1_QeA4600FA',
+      apiUrl: 'https://d6q5pgqgx5oy5.cloudfront.net',
+      cognitoClientId: '70o6i77h1orcnvonb9ua3fh58e',
     },
   },
   'cori/dev': {
