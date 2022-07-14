@@ -69,6 +69,8 @@ export class PipelineStack extends Stack {
 
     const { source, artifactBucketName, integrationConfig } = props;
 
+    console.log('Integration Configuration ', integrationConfig);
+
     const userName = integrationConfig.userName
       ? ssm.StringParameter.valueFromLookup(this, integrationConfig.userName)
       : 'NOT_SET';
