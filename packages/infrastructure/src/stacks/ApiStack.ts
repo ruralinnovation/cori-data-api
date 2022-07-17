@@ -1,11 +1,11 @@
-import { Stack, StackProps, CfnOutput, Tags, Aws } from 'aws-cdk-lib';
+import { Stack, StackProps, CfnOutput, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Hosting } from '../constructs/Hosting';
 import { Cognito, ExistingCognitoConfig } from '../constructs/Cognito';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { ApolloGraphqlServer } from '../constructs/api/ApolloGraphqlServer/ApolloGraphqlServer';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { BcatServer } from '../constructs/api/BcatServer';
+import { PythonDataServer } from '../constructs/api/PythonDataServer';
 import { Networking } from '../constructs/Networking';
 
 export interface DatabaseConfig {
@@ -51,7 +51,10 @@ export interface ApiStackProps extends StackProps {
   retain: boolean;
 
   /**
-   * Define this prop to put lambdas in VPC. Expecting VPC to be in another stack.
+   * Database integration configuration
+   * Puts lambdas in VPC. Expecting VPC to be in another stack or deployed already.
+   * DB creds are accessed through parameter store and deployed as part of the lambda service environment.
+   *
    */
   databaseConfig: DatabaseConfig;
 
@@ -111,7 +114,7 @@ export class ApiStack extends Stack {
     /**
      * Python API Handler
      */
-    const bcat = new BcatServer(this, 'BcatServer', {
+    const bcat = new PythonDataServer(this, 'PythonDataServer', {
       prefix,
       stage,
       userPool: cognito.userPool,

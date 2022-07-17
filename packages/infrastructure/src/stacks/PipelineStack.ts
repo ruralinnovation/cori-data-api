@@ -67,9 +67,17 @@ export class PipelineStack extends Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
+    // Destructure incoming stack parameters
     const { source, artifactBucketName, integrationConfig } = props;
 
     console.log('Integration Configuration ', integrationConfig);
+
+    /**
+     * Send a request to Parameter store to access Cognito User name and password
+     * for integration testing.
+     *
+     * The integration tests are located in `spec/integration-test.spec.ts`
+     */
 
     const userName = integrationConfig.userName
       ? ssm.StringParameter.valueFromLookup(this, integrationConfig.userName)
