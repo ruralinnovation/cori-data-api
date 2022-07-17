@@ -8,7 +8,7 @@ import { microservicesDirectory } from '../../util';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { ApiGw } from './ApiGw';
 
-interface BcatServerProps {
+interface PythonDataServerProps {
   prefix: string;
   stage: string;
 
@@ -27,9 +27,9 @@ interface BcatServerProps {
     DB_NAME: string;
   };
 }
-export class BcatServer extends Construct {
+export class PythonDataServer extends Construct {
   readonly apiGw: ApiGw;
-  constructor(scope: Construct, id: string, props: BcatServerProps) {
+  constructor(scope: Construct, id: string, props: PythonDataServerProps) {
     super(scope, id);
 
     const { prefix, stage, userPool, vpc, securityGroups, environment } = props;
@@ -89,7 +89,7 @@ export class BcatServer extends Construct {
       /**
        * BCAT Microservice
        */
-      const bcatService = new PythonLambda(this, 'BCATService', {
+      const bcatService = new PythonLambda(this, 'PythonServer', {
         ...defaults,
         functionName: prefix + '-bcat-service',
         entry: join(microservicesDirectory, 'bcat'),

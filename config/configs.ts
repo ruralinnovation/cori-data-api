@@ -90,7 +90,7 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     vpcId: 'vpc-08f5e17f5b75ccee9',
     databaseSecurityGroupId: 'sg-01ddcc192d814136f',
     host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
-    dbname: 'postgres',
+    dbname: 'data',
     parameterName: '/postgresql/read_only_user_credentials',
     dbuser: 'read_only_user',
   },
@@ -101,48 +101,30 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     username: 'default',
     parameterName: '/redis/default_user_credentials',
   },
-  existingUserPoolId: 'us-east-1_QeA4600FA',
+  existingCognito: {
+    userPoolId: 'us-east-1_QeA4600FA',
+    userPoolDomain: 'authcori',
+  },
+  testing: {
+    username: '/cori/api/integration-test-username',
+    password: '/cori/api/integration-test-password',
+    region: 'us-east-1',
+    userPoolId: 'us-east-1_QeA4600FA',
+    apiUrl: 'https://d6q5pgqgx5oy5.cloudfront.net',
+    cognitoClientId: '70o6i77h1orcnvonb9ua3fh58e',
+  },
 };
 
 export const Config: IConfigs = {
-  'refactor/ibliskavka-integration-test': {
-    ...mfDefaults,
-    client: 'ib',
-    stage: 'dev',
-    testing: {
-      username: 'int-test@yopmail.com',
-      password: 'P@ssw0rd1',
-      region: 'us-east-1',
-      userPoolId: 'us-east-1_7DCdD4Cgd',
-      apiUrl: 'https://d52lkk2qfx1z9.cloudfront.net',
-      cognitoClientId: '4uims9844lfb2efacb684g2s6e',
-    },
-  },
   'dev': {
     ...coriDefaults,
     client: 'cori',
     stage: 'dev',
-    testing: {
-      username: '',
-      password: '',
-      region: '',
-      userPoolId: '',
-      apiUrl: '',
-      cognitoClientId: '',
-    },
   },
-  'mf/dev': {
-    ...mfDefaults,
-    client: 'mf',
+  'cori/dev': {
+    ...coriDefaults,
+    client: 'cori',
     stage: 'dev',
-    testing: {
-      username: '/cori/int-test-user-name',
-      password: '/cori/int-test-user-pw',
-      region: 'us-east-1',
-      userPoolId: 'us-east-1_NE91zaapX',
-      apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
-      cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
-    },
   },
   'local': {
     ...mfDefaults,

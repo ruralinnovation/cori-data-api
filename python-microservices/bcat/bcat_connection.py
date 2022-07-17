@@ -18,6 +18,11 @@ def execute(query):
         conn = psycopg.connect(**DB_ARGS)
 
     with conn.cursor() as cur:
-        cur.execute(query)
-        return cur.fetchall()
+        try:
+            cur.execute(query)
+            return cur.fetchall()
+        except Exception as error:
+            print(error)
+            cur.execute("ROLLBACK")
+            conn.commit()
 
