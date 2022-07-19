@@ -38,7 +38,7 @@ export class PythonDataServer extends Construct {
      * Python Data RESTApi
      */
     this.apiGw = new ApiGw(this, 'PythonApi', {
-      prefix: prefix + '-python-gis-api',
+      prefix: prefix + '-python-data-api',
       stage,
       // cloudWatchRole: this.iam.roles === undefined,
       cloudWatchRole: true,
@@ -91,7 +91,7 @@ export class PythonDataServer extends Construct {
        */
       const bcatService = new PythonLambda(this, 'PythonServer', {
         ...defaults,
-        functionName: prefix + '-bcat-service',
+        functionName: prefix + '-bcat-microservice',
         entry: join(microservicesDirectory, 'bcat'),
       });
 
