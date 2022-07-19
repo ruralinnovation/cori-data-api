@@ -75,6 +75,14 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
    */
   //artifactBucketName: 'coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm',
   //coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm
+  testing: {
+    username: '/cori/int-test-user-name',
+    password: '/cori/int-test-user-password',
+    region: 'us-east-1',
+    userPoolId: 'us-east-1_NE91zaapX',
+    apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
+    cognitoClientId: '76um99fv2qtb6f7ise3i037vna',
+  },
 };
 
 const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
@@ -117,8 +125,8 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
 
 export const Config: IConfigs = {
   'dev': {
-    ...coriDefaults,
-    client: 'cori',
+    ...mfDefaults,
+    client: 'mf',
     stage: 'dev',
   },
   'cori/dev': {
