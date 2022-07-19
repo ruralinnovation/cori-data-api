@@ -77,7 +77,7 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   //coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm
   testing: {
     username: '/cori/int-test-user-name',
-    password: '/cori/int-test-user-password',
+    password: '/cori/int-test-user-pw',
     region: 'us-east-1',
     userPoolId: 'us-east-1_NE91zaapX',
     apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
