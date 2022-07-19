@@ -31,6 +31,7 @@ export const dataLayer2: FillLayer = {
 
 function MapContainer() {
   const [viewport, setViewport] = useState();
+
   const { loading, error, data } = useQuery(county_broadband_farm_bill_eligibility_geojson, {
     fetchPolicy: 'no-cache',
     variables: {
@@ -39,30 +40,12 @@ function MapContainer() {
     },
   });
 
-  //   useEffect(() => {
-  //     if (data) {
-  //       console.log(
-  //         'Data ',
-  //         data.incumbent_electric_providers_geo_geojson.features.filter(
-  //           (f: any) => f.properties.utility_name !== 'CITY OF HARRIMAN - (TN)'
-  //         )
-  //       );
-  //       console.log('data ', data);
-  //     }
-  //   }, [data]);
-
   useEffect(() => {
     console.log('ERROR ', error);
   }, [error]);
 
   if (loading) return <div>Loading Data</div>;
 
-  const getSource = (id: string, layer: any) => {
-    return {
-      ...layer,
-      source: id,
-    };
-  };
   return (
     <Container maxWidth="xl">
       <Box sx={{ bgcolor: '#cfe8fc', height: '100vh' }}>
