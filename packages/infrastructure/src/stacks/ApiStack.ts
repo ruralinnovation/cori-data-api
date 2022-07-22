@@ -21,6 +21,7 @@ export interface CacheConfig {
   port: number;
   username: string;
   parameterName: string;
+  globalTTL: string;
 }
 
 interface AppSyncUserPoolConfig {
@@ -149,6 +150,7 @@ export class ApiStack extends Stack {
         CACHE_PORT: '' + cacheConfig.port,
         CACHE_USERNAME: cacheConfig.username,
         CACHE_PASSWORD: cachePassword,
+        CACHE_GLOBAL_TTL: '86400',
       },
     });
 

@@ -115,23 +115,23 @@ describe('ApiIntegrationTests', () => {
     });
   });
 
-  // describe('Python API Response MVT Tiles', () => {
-  //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
-  //     if (val.mvt) {
-  //       it(name, async () => {
-  //         try {
-  //           const response = await apiClient.get(pythonIntegrationEndpoints.auction_904_subsidy_awards.mvt);
+  describe('Python API Response MVT Tiles', () => {
+    Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
+      if (val.mvt) {
+        it(name, async () => {
+          try {
+            const response = await apiClient.get(pythonIntegrationEndpoints.auction_904_subsidy_awards.mvt);
 
-  //           expect(response.status).toEqual(200);
-  //           expect(response.headers['content-type']).toEqual('application/x-protobuf');
-  //         } catch (error) {
-  //           logger.error(error);
-  //           fail(error);
-  //         }
-  //       });
-  //     }
-  //   });
-  // });
+            expect(response.status).toEqual(200);
+            expect(response.headers['content-type']).toEqual('application/x-protobuf');
+          } catch (error) {
+            logger.error(error);
+            fail(error);
+          }
+        });
+      }
+    });
+  });
 
   describe('Apollo GraphQL API Request Status 200 and Defined Response', () => {
     Object.entries(apolloIntegrationEndpoints).forEach(([name, val]) => {

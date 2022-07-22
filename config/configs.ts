@@ -69,6 +69,7 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     port: 17358,
     username: 'default',
     parameterName: '/cori/redis-cluster-credentials',
+    globalTTL: '86400',
   },
   /**
    * @todo: create a bucket with a prettier name
@@ -81,7 +82,7 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     region: 'us-east-1',
     userPoolId: 'us-east-1_NE91zaapX',
     apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
-    cognitoClientId: '76um99fv2qtb6f7ise3i037vna',
+    cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
   },
 };
 
@@ -104,10 +105,11 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   },
   cacheEnabled: true,
   cacheConfig: {
-    host: 'redis-19416.c283.us-east-1-4.ec2.cloud.redislabs.com:19416',
+    host: 'redis-19416.c283.us-east-1-4.ec2.cloud.redislabs.com',
     port: 17358,
     username: 'default',
     parameterName: '/redis/default_user_credentials',
+    globalTTL: '86400',
   },
   existingCognito: {
     userPoolId: 'us-east-1_QeA4600FA',
