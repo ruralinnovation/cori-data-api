@@ -127,7 +127,7 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
 
 export const Config: IConfigs = {
   'dev': {
-    ...mfDefaults,
+    ...coriDefaults,
     client: 'mf',
     stage: 'dev',
   },
