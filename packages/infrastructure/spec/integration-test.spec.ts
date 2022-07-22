@@ -69,55 +69,55 @@ describe('ApiIntegrationTests', () => {
   //     }
   //   });
   // });
-  describe('Python API Request 200 Status & Defined Response', () => {
-    Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
-      it(name, async () => {
-        try {
-          const response = await apiClient.get(val.geo);
+  // describe('Python API Request 200 Status & Defined Response', () => {
+  //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
+  //     it(name, async () => {
+  //       try {
+  //         const response = await apiClient.get(val.geo);
 
-          // Axios has an extra data wrapper
-          const result = response.data;
+  //         // Axios has an extra data wrapper
+  //         const result = response.data;
 
-          expect(response.status).toEqual(200);
-          expect(result).toBeDefined();
-        } catch (error) {
-          logger.error(error);
-          fail(error);
-        }
-      });
-    });
-  });
+  //         expect(response.status).toEqual(200);
+  //         expect(result).toBeDefined();
+  //       } catch (error) {
+  //         logger.error(error);
+  //         fail(error);
+  //       }
+  //     });
+  //   });
+  // });
 
-  describe('Python API Response GeoJSON Format', () => {
-    Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
-      it(name, async () => {
-        try {
-          const response = await apiClient.get(val.geo);
+  // describe('Python API Response GeoJSON Format', () => {
+  //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
+  //     it(name, async () => {
+  //       try {
+  //         const response = await apiClient.get(val.geo);
 
-          // Axios has an extra data wrapper
-          const result = response.data;
+  //         // Axios has an extra data wrapper
+  //         const result = response.data;
 
-          expect(result.type).toBeDefined();
-          expect(result.type).toEqual('FeatureCollection');
-          expect(result.features).toBeDefined();
-          expect(Array.isArray(result.features)).toEqual(true);
-          expect(result.features[0].type).toBeDefined();
-          expect(result.features[0].type).toEqual('Feature');
-          expect(result.features[0].geometry).toBeDefined();
-          expect(result.features[0].geometry.type).toBeDefined();
-          expect(result.features[0].geometry.coordinates).toBeDefined();
-          expect(Array.isArray(result.features[0].geometry.coordinates)).toEqual(true);
-        } catch (error) {
-          logger.error(error);
-          fail(error);
-        }
-      });
-    });
-  });
+  //         expect(result.type).toBeDefined();
+  //         expect(result.type).toEqual('FeatureCollection');
+  //         expect(result.features).toBeDefined();
+  //         expect(Array.isArray(result.features)).toEqual(true);
+  //         expect(result.features[0].type).toBeDefined();
+  //         expect(result.features[0].type).toEqual('Feature');
+  //         expect(result.features[0].geometry).toBeDefined();
+  //         expect(result.features[0].geometry.type).toBeDefined();
+  //         expect(result.features[0].geometry.coordinates).toBeDefined();
+  //         expect(Array.isArray(result.features[0].geometry.coordinates)).toEqual(true);
+  //       } catch (error) {
+  //         logger.error(error);
+  //         fail(error);
+  //       }
+  //     });
+  //   });
+  // });
 
   // describe('Python API Response MVT Tiles', () => {
-  //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
-  //     if (val.mvt) {
+  //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val], i) => {
+  //     if (val.mvt && i === 0) {
   //       it(name, async () => {
   //         try {
   //           const response = await apiClient.get(pythonIntegrationEndpoints.auction_904_subsidy_awards.mvt);
