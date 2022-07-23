@@ -90,7 +90,7 @@ export default abstract class AmplifyService {
         groups: payload['cognito:groups'] ? payload['cognito:groups'] : [],
       };
     } catch (error) {
-      console.log('cliams error');
+      console.log('claims error');
       console.log(error);
       return null;
     }
