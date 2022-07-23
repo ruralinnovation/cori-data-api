@@ -7,6 +7,7 @@ import { PythonLambda } from '../lambda';
 import { microservicesDirectory } from '../../util';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { ApiGw } from './ApiGw';
+import { ServiceConfig } from '../../../stacks/ApiStack';
 
 interface PythonDataServerProps {
   prefix: string;
@@ -26,13 +27,14 @@ interface PythonDataServerProps {
     DB_HOST: string;
     DB_NAME: string;
   };
+  microservicesConfig: ServiceConfig[];
 }
 export class PythonDataServer extends Construct {
   readonly apiGw: ApiGw;
   constructor(scope: Construct, id: string, props: PythonDataServerProps) {
     super(scope, id);
 
-    const { prefix, stage, userPool, vpc, securityGroups, environment } = props;
+    const { prefix, stage, userPool, vpc, securityGroups, environment, microservicesConfig } = props;
 
     /**
      * Python Data RESTApi
@@ -86,19 +88,18 @@ export class PythonDataServer extends Construct {
         lambda: localApiWrapper.function,
       });
     } else {
-      /**
-       * BCAT Microservice
-       */
-      const bcatService = new PythonLambda(this, 'PythonServer', {
-        ...defaults,
-        functionName: prefix + '-bcat-microservice',
-        entry: join(microservicesDirectory, 'bcat'),
-      });
+      microservicesConfig.forEach(config => {
+        const service = new PythonLambda(this, config.logicalName, {
+          ...defaults,
+          functionName: prefix + `-${config.directoryName}-microservice`,
+          entry: join(microservicesDirectory, config.directoryName),
+        });
 
-      this.apiGw.addLambda({
-        method: 'GET',
-        path: '/bcat/{proxy+}',
-        lambda: bcatService.function,
+        this.apiGw.addLambda({
+          method: 'GET',
+          path: `${config.corePath}/{proxy+}`,
+          lambda: service.function,
+        });
       });
     }
   }

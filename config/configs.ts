@@ -1,4 +1,5 @@
 import { ApiStackProps } from '../packages/infrastructure/src/stacks/ApiStack';
+import { ServiceConfig } from '../packages/infrastructure/stacks/ApiStack';
 
 export interface TestEnvConfig {
   region: string;
@@ -39,6 +40,23 @@ export interface IMixedConfig extends ApiStackProps {
 }
 
 /**
+ * Microervices Configuration
+ * Automatically deploys custom endpoints and services.
+ * [NOTE]: You must have a valid service in the directory noted.
+ */
+const microservicesConfiguration: ServiceConfig[] = [
+  {
+    logicalName: 'BCATService',
+    corePath: '/bcat',
+    directoryName: 'bcat',
+  },
+  {
+    logicalName: 'BCATCloneService',
+    corePath: '/bcat-clone',
+    directoryName: 'bcatclone',
+  },
+];
+/**
  * Provides strongly typed configs for deployment
  * Configs should be matched to a branch. Use the GIT_BRANCH environment variable to override.
  */
@@ -71,6 +89,7 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     parameterName: '/cori/redis-cluster-credentials',
     globalTTL: '86400',
   },
+  microservicesConfig: microservicesConfiguration,
   /**
    * @todo: create a bucket with a prettier name
    */
@@ -115,6 +134,7 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     userPoolId: 'us-east-1_QeA4600FA',
     userPoolDomain: 'authcori',
   },
+  microservicesConfig: microservicesConfiguration,
   testing: {
     username: '/cori/api/integration-test-username',
     password: '/cori/api/integration-test-password',

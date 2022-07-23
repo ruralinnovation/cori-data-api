@@ -28,6 +28,21 @@ interface AppSyncUserPoolConfig {
   userPoolId: string;
 }
 
+export interface ServiceConfig {
+  /**
+   * The Logical Name of the service (NO SPACES) e.g. BCATService
+   */
+  logicalName: string;
+  /**
+   * The Core path to trigger the Microservice e.g. /bcat
+   */
+  corePath: string;
+  /**
+   * The name of the directory this service is located.  e.g. bcat
+   */
+  directoryName: string;
+}
+
 interface AppSyncConfig {
   /**
    * Optional: When provided will configure additional user pools in the app sync authorization configuration
@@ -74,6 +89,8 @@ export interface ApiStackProps extends StackProps {
    * Optional. When provided, will attach to existing Cognito for authentication.
    */
   existingCognito?: ExistingCognitoConfig;
+
+  microservicesConfig: ServiceConfig[];
 }
 
 export class ApiStack extends Stack {
@@ -93,7 +110,17 @@ export class ApiStack extends Stack {
   constructor(scope: Construct, id: string, private props: ApiStackProps) {
     super(scope, id, props);
 
-    const { client, project, stage, existingCognito, databaseConfig, cacheConfig, cacheEnabled, retain } = this.props;
+    const {
+      client,
+      project,
+      stage,
+      existingCognito,
+      databaseConfig,
+      cacheConfig,
+      cacheEnabled,
+      retain,
+      microservicesConfig,
+    } = this.props;
 
     const prefix = `${client}-data-api-${stage}`;
 
@@ -121,6 +148,7 @@ export class ApiStack extends Stack {
       userPool: cognito.userPool,
       vpc: networking.vpc,
       securityGroups: [networking.lambdaSecurityGroup],
+      microservicesConfig,
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: stage,

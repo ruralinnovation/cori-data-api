@@ -2,13 +2,12 @@
   "name": "schemas",
   "version": "0.0.1",
   "description": "Data schemas for APIs",
-  "main": "index.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && merge-schemas",
+    "build": "tsc && npm run merge-schemas",
     "build:schemas": "npm run merge-schemas",
     "merge-schemas": "ts-node merge-schemas.ts",
     "hive-publish": "npx hive schema:publish dist/schema.graphql --service api --force"
