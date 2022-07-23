@@ -55,6 +55,11 @@ const microservicesConfiguration: ServiceConfig[] = [
     corePath: '/bcat-clone',
     directoryName: 'bcatclone',
   },
+  {
+    logicalName: 'LeeService',
+    corePath: '/lee-magic',
+    directoryName: 'lee-service',
+  },
 ];
 /**
  * Provides strongly typed configs for deployment
