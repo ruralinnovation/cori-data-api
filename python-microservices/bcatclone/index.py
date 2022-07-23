@@ -9,7 +9,7 @@ from bcat_connection import execute
 
 logger = Logger(service="BCAT")
 tracer = Tracer(service="BCAT")
-app = APIGatewayRestResolver(strip_prefixes=["/bcatclone"])
+app = APIGatewayRestResolver(strip_prefixes=["/bcat-clone"])
 
 
 @app.get(rule="/bad-request-error")

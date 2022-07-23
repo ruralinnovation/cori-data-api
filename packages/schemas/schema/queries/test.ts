@@ -22,9 +22,9 @@ export default {
       info: any
     ) => {
       return skipCache
-        ? await pythonApi.getItem(`bcat-clone/county_adjacency_crosswalk/geojson?geoid_co=${county}`)
+        ? await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`)
         : await redisClient.checkCache(`county_adjacency_crosswalk-${county}`, async () => {
-            return await pythonApi.getItem(`bcat-clone/county_adjacency_crosswalk/geojson?geoid_co=${county}`);
+            return await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`);
           });
     },
   },
