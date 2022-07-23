@@ -92,7 +92,7 @@ const RootQuery = new GraphQLObjectType({
   },
 });
 
-const schema = mergeSchemas({
+export const schema = mergeSchemas({
   schemas: [
     new GraphQLSchema({
       query: RootQuery,
@@ -100,7 +100,7 @@ const schema = mergeSchemas({
   ],
 });
 
-if (!existsSync('dist')) {
-  mkdirSync('dist');
-}
-writeFileSync('dist/schema.graphql', printSchema(schema));
+// if (!existsSync('dist')) {
+//   mkdirSync('dist');
+// }
+// writeFileSync('dist/schema.graphql', printSchema(schema));
