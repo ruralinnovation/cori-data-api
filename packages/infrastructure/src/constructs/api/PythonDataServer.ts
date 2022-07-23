@@ -91,7 +91,7 @@ export class PythonDataServer extends Construct {
       microservicesConfig.forEach(config => {
         const service = new PythonLambda(this, config.logicalName, {
           ...defaults,
-          functionName: prefix + `-${config.directoryName}-microservice`,
+          functionName: prefix + `-${config.directoryName}-microservice-1`,
           entry: join(microservicesDirectory, config.directoryName),
         });
 

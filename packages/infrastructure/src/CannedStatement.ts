@@ -67,6 +67,7 @@ export class CannedStatements {
   /**
    * Typical KMS policy statements
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static kmsDefault(accountId: any): PolicyStatement[] {
     const accountPrincipal = new AccountPrincipal(accountId);
     return [

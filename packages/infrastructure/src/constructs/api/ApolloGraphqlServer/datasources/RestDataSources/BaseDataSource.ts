@@ -11,8 +11,6 @@ export class BaseDataSource extends RESTDataSource {
   }
   async getItem(path?: string) {
     const res = await this.get(path ? path : '', undefined);
-    console.log('REsponse ', res);
-    console.log('Attr', Object.keys(res.features[0]));
     return res;
   }
 }
