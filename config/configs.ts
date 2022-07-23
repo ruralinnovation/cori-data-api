@@ -1,4 +1,5 @@
 import { ApiStackProps } from '../packages/infrastructure/src/stacks/ApiStack';
+import { ServiceConfig } from '../packages/infrastructure/stacks/ApiStack';
 
 export interface TestEnvConfig {
   region: string;
@@ -39,6 +40,23 @@ export interface IMixedConfig extends ApiStackProps {
 }
 
 /**
+ * Microervices Configuration
+ * Automatically deploys custom endpoints and services.
+ * [NOTE]: You must have a valid service in the directory noted.
+ */
+const microservicesConfiguration: ServiceConfig[] = [
+  {
+    logicalName: 'BCATService',
+    corePath: '/bcat',
+    directoryName: 'bcat',
+  },
+  {
+    logicalName: 'BCATCloneService',
+    corePath: '/bcat-clone',
+    directoryName: 'bcatclone',
+  },
+];
+/**
  * Provides strongly typed configs for deployment
  * Configs should be matched to a branch. Use the GIT_BRANCH environment variable to override.
  */
@@ -69,12 +87,22 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     port: 17358,
     username: 'default',
     parameterName: '/cori/redis-cluster-credentials',
+    globalTTL: '86400',
   },
+  microservicesConfig: microservicesConfiguration,
   /**
    * @todo: create a bucket with a prettier name
    */
   //artifactBucketName: 'coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm',
   //coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm
+  testing: {
+    username: '/cori/int-test-user-name',
+    password: '/cori/int-test-user-pw',
+    region: 'us-east-1',
+    userPoolId: 'us-east-1_NE91zaapX',
+    apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
+    cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
+  },
 };
 
 const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
@@ -96,14 +124,24 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   },
   cacheEnabled: true,
   cacheConfig: {
-    host: 'redis-19416.c283.us-east-1-4.ec2.cloud.redislabs.com:19416',
+    host: 'redis-19416.c283.us-east-1-4.ec2.cloud.redislabs.com',
     port: 17358,
     username: 'default',
     parameterName: '/redis/default_user_credentials',
+    globalTTL: '86400',
   },
   existingCognito: {
     userPoolId: 'us-east-1_QeA4600FA',
     userPoolDomain: 'authcori',
+  },
+  microservicesConfig: microservicesConfiguration,
+  testing: {
+    username: '/cori/api/integration-test-username',
+    password: '/cori/api/integration-test-password',
+    region: 'us-east-1',
+    userPoolId: 'us-east-1_QeA4600FA',
+    apiUrl: 'https://d6q5pgqgx5oy5.cloudfront.net',
+    cognitoClientId: '70o6i77h1orcnvonb9ua3fh58e',
   },
 };
 
@@ -126,27 +164,11 @@ export const Config: IConfigs = {
     ...coriDefaults,
     client: 'cori',
     stage: 'dev',
-    testing: {
-      username: '',
-      password: '',
-      region: '',
-      userPoolId: '',
-      apiUrl: '',
-      cognitoClientId: '',
-    },
   },
   'cori/dev': {
     ...coriDefaults,
     client: 'cori',
     stage: 'dev',
-    testing: {
-      username: '/cori/api/integration-test-username',
-      password: '/cori/api/integration-test-password',
-      region: 'us-east-1',
-      userPoolId: 'us-east-1_QeA4600FA',
-      apiUrl: 'https://d6q5pgqgx5oy5.cloudfront.net',
-      cognitoClientId: '70o6i77h1orcnvonb9ua3fh58e',
-    },
   },
   'local': {
     ...mfDefaults,

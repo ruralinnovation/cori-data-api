@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { getConfig, getLocalGitBranch, TestEnvConfig } from '../../../config';
 require('dotenv').config();
 

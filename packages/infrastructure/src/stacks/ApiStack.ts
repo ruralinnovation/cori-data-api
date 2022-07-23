@@ -1,11 +1,11 @@
-import { Stack, StackProps, CfnOutput, Tags, Aws } from 'aws-cdk-lib';
+import { Stack, StackProps, CfnOutput, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Hosting } from '../constructs/Hosting';
 import { Cognito, ExistingCognitoConfig } from '../constructs/Cognito';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { ApolloGraphqlServer } from '../constructs/api/ApolloGraphqlServer/ApolloGraphqlServer';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { BcatServer } from '../constructs/api/BcatServer';
+import { PythonDataServer } from '../constructs/api/PythonDataServer';
 import { Networking } from '../constructs/Networking';
 
 export interface DatabaseConfig {
@@ -21,10 +21,26 @@ export interface CacheConfig {
   port: number;
   username: string;
   parameterName: string;
+  globalTTL: string;
 }
 
 interface AppSyncUserPoolConfig {
   userPoolId: string;
+}
+
+export interface ServiceConfig {
+  /**
+   * The Logical Name of the service (NO SPACES) e.g. BCATService
+   */
+  logicalName: string;
+  /**
+   * The Core path to trigger the Microservice e.g. /bcat
+   */
+  corePath: string;
+  /**
+   * The name of the directory this service is located.  e.g. bcat
+   */
+  directoryName: string;
 }
 
 interface AppSyncConfig {
@@ -51,7 +67,10 @@ export interface ApiStackProps extends StackProps {
   retain: boolean;
 
   /**
-   * Define this prop to put lambdas in VPC. Expecting VPC to be in another stack.
+   * Database integration configuration
+   * Puts lambdas in VPC. Expecting VPC to be in another stack or deployed already.
+   * DB creds are accessed through parameter store and deployed as part of the lambda service environment.
+   *
    */
   databaseConfig: DatabaseConfig;
 
@@ -70,6 +89,8 @@ export interface ApiStackProps extends StackProps {
    * Optional. When provided, will attach to existing Cognito for authentication.
    */
   existingCognito?: ExistingCognitoConfig;
+
+  microservicesConfig: ServiceConfig[];
 }
 
 export class ApiStack extends Stack {
@@ -89,7 +110,17 @@ export class ApiStack extends Stack {
   constructor(scope: Construct, id: string, private props: ApiStackProps) {
     super(scope, id, props);
 
-    const { client, project, stage, existingCognito, databaseConfig, cacheConfig, cacheEnabled, retain } = this.props;
+    const {
+      client,
+      project,
+      stage,
+      existingCognito,
+      databaseConfig,
+      cacheConfig,
+      cacheEnabled,
+      retain,
+      microservicesConfig,
+    } = this.props;
 
     const prefix = `${client}-data-api-${stage}`;
 
@@ -111,12 +142,13 @@ export class ApiStack extends Stack {
     /**
      * Python API Handler
      */
-    const bcat = new BcatServer(this, 'BcatServer', {
+    const bcat = new PythonDataServer(this, 'PythonDataServer', {
       prefix,
       stage,
       userPool: cognito.userPool,
       vpc: networking.vpc,
       securityGroups: [networking.lambdaSecurityGroup],
+      microservicesConfig,
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: stage,
@@ -146,6 +178,7 @@ export class ApiStack extends Stack {
         CACHE_PORT: '' + cacheConfig.port,
         CACHE_USERNAME: cacheConfig.username,
         CACHE_PASSWORD: cachePassword,
+        CACHE_GLOBAL_TTL: '86400',
       },
     });
 

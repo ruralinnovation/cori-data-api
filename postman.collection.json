@@ -1,0 +1,2277 @@
+{
+  "info": {
+    "_postman_id": "331d1e58-7e7d-49bb-8a37-7afcbad025d9",
+    "name": "cori-data-api-dev",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13931905"
+  },
+  "item": [
+    {
+      "name": "bcat",
+      "item": [
+        {
+          "name": "auction_904_subsidy_awards",
+          "item": [
+            {
+              "name": "graphql",
+              "item": [
+                {
+                  "name": "auction_904_subsidy_awards_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($counties: [String]!, $skipCache: Boolean) {\n    auction_904_subsidy_awards_geojson (counties: $counties, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"counties\": [\"47167\", \"47017\"],\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "auction_904_subsidy_awards_county_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($county: String!, $skipCache: Boolean) {\n    auction_904_subsidy_awards_county_geojson (county: $county, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"county\": \"47167\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "restapi",
+              "item": [
+                {
+                  "name": "auction_904_subsidy_awards/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/auction_904_subsidy_awards/geojson?geoid_co=47001,47003,47011",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "auction_904_subsidy_awards", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003,47011"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "auction_904_subsidy_awards/tiles",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/auction_904_subsidy_awards/geojson?geoid_co=47001,47003,47011",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "auction_904_subsidy_awards", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003,47011"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "local",
+              "item": [
+                {
+                  "name": "auction_904_subsidy_awards/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "eyJraWQiOiJJM3lHUGVjOTF2ejJ3RE1kRlk5YlJUMzJoSzZXc1UrMlJCN0lcL1JpNFJYdz0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIwZmVkOTQxYS1hYmIxLTQ0MmEtYmUxYi1jYWNlNmZmM2ExYTkiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfN0RDZEQ0Q2dkIiwiY29nbml0bzp1c2VybmFtZSI6ImludC10ZXN0QHlvcG1haWwuY29tIiwib3JpZ2luX2p0aSI6ImQxNzdjYmQyLWJmZGUtNDE3OC1hNWQ1LTY2NjlmNjliODI0MSIsImF1ZCI6IjR1aW1zOTg0NGxmYjJlZmFjYjY4NGcyczZlIiwiZXZlbnRfaWQiOiIwNmNjMTgxYS01MjFiLTRmNDItYTUxYi1jYjM3OGI4YWRiNWYiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY1NjcyMTE2OCwiZXhwIjoxNjU2NzI0NzY4LCJpYXQiOjE2NTY3MjExNjgsImp0aSI6IjllOGI0MzBmLWIxMmUtNGU4ZC05NjNkLTE4NWQ3NTA4NGVhNSIsImVtYWlsIjoiaW50LXRlc3RAeW9wbWFpbC5jb20ifQ.R8gG_OQsAZUheTLkph9_SU9d2EI-kpEaNzgNB-0xc5z00cHtsd4PPO4MCeZ3e2hGNLq6gy0pyQWEwUgsWv1ECNFh4G7APxZEGSUjnYHYo4nMDhi2Ss1M-p2HoDZueArrz5WMn-qiOhkfMWLhiELebAQ8PRWuE4rbP1g3v1l8ZJm18tenJkAxD2VpJyuXoCI6jnUBnhC_WYVxy6C1qhFzBASTOFD9xhnD8YFKMe5kPhw2n_ApgG35hTKxx1LpiEaXjJmqaxyIu1bA_84O0UjdUVgqUH_U_wDTgBks_fY8nvPql1nGRJvT1qcrB0vsysukN96hkETudbrGKRx16GN2p",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{localApiUrl}}/bcat/auction_904_subsidy_awards/geojson?geoid_co=47001,47003",
+                      "host": ["{{localApiUrl}}"],
+                      "path": ["bcat", "auction_904_subsidy_awards", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "broadband_unserved_blocks",
+          "item": [
+            {
+              "name": "graphql",
+              "item": [
+                {
+                  "name": "broadband_unserved_blocks_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($counties: [String], $skipCache: Boolean) {\n    broadband_unserved_blocks_geojson (counties: $counties, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"counties\": [\"47167\", \"47017\"],\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "broadband_unserved_blocks_county_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($county: String!, $skipCache: Boolean) {\n    broadband_unserved_blocks_county_geojson (county: $county, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"county\": \"47167\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "restapi",
+              "item": [
+                {
+                  "name": "broadband_unserved_blocks/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/broadband_unserved_blocks/geojson?geoid_co=47001,47003",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "broadband_unserved_blocks", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "local",
+              "item": [
+                {
+                  "name": "broadband_unserved_blocks/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{localApiUrl}}/bcat/broadband_unserved_blocks/geojson?geoid_co=47001,47003",
+                      "host": ["{{localApiUrl}}"],
+                      "path": ["bcat", "broadband_unserved_blocks", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "county_broadband_farm_bill_eligibility",
+          "item": [
+            {
+              "name": "graphql",
+              "item": [
+                {
+                  "name": "county_broadband_farm_bill_eligibility_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "var clientId = pm.environment.get(\"cognitoClientId\");",
+                          "var username = pm.environment.get(\"cognitoUserName\");",
+                          "var password = pm.environment.get(\"cognitoUserPassword\");",
+                          "console.log(username)",
+                          "console.log(password)",
+                          "pm.sendRequest({",
+                          "           url: \"https://cognito-idp.us-east-1.amazonaws.com/\",",
+                          "           method: 'POST',",
+                          "           header: {",
+                          "                    'X-Amz-Target':   'AWSCognitoIdentityProviderService.InitiateAuth',",
+                          "                    'Content-Type': 'application/x-amz-json-1.1'",
+                          "                   },",
+                          "            body: {",
+                          "                   mode: 'raw',",
+                          "                   raw: JSON.stringify({",
+                          "                   \"AuthParameters\": {",
+                          "                   \"USERNAME\": username,",
+                          "                   \"PASSWORD\": password",
+                          "                   },",
+                          "                  \"AuthFlow\": \"USER_PASSWORD_AUTH\",",
+                          "                  \"ClientId\": clientId",
+                          "  }),",
+                          "options: {",
+                          "raw: {",
+                          "language: 'json'",
+                          "}",
+                          "}",
+                          "}",
+                          "}, function (error, response) {",
+                          "console.log(response.json());",
+                          "pm.environment.set(\"cognitoAccessToken\", response.json().AuthenticationResult.AccessToken);",
+                          "pm.environment.set(\"cognitoIdToken\", response.json().AuthenticationResult.IdToken);",
+                          "});"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "oauth2",
+                      "oauth2": [
+                        {
+                          "key": "tokenType",
+                          "value": "",
+                          "type": "string"
+                        },
+                        {
+                          "key": "accessToken",
+                          "value": "{{cognitoIdToken}}",
+                          "type": "string"
+                        },
+                        {
+                          "key": "redirect_uri",
+                          "value": "https://example.com/",
+                          "type": "string"
+                        },
+                        {
+                          "key": "authUrl",
+                          "value": "https://mf-data-api-dev.auth.us-east-1.amazoncognito.com",
+                          "type": "string"
+                        },
+                        {
+                          "key": "scope",
+                          "value": "phone email openid profile aws.cognito.signin.user.admin",
+                          "type": "string"
+                        },
+                        {
+                          "key": "useBrowser",
+                          "value": false,
+                          "type": "boolean"
+                        },
+                        {
+                          "key": "clientId",
+                          "value": "id5voqulhfbc55ko0n59h6ae4",
+                          "type": "string"
+                        },
+                        {
+                          "key": "grant_type",
+                          "value": "implicit",
+                          "type": "string"
+                        },
+                        {
+                          "key": "tokenName",
+                          "value": "MF Cori Api Cognito Token",
+                          "type": "string"
+                        },
+                        {
+                          "key": "addTokenTo",
+                          "value": "header",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($state_abbr: String!, $skipCache: Boolean) {\n    county_broadband_farm_bill_eligibility_geojson (state_abbr: $state_abbr, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"state_abbr\": \"TN\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "restapi",
+              "item": [
+                {
+                  "name": "county_broadband_farm_bill_eligibility/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/county_broadband_farm_bill_eligibility/geojson?state_abbr=TN",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "county_broadband_farm_bill_eligibility", "geojson"],
+                      "query": [
+                        {
+                          "key": "state_abbr",
+                          "value": "TN"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "local",
+              "item": [
+                {
+                  "name": "county_broadband_farm_bill_eligibility/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{localApiUrl}}/bcat/county_broadband_farm_bill_eligibility/geojson?state_abbr=TN",
+                      "host": ["{{localApiUrl}}"],
+                      "path": ["bcat", "county_broadband_farm_bill_eligibility", "geojson"],
+                      "query": [
+                        {
+                          "key": "state_abbr",
+                          "value": "TN"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "county_broadband_pending_rural_dev",
+          "item": [
+            {
+              "name": "graphql",
+              "item": [
+                {
+                  "name": "county_broadband_pending_rural_dev_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "var clientId = pm.environment.get(\"cognitoClientId\");",
+                          "var username = pm.environment.get(\"cognitoUserName\");",
+                          "var password = pm.environment.get(\"cognitoUserPassword\");",
+                          "console.log(username)",
+                          "console.log(password)",
+                          "pm.sendRequest({",
+                          "           url: \"https://cognito-idp.us-east-1.amazonaws.com/\",",
+                          "           method: 'POST',",
+                          "           header: {",
+                          "                    'X-Amz-Target':   'AWSCognitoIdentityProviderService.InitiateAuth',",
+                          "                    'Content-Type': 'application/x-amz-json-1.1'",
+                          "                   },",
+                          "            body: {",
+                          "                   mode: 'raw',",
+                          "                   raw: JSON.stringify({",
+                          "                   \"AuthParameters\": {",
+                          "                   \"USERNAME\": username,",
+                          "                   \"PASSWORD\": password",
+                          "                   },",
+                          "                  \"AuthFlow\": \"USER_PASSWORD_AUTH\",",
+                          "                  \"ClientId\": clientId",
+                          "  }),",
+                          "options: {",
+                          "raw: {",
+                          "language: 'json'",
+                          "}",
+                          "}",
+                          "}",
+                          "}, function (error, response) {",
+                          "console.log(response.json());",
+                          "pm.environment.set(\"cognitoAccessToken\", response.json().AuthenticationResult.AccessToken);",
+                          "pm.environment.set(\"cognitoIdToken\", response.json().AuthenticationResult.IdToken);",
+                          "});"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "oauth2",
+                      "oauth2": [
+                        {
+                          "key": "tokenType",
+                          "value": "",
+                          "type": "string"
+                        },
+                        {
+                          "key": "accessToken",
+                          "value": "{{cognitoIdToken}}",
+                          "type": "string"
+                        },
+                        {
+                          "key": "redirect_uri",
+                          "value": "https://example.com/",
+                          "type": "string"
+                        },
+                        {
+                          "key": "authUrl",
+                          "value": "https://mf-data-api-dev.auth.us-east-1.amazoncognito.com",
+                          "type": "string"
+                        },
+                        {
+                          "key": "scope",
+                          "value": "phone email openid profile aws.cognito.signin.user.admin",
+                          "type": "string"
+                        },
+                        {
+                          "key": "useBrowser",
+                          "value": false,
+                          "type": "boolean"
+                        },
+                        {
+                          "key": "clientId",
+                          "value": "id5voqulhfbc55ko0n59h6ae4",
+                          "type": "string"
+                        },
+                        {
+                          "key": "grant_type",
+                          "value": "implicit",
+                          "type": "string"
+                        },
+                        {
+                          "key": "tokenName",
+                          "value": "MF Cori Api Cognito Token",
+                          "type": "string"
+                        },
+                        {
+                          "key": "addTokenTo",
+                          "value": "header",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($state_abbr: String!, $skipCache: Boolean) {\n    county_broadband_pending_rural_dev_geojson (state_abbr: $state_abbr, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"state_abbr\": \"TN\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "restapi",
+              "item": [
+                {
+                  "name": "county_broadband_pending_rural_dev/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/county_broadband_pending_rural_dev/geojson?state_abbr=TN",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "county_broadband_pending_rural_dev", "geojson"],
+                      "query": [
+                        {
+                          "key": "state_abbr",
+                          "value": "TN"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "local",
+              "item": [
+                {
+                  "name": "county_broadband_pending_rural_dev/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{localApiUrl}}/bcat/county_broadband_pending_rural_dev/geojson?state_abbr=TN",
+                      "host": ["{{localApiUrl}}"],
+                      "path": ["bcat", "county_broadband_pending_rural_dev", "geojson"],
+                      "query": [
+                        {
+                          "key": "state_abbr",
+                          "value": "TN"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "county_ilecs_geo",
+          "item": [
+            {
+              "name": "graphql",
+              "item": [
+                {
+                  "name": "county_ilecs_geo_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "var clientId = pm.environment.get(\"cognitoClientId\");",
+                          "var username = pm.environment.get(\"cognitoUserName\");",
+                          "var password = pm.environment.get(\"cognitoUserPassword\");",
+                          "console.log(username)",
+                          "console.log(password)",
+                          "pm.sendRequest({",
+                          "           url: \"https://cognito-idp.us-east-1.amazonaws.com/\",",
+                          "           method: 'POST',",
+                          "           header: {",
+                          "                    'X-Amz-Target':   'AWSCognitoIdentityProviderService.InitiateAuth',",
+                          "                    'Content-Type': 'application/x-amz-json-1.1'",
+                          "                   },",
+                          "            body: {",
+                          "                   mode: 'raw',",
+                          "                   raw: JSON.stringify({",
+                          "                   \"AuthParameters\": {",
+                          "                   \"USERNAME\": username,",
+                          "                   \"PASSWORD\": password",
+                          "                   },",
+                          "                  \"AuthFlow\": \"USER_PASSWORD_AUTH\",",
+                          "                  \"ClientId\": clientId",
+                          "  }),",
+                          "options: {",
+                          "raw: {",
+                          "language: 'json'",
+                          "}",
+                          "}",
+                          "}",
+                          "}, function (error, response) {",
+                          "console.log(response.json());",
+                          "pm.environment.set(\"cognitoAccessToken\", response.json().AuthenticationResult.AccessToken);",
+                          "pm.environment.set(\"cognitoIdToken\", response.json().AuthenticationResult.IdToken);",
+                          "});"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "oauth2",
+                      "oauth2": [
+                        {
+                          "key": "tokenType",
+                          "value": "",
+                          "type": "string"
+                        },
+                        {
+                          "key": "accessToken",
+                          "value": "{{cognitoIdToken}}",
+                          "type": "string"
+                        },
+                        {
+                          "key": "redirect_uri",
+                          "value": "https://example.com/",
+                          "type": "string"
+                        },
+                        {
+                          "key": "authUrl",
+                          "value": "https://mf-data-api-dev.auth.us-east-1.amazoncognito.com",
+                          "type": "string"
+                        },
+                        {
+                          "key": "scope",
+                          "value": "phone email openid profile aws.cognito.signin.user.admin",
+                          "type": "string"
+                        },
+                        {
+                          "key": "useBrowser",
+                          "value": false,
+                          "type": "boolean"
+                        },
+                        {
+                          "key": "clientId",
+                          "value": "id5voqulhfbc55ko0n59h6ae4",
+                          "type": "string"
+                        },
+                        {
+                          "key": "grant_type",
+                          "value": "implicit",
+                          "type": "string"
+                        },
+                        {
+                          "key": "tokenName",
+                          "value": "MF Cori Api Cognito Token",
+                          "type": "string"
+                        },
+                        {
+                          "key": "addTokenTo",
+                          "value": "header",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($state_abbr: String!, $skipCache: Boolean) {\n    county_ilecs_geo_geojson (state_abbr: $state_abbr, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"state_abbr\": \"TN\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "restapi",
+              "item": [
+                {
+                  "name": "county_ilecs_geo/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/county_ilecs_geo/geojson?state_abbr=TN",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "county_ilecs_geo", "geojson"],
+                      "query": [
+                        {
+                          "key": "state_abbr",
+                          "value": "TN"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "local",
+              "item": [
+                {
+                  "name": "county_ilecs_geo/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{localApiUrl}}/bcat/county_ilecs_geo/geojson?state_abbr=TN",
+                      "host": ["{{localApiUrl}}"],
+                      "path": ["bcat", "county_ilecs_geo", "geojson"],
+                      "query": [
+                        {
+                          "key": "state_abbr",
+                          "value": "TN"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "county_rural_dev_broadband_protected_borrowers",
+          "item": [
+            {
+              "name": "graphql",
+              "item": [
+                {
+                  "name": "county_rural_dev_broadband_protected_borrowers_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "var clientId = pm.environment.get(\"cognitoClientId\");",
+                          "var username = pm.environment.get(\"cognitoUserName\");",
+                          "var password = pm.environment.get(\"cognitoUserPassword\");",
+                          "console.log(username)",
+                          "console.log(password)",
+                          "pm.sendRequest({",
+                          "           url: \"https://cognito-idp.us-east-1.amazonaws.com/\",",
+                          "           method: 'POST',",
+                          "           header: {",
+                          "                    'X-Amz-Target':   'AWSCognitoIdentityProviderService.InitiateAuth',",
+                          "                    'Content-Type': 'application/x-amz-json-1.1'",
+                          "                   },",
+                          "            body: {",
+                          "                   mode: 'raw',",
+                          "                   raw: JSON.stringify({",
+                          "                   \"AuthParameters\": {",
+                          "                   \"USERNAME\": username,",
+                          "                   \"PASSWORD\": password",
+                          "                   },",
+                          "                  \"AuthFlow\": \"USER_PASSWORD_AUTH\",",
+                          "                  \"ClientId\": clientId",
+                          "  }),",
+                          "options: {",
+                          "raw: {",
+                          "language: 'json'",
+                          "}",
+                          "}",
+                          "}",
+                          "}, function (error, response) {",
+                          "console.log(response.json());",
+                          "pm.environment.set(\"cognitoAccessToken\", response.json().AuthenticationResult.AccessToken);",
+                          "pm.environment.set(\"cognitoIdToken\", response.json().AuthenticationResult.IdToken);",
+                          "});"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "oauth2",
+                      "oauth2": [
+                        {
+                          "key": "tokenType",
+                          "value": "",
+                          "type": "string"
+                        },
+                        {
+                          "key": "accessToken",
+                          "value": "{{cognitoIdToken}}",
+                          "type": "string"
+                        },
+                        {
+                          "key": "redirect_uri",
+                          "value": "https://example.com/",
+                          "type": "string"
+                        },
+                        {
+                          "key": "authUrl",
+                          "value": "https://mf-data-api-dev.auth.us-east-1.amazoncognito.com",
+                          "type": "string"
+                        },
+                        {
+                          "key": "scope",
+                          "value": "phone email openid profile aws.cognito.signin.user.admin",
+                          "type": "string"
+                        },
+                        {
+                          "key": "useBrowser",
+                          "value": false,
+                          "type": "boolean"
+                        },
+                        {
+                          "key": "clientId",
+                          "value": "id5voqulhfbc55ko0n59h6ae4",
+                          "type": "string"
+                        },
+                        {
+                          "key": "grant_type",
+                          "value": "implicit",
+                          "type": "string"
+                        },
+                        {
+                          "key": "tokenName",
+                          "value": "MF Cori Api Cognito Token",
+                          "type": "string"
+                        },
+                        {
+                          "key": "addTokenTo",
+                          "value": "header",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($state_abbr: String!, $skipCache: Boolean) {\n    county_ilecs_geo_geojson (state_abbr: $state_abbr, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"state_abbr\": \"TN\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "restapi",
+              "item": [
+                {
+                  "name": "county_rural_dev_broadband_protected_borrowers/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=TN",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "county_rural_dev_broadband_protected_borrowers", "geojson"],
+                      "query": [
+                        {
+                          "key": "stusps",
+                          "value": "TN"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "local",
+              "item": [
+                {
+                  "name": "county_rural_dev_broadband_protected_borrowers/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{localApiUrl}}/bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=TN",
+                      "host": ["{{localApiUrl}}"],
+                      "path": ["bcat", "county_rural_dev_broadband_protected_borrowers", "geojson"],
+                      "query": [
+                        {
+                          "key": "stusps",
+                          "value": "TN"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "county_summary",
+          "item": [
+            {
+              "name": "graphql",
+              "item": [
+                {
+                  "name": "county_summary_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($counties: [String]!, $skipCache: Boolean) {\n    county_summary_geojson (counties: $counties, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"counties\": [\"47167\", \"47017\"],\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "county_summary_county_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($county: String!, $skipCache: Boolean) {\n    county_summary_county_geojson (county: $county, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"county\": \"47167\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "restapi",
+              "item": [
+                {
+                  "name": "county_summary/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/county_summary/geojson?geoid_co=47001,47003",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "county_summary", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "local",
+              "item": [
+                {
+                  "name": "county_summary/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{localApiUrl}}/bcat/county_summary/geojson?geoid_co=47001,47003",
+                      "host": ["{{localApiUrl}}"],
+                      "path": ["bcat", "county_summary", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "fiber_cable_unserved_blocks",
+          "item": [
+            {
+              "name": "graphql",
+              "item": [
+                {
+                  "name": "fiber_cable_unserved_blocks_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($counties: [String]!, $skipCache: Boolean) {\n    fiber_cable_unserved_blocks_geojson (counties: $counties, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"counties\": [\"47167\", \"47017\"],\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "fiber_cable_unserved_blocks_county_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($county: String!, $skipCache: Boolean) {\n    fiber_cable_unserved_blocks_county_geojson (county: $county, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"county\": \"47167\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "restapi",
+              "item": [
+                {
+                  "name": "fiber_cable_unserved_blocks/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/fiber_cable_unserved_blocks/geojson?geoid_co=47001,47003",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "fiber_cable_unserved_blocks", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "local",
+              "item": [
+                {
+                  "name": "fiber_cable_unserved_blocks/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{localApiUrl}}/bcat/fiber_cable_unserved_blocks/geojson?geoid_co=47001,47003",
+                      "host": ["{{localApiUrl}}"],
+                      "path": ["bcat", "fiber_cable_unserved_blocks", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "incumbent_electric_providers_geo",
+          "item": [
+            {
+              "name": "graphql",
+              "item": [
+                {
+                  "name": "incumbent_electric_providers_geo_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "var clientId = pm.environment.get(\"cognitoClientId\");",
+                          "var username = pm.environment.get(\"cognitoUserName\");",
+                          "var password = pm.environment.get(\"cognitoUserPassword\");",
+                          "console.log(username)",
+                          "console.log(password)",
+                          "pm.sendRequest({",
+                          "           url: \"https://cognito-idp.us-east-1.amazonaws.com/\",",
+                          "           method: 'POST',",
+                          "           header: {",
+                          "                    'X-Amz-Target':   'AWSCognitoIdentityProviderService.InitiateAuth',",
+                          "                    'Content-Type': 'application/x-amz-json-1.1'",
+                          "                   },",
+                          "            body: {",
+                          "                   mode: 'raw',",
+                          "                   raw: JSON.stringify({",
+                          "                   \"AuthParameters\": {",
+                          "                   \"USERNAME\": username,",
+                          "                   \"PASSWORD\": password",
+                          "                   },",
+                          "                  \"AuthFlow\": \"USER_PASSWORD_AUTH\",",
+                          "                  \"ClientId\": clientId",
+                          "  }),",
+                          "options: {",
+                          "raw: {",
+                          "language: 'json'",
+                          "}",
+                          "}",
+                          "}",
+                          "}, function (error, response) {",
+                          "console.log(response.json());",
+                          "pm.environment.set(\"cognitoAccessToken\", response.json().AuthenticationResult.AccessToken);",
+                          "pm.environment.set(\"cognitoIdToken\", response.json().AuthenticationResult.IdToken);",
+                          "});"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "oauth2",
+                      "oauth2": [
+                        {
+                          "key": "tokenType",
+                          "value": "",
+                          "type": "string"
+                        },
+                        {
+                          "key": "accessToken",
+                          "value": "{{cognitoIdToken}}",
+                          "type": "string"
+                        },
+                        {
+                          "key": "redirect_uri",
+                          "value": "https://example.com/",
+                          "type": "string"
+                        },
+                        {
+                          "key": "authUrl",
+                          "value": "https://mf-data-api-dev.auth.us-east-1.amazoncognito.com",
+                          "type": "string"
+                        },
+                        {
+                          "key": "scope",
+                          "value": "phone email openid profile aws.cognito.signin.user.admin",
+                          "type": "string"
+                        },
+                        {
+                          "key": "useBrowser",
+                          "value": false,
+                          "type": "boolean"
+                        },
+                        {
+                          "key": "clientId",
+                          "value": "id5voqulhfbc55ko0n59h6ae4",
+                          "type": "string"
+                        },
+                        {
+                          "key": "grant_type",
+                          "value": "implicit",
+                          "type": "string"
+                        },
+                        {
+                          "key": "tokenName",
+                          "value": "MF Cori Api Cognito Token",
+                          "type": "string"
+                        },
+                        {
+                          "key": "addTokenTo",
+                          "value": "header",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($state_abbr: String!, $skipCache: Boolean) {\n    incumbent_electric_providers_geo_geojson (state_abbr: $state_abbr, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"state_abbr\": \"TN\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "restapi",
+              "item": [
+                {
+                  "name": "incumbent_electric_providers_geo/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/incumbent_electric_providers_geo/geojson?state_abbr=TN",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "incumbent_electric_providers_geo", "geojson"],
+                      "query": [
+                        {
+                          "key": "state_abbr",
+                          "value": "TN"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "local",
+              "item": [
+                {
+                  "name": "incumbent_electric_providers_geo/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{localApiUrl}}/bcat/incumbent_electric_providers_geo/geojson?state_abbr=TN",
+                      "host": ["{{localApiUrl}}"],
+                      "path": ["bcat", "incumbent_electric_providers_geo", "geojson"],
+                      "query": [
+                        {
+                          "key": "state_abbr",
+                          "value": "TN"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "county_adjacency_crosswalk",
+          "item": [
+            {
+              "name": "graphql",
+              "item": [
+                {
+                  "name": "county_adjacency_crosswalk_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "var clientId = pm.environment.get(\"cognitoClientId\");",
+                          "var username = pm.environment.get(\"cognitoUserName\");",
+                          "var password = pm.environment.get(\"cognitoUserPassword\");",
+                          "console.log(username)",
+                          "console.log(password)",
+                          "pm.sendRequest({",
+                          "           url: \"https://cognito-idp.us-east-1.amazonaws.com/\",",
+                          "           method: 'POST',",
+                          "           header: {",
+                          "                    'X-Amz-Target':   'AWSCognitoIdentityProviderService.InitiateAuth',",
+                          "                    'Content-Type': 'application/x-amz-json-1.1'",
+                          "                   },",
+                          "            body: {",
+                          "                   mode: 'raw',",
+                          "                   raw: JSON.stringify({",
+                          "                   \"AuthParameters\": {",
+                          "                   \"USERNAME\": username,",
+                          "                   \"PASSWORD\": password",
+                          "                   },",
+                          "                  \"AuthFlow\": \"USER_PASSWORD_AUTH\",",
+                          "                  \"ClientId\": clientId",
+                          "  }),",
+                          "options: {",
+                          "raw: {",
+                          "language: 'json'",
+                          "}",
+                          "}",
+                          "}",
+                          "}, function (error, response) {",
+                          "console.log(response.json());",
+                          "pm.environment.set(\"cognitoAccessToken\", response.json().AuthenticationResult.AccessToken);",
+                          "pm.environment.set(\"cognitoIdToken\", response.json().AuthenticationResult.IdToken);",
+                          "});"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "oauth2",
+                      "oauth2": [
+                        {
+                          "key": "tokenType",
+                          "value": "",
+                          "type": "string"
+                        },
+                        {
+                          "key": "accessToken",
+                          "value": "{{cognitoIdToken}}",
+                          "type": "string"
+                        },
+                        {
+                          "key": "redirect_uri",
+                          "value": "https://example.com/",
+                          "type": "string"
+                        },
+                        {
+                          "key": "authUrl",
+                          "value": "https://mf-data-api-dev.auth.us-east-1.amazoncognito.com",
+                          "type": "string"
+                        },
+                        {
+                          "key": "scope",
+                          "value": "phone email openid profile aws.cognito.signin.user.admin",
+                          "type": "string"
+                        },
+                        {
+                          "key": "useBrowser",
+                          "value": false,
+                          "type": "boolean"
+                        },
+                        {
+                          "key": "clientId",
+                          "value": "id5voqulhfbc55ko0n59h6ae4",
+                          "type": "string"
+                        },
+                        {
+                          "key": "grant_type",
+                          "value": "implicit",
+                          "type": "string"
+                        },
+                        {
+                          "key": "tokenName",
+                          "value": "MF Cori Api Cognito Token",
+                          "type": "string"
+                        },
+                        {
+                          "key": "addTokenTo",
+                          "value": "header",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($counties: [String], $skipCache: Boolean) {\n    county_adjacency_crosswalk_geojson (counties: $counties, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"state_abbr\": \"TN\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "county_adjacency_crosswalk_county_geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [
+                          "var clientId = pm.environment.get(\"cognitoClientId\");",
+                          "var username = pm.environment.get(\"cognitoUserName\");",
+                          "var password = pm.environment.get(\"cognitoUserPassword\");",
+                          "console.log(username)",
+                          "console.log(password)",
+                          "pm.sendRequest({",
+                          "           url: \"https://cognito-idp.us-east-1.amazonaws.com/\",",
+                          "           method: 'POST',",
+                          "           header: {",
+                          "                    'X-Amz-Target':   'AWSCognitoIdentityProviderService.InitiateAuth',",
+                          "                    'Content-Type': 'application/x-amz-json-1.1'",
+                          "                   },",
+                          "            body: {",
+                          "                   mode: 'raw',",
+                          "                   raw: JSON.stringify({",
+                          "                   \"AuthParameters\": {",
+                          "                   \"USERNAME\": username,",
+                          "                   \"PASSWORD\": password",
+                          "                   },",
+                          "                  \"AuthFlow\": \"USER_PASSWORD_AUTH\",",
+                          "                  \"ClientId\": clientId",
+                          "  }),",
+                          "options: {",
+                          "raw: {",
+                          "language: 'json'",
+                          "}",
+                          "}",
+                          "}",
+                          "}, function (error, response) {",
+                          "console.log(response.json());",
+                          "pm.environment.set(\"cognitoAccessToken\", response.json().AuthenticationResult.AccessToken);",
+                          "pm.environment.set(\"cognitoIdToken\", response.json().AuthenticationResult.IdToken);",
+                          "});"
+                        ],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "auth": {
+                      "type": "oauth2",
+                      "oauth2": [
+                        {
+                          "key": "tokenType",
+                          "value": "",
+                          "type": "string"
+                        },
+                        {
+                          "key": "accessToken",
+                          "value": "{{cognitoIdToken}}",
+                          "type": "string"
+                        },
+                        {
+                          "key": "redirect_uri",
+                          "value": "https://example.com/",
+                          "type": "string"
+                        },
+                        {
+                          "key": "authUrl",
+                          "value": "https://mf-data-api-dev.auth.us-east-1.amazoncognito.com",
+                          "type": "string"
+                        },
+                        {
+                          "key": "scope",
+                          "value": "phone email openid profile aws.cognito.signin.user.admin",
+                          "type": "string"
+                        },
+                        {
+                          "key": "useBrowser",
+                          "value": false,
+                          "type": "boolean"
+                        },
+                        {
+                          "key": "clientId",
+                          "value": "id5voqulhfbc55ko0n59h6ae4",
+                          "type": "string"
+                        },
+                        {
+                          "key": "grant_type",
+                          "value": "implicit",
+                          "type": "string"
+                        },
+                        {
+                          "key": "tokenName",
+                          "value": "MF Cori Api Cognito Token",
+                          "type": "string"
+                        },
+                        {
+                          "key": "addTokenTo",
+                          "value": "header",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "graphql",
+                      "graphql": {
+                        "query": "query ($county: String!, $skipCache: Boolean) {\n    county_adjacency_crosswalk_county_geojson (county: $county, skipCache: $skipCache) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                        "variables": "{\n    \"state_abbr\": \"TN\",\n    \"skipCache\": true\n}"
+                      }
+                    },
+                    "url": {
+                      "raw": "{{apolloApiUrl}}/graphql",
+                      "host": ["{{apolloApiUrl}}"],
+                      "path": ["graphql"]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "restapi",
+              "item": [
+                {
+                  "name": "county_adjacency_crosswalk/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{pythonApiUrl}}/bcat/county_adjacency_crosswalk/geojson?geoid_co=47001,47003",
+                      "host": ["{{pythonApiUrl}}"],
+                      "path": ["bcat", "county_adjacency_crosswalk", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "local",
+              "item": [
+                {
+                  "name": "county_adjacency_crosswalk/geojson",
+                  "event": [
+                    {
+                      "listen": "prerequest",
+                      "script": {
+                        "exec": [""],
+                        "type": "text/javascript"
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "api",
+                        "value": "Xy4Gq51ixT3OYvZPqhb3D5OdemA3BYZ06ISg5Duo",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Access",
+                        "value": "",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{localApiUrl}}/bcat/county_adjacency_crosswalk/geojson?geoid_co=47001,47003",
+                      "host": ["{{localApiUrl}}"],
+                      "path": ["bcat", "county_adjacency_crosswalk", "geojson"],
+                      "query": [
+                        {
+                          "key": "geoid_co",
+                          "value": "47001,47003"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "general_queries",
+          "item": [
+            {
+              "name": "feature_collection",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [""],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "query ($table: String!, $counties: [String]) {\n    feature_collection (table: $table, counties: $counties) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                    "variables": "{\n    \"table\": \"auction_904_subsidy_awards\",\n    \"counties\": [\"47167\", \"47017\"]\n}"
+                  }
+                },
+                "url": {
+                  "raw": "{{apolloApiUrl}}/graphql",
+                  "host": ["{{apolloApiUrl}}"],
+                  "path": ["graphql"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "county_feature_collection",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [""],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "graphql",
+                  "graphql": {
+                    "query": "query ($table: String!, $county: String!) {\n    county_feature (table: $table, county: $county) {\n        type\n        features {\n            type\n            id\n            properties\n            geometry {\n                coordinates\n                type\n            }\n        }\n    }\n}",
+                    "variables": "{\n    \"table\": \"auction_904_subsidy_awards\",\n    \"county\": \"47167\"\n}"
+                  }
+                },
+                "url": {
+                  "raw": "{{apolloApiUrl}}/graphql",
+                  "host": ["{{apolloApiUrl}}"],
+                  "path": ["graphql"]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "tokenType",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "accessToken",
+        "value": "{{cognitoIdToken}}",
+        "type": "string"
+      },
+      {
+        "key": "addTokenTo",
+        "value": "header",
+        "type": "string"
+      },
+      {
+        "key": "scope",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "clientId",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "authUrl",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "tokenName",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "challengeAlgorithm",
+        "value": "S256",
+        "type": "string"
+      },
+      {
+        "key": "grant_type",
+        "value": "implicit",
+        "type": "string"
+      },
+      {
+        "key": "client_authentication",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "var clientId = pm.environment.get(\"cognitoClientId\");",
+          "var username = pm.environment.get(\"cognitoUserName\");",
+          "var password = pm.environment.get(\"cognitoUserPassword\");",
+          "console.log(username)",
+          "console.log(password)",
+          "console.log(clientId)",
+          "pm.sendRequest({",
+          "           url: \"https://cognito-idp.us-east-1.amazonaws.com/\",",
+          "           method: 'POST',",
+          "           header: {",
+          "                    'X-Amz-Target':   'AWSCognitoIdentityProviderService.InitiateAuth',",
+          "                    'Content-Type': 'application/x-amz-json-1.1'",
+          "                   },",
+          "            body: {",
+          "                   mode: 'raw',",
+          "                   raw: JSON.stringify({",
+          "                   \"AuthParameters\": {",
+          "                   \"USERNAME\": username,",
+          "                   \"PASSWORD\": password",
+          "                   },",
+          "                  \"AuthFlow\": \"USER_PASSWORD_AUTH\",",
+          "                  \"ClientId\": clientId",
+          "  }),",
+          "options: {",
+          "raw: {",
+          "language: 'json'",
+          "}",
+          "}",
+          "}",
+          "}, function (error, response) {",
+          "console.log(response.json());",
+          "pm.environment.set(\"cognitoAccessToken\", response.json().AuthenticationResult.AccessToken);",
+          "pm.environment.set(\"cognitoIdToken\", response.json().AuthenticationResult.IdToken);",
+          "});"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": []
+}

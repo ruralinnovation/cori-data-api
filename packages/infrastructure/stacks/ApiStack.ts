@@ -1,12 +1,12 @@
-import { Stack, StackProps, CfnOutput, Tags, Aws } from 'aws-cdk-lib';
+import { Stack, StackProps, CfnOutput, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Hosting } from '../src/constructs/Hosting';
 import { Cognito, ExistingCognitoConfig } from '../src/constructs/Cognito';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { ApolloGraphqlServer } from '../src/constructs/api/ApolloGraphqlServer/ApolloGraphqlServer';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { BcatServer } from '../src/constructs/api/BcatServer';
 import { Networking } from '../src/constructs/Networking';
+import { PythonDataServer } from '../src/constructs/api/PythonDataServer';
 
 export interface DatabaseConfig {
   vpcId: string;
@@ -21,10 +21,26 @@ export interface CacheConfig {
   port: number;
   username: string;
   parameterName: string;
+  globalTTL: string;
 }
 
 interface AppSyncUserPoolConfig {
   userPoolId: string;
+}
+
+export interface ServiceConfig {
+  /**
+   * The Logical Name of the service (NO SPACES) e.g. BCATService
+   */
+  logicalName: string;
+  /**
+   * The Core path to trigger the Microservice e.g. /bcat
+   */
+  corePath: string;
+  /**
+   * The name of the directory this service is located.  e.g. bcat
+   */
+  directoryName: string;
 }
 
 interface AppSyncConfig {
@@ -51,7 +67,10 @@ export interface ApiStackProps extends StackProps {
   retain: boolean;
 
   /**
-   * Define this prop to put lambdas in VPC. Expecting VPC to be in another stack.
+   * Database integration configuration
+   * Puts lambdas in VPC. Expecting VPC to be in another stack or deployed already.
+   * DB creds are accessed through parameter store and deployed as part of the lambda service environment.
+   *
    */
   databaseConfig: DatabaseConfig;
 
@@ -70,8 +89,9 @@ export interface ApiStackProps extends StackProps {
    * Optional. When provided, will attach to existing Cognito for authentication.
    */
   existingCognito?: ExistingCognitoConfig;
-}
 
+  microservicesConfig: ServiceConfig[];
+}
 export class ApiStack extends Stack {
   /**
    * Used to connect values to integration test
@@ -89,7 +109,17 @@ export class ApiStack extends Stack {
   constructor(scope: Construct, id: string, private props: ApiStackProps) {
     super(scope, id, props);
 
-    const { client, project, stage, existingCognito, databaseConfig, cacheConfig, cacheEnabled, retain } = this.props;
+    const {
+      client,
+      project,
+      stage,
+      existingCognito,
+      databaseConfig,
+      cacheConfig,
+      cacheEnabled,
+      retain,
+      microservicesConfig,
+    } = this.props;
 
     const prefix = `${client}-data-api-${stage}`;
 
@@ -109,14 +139,16 @@ export class ApiStack extends Stack {
     });
 
     /**
-     * Python API Handler
+     * Python Data RESTApi
      */
-    const bcat = new BcatServer(this, 'BcatServer', {
+
+    const pythonServer = new PythonDataServer(this, 'PythonDataServer', {
       prefix,
       stage,
       userPool: cognito.userPool,
       vpc: networking.vpc,
       securityGroups: [networking.lambdaSecurityGroup],
+      microservicesConfig,
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: stage,
@@ -131,14 +163,14 @@ export class ApiStack extends Stack {
     /**
      * Apollo V3 GraphQL Api Handler
      */
-    const apollo = new ApolloGraphqlServer(this, 'ApolloServer', {
+    const apolloServer = new ApolloGraphqlServer(this, 'ApolloServer', {
       prefix,
       stage,
       userPool: cognito.userPool,
       logRetention: RetentionDays.FOUR_MONTHS,
       environment: {
         LOGGING_LEVEL: 'debug',
-        PYTHON_API_URL: bcat.apiGw.apiEndpoint,
+        PYTHON_API_URL: pythonServer.apiGw.apiEndpoint,
         PYTHON_API_STAGE: stage,
         // CF_URL: this.hosting.url,   // Circular dep
         CACHE_ENABLED: cacheEnabled ? 'true' : 'false',
@@ -146,6 +178,7 @@ export class ApiStack extends Stack {
         CACHE_PORT: '' + cacheConfig.port,
         CACHE_USERNAME: cacheConfig.username,
         CACHE_PASSWORD: cachePassword,
+        CACHE_GLOBAL_TTL: cacheConfig.globalTTL || '86400',
       },
     });
 
@@ -154,13 +187,13 @@ export class ApiStack extends Stack {
       apiOriginConfigs: [
         {
           default: true,
-          domain: bcat.apiGw.apiDomain,
+          domain: pythonServer.apiGw.apiDomain,
           originPath: `/${stage}`,
           behaviorPathPattern: '/bcat/*',
         },
         {
           default: false,
-          domain: apollo.apiGw.apiDomain,
+          domain: apolloServer.apiGw.apiDomain,
           originPath: `/${stage}`,
           behaviorPathPattern: '/graphql*',
         },
@@ -181,8 +214,8 @@ export class ApiStack extends Stack {
     this.postmanClientIdOutput = new CfnOutput(this, 'PostmanClientId', {
       value: cognito.postmanClient.userPoolClientId,
     });
-    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: bcat.apiGw.apiEndpoint });
-    this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: apollo.apiGw.apiEndpoint });
+    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: pythonServer.apiGw.apiEndpoint });
+    this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: apolloServer.apiGw.apiEndpoint });
     this.cloudFrontUrl = new CfnOutput(this, 'CloudFrontUrl', { value: hosting.url });
   }
 }

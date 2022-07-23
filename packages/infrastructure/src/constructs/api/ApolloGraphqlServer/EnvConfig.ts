@@ -10,6 +10,7 @@ export interface EnvConfigVars {
   CACHE_PORT: string;
   CACHE_USERNAME: string;
   CACHE_PASSWORD: string;
+  CACHE_GLOBAL_TTL: string;
   [name: string]: string;
 }
 
@@ -33,4 +34,5 @@ export const EnvConfig: EnvConfigVars = {
   CACHE_PORT: getEnv('CACHE_PORT'),
   CACHE_USERNAME: getEnv('CACHE_USERNAME'),
   CACHE_PASSWORD: getEnv('CACHE_PASSWORD'),
+  CACHE_GLOBAL_TTL: getEnv('CACHE_GLOBAL_TTL', '86400'),
 };

@@ -7,8 +7,9 @@ import { PythonLambda } from '../lambda';
 import { microservicesDirectory } from '../../util';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { ApiGw } from './ApiGw';
+import { ServiceConfig } from '../../../stacks/ApiStack';
 
-interface BcatServerProps {
+interface PythonDataServerProps {
   prefix: string;
   stage: string;
 
@@ -26,19 +27,20 @@ interface BcatServerProps {
     DB_HOST: string;
     DB_NAME: string;
   };
+  microservicesConfig: ServiceConfig[];
 }
-export class BcatServer extends Construct {
+export class PythonDataServer extends Construct {
   readonly apiGw: ApiGw;
-  constructor(scope: Construct, id: string, props: BcatServerProps) {
+  constructor(scope: Construct, id: string, props: PythonDataServerProps) {
     super(scope, id);
 
-    const { prefix, stage, userPool, vpc, securityGroups, environment } = props;
+    const { prefix, stage, userPool, vpc, securityGroups, environment, microservicesConfig } = props;
 
     /**
      * Python Data RESTApi
      */
     this.apiGw = new ApiGw(this, 'PythonApi', {
-      prefix: prefix + '-python-gis-api',
+      prefix: prefix + '-python-data-api',
       stage,
       // cloudWatchRole: this.iam.roles === undefined,
       cloudWatchRole: true,
@@ -86,19 +88,18 @@ export class BcatServer extends Construct {
         lambda: localApiWrapper.function,
       });
     } else {
-      /**
-       * BCAT Microservice
-       */
-      const bcatService = new PythonLambda(this, 'BCATService', {
-        ...defaults,
-        functionName: prefix + '-bcat-service',
-        entry: join(microservicesDirectory, 'bcat'),
-      });
+      microservicesConfig.forEach(config => {
+        const service = new PythonLambda(this, config.logicalName, {
+          ...defaults,
+          functionName: prefix + `-${config.directoryName}-microservice-1`,
+          entry: join(microservicesDirectory, config.directoryName),
+        });
 
-      this.apiGw.addLambda({
-        method: 'GET',
-        path: '/bcat/{proxy+}',
-        lambda: bcatService.function,
+        this.apiGw.addLambda({
+          method: 'GET',
+          path: `${config.corePath}/{proxy+}`,
+          lambda: service.function,
+        });
       });
     }
   }

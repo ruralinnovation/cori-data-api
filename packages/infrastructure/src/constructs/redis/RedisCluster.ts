@@ -1,8 +1,7 @@
-import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as redis from 'aws-cdk-lib/aws-elasticache';
 
-import { ISecurityGroup, ISubnet, IVpc } from 'aws-cdk-lib/aws-ec2';
+import { ISecurityGroup, IVpc } from 'aws-cdk-lib/aws-ec2';
 import { RedisSubnetGroup } from './RedisSubnetGroup';
 import { RedisSecurityGroup } from './RedisSecurityGroup';
 import { CfnCacheCluster } from 'aws-cdk-lib/aws-elasticache';

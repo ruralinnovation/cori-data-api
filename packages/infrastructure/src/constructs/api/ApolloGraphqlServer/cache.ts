@@ -18,7 +18,7 @@ export interface CacheOptions {
     ttl?: number;
   };
 }
-const globalTTL = 300;
+const globalTTL = parseInt(EnvConfig.CACHE_GLOBAL_TTL);
 
 /**
  * @description The default options for the cache

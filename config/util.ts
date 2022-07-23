@@ -19,13 +19,13 @@ export function exec(command: string, logToConsole = true): Promise<string> {
       resolve(results);
     });
 
-    if (child && child.stdout && child.stderr) {
+    if (child?.stdout && child.stderr) {
       child.stdout.on('data', stdoutHandler);
       child.stderr.on('data', stderrHandler);
     }
 
     child.once('exit', () => {
-      if (child && child.stdout && child.stderr) {
+      if (child?.stdout && child.stderr) {
         child.stdout.removeListener('data', stdoutHandler);
         child.stderr.removeListener('data', stderrHandler);
       }
