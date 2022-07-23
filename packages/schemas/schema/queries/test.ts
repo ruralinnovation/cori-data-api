@@ -4,13 +4,6 @@
 import { GraphQLBoolean, GraphQLList, GraphQLString, GraphQLObjectType } from 'graphql';
 import GeoJSON from '../geojson';
 
-const leeResponse = new GraphQLObjectType({
-  name: 'Lee',
-  fields: {
-    response: { type: GraphQLString },
-  },
-});
-
 export default {
   test: {
     type: GeoJSON.FeatureCollectionObject,
@@ -33,13 +26,6 @@ export default {
         : await redisClient.checkCache(`county_adjacency_crosswalk-${county}`, async () => {
             return await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`);
           });
-    },
-  },
-  lee: {
-    type: leeResponse,
-    args: {},
-    resolve: async (_: any, __: any, { dataSources: { pythonApi }, redisClient }: any, info: any) => {
-      return await pythonApi.getItem(`lee-service/magic`);
     },
   },
 };
