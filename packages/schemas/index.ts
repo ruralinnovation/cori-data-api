@@ -1,8 +1,14 @@
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { mergeSchemas } from '@graphql-tools/schema';
-import { GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLString, printSchema } from 'graphql';
+import { GraphQLBoolean, GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
 import GeoJSON from './schema/geojson';
-import { bcatQueries } from './schema/bcatQueries';
+import * as queries from './schema/queries';
+
+const combinedQueries = Object.values(queries).reduce((obj, query) => {
+  return {
+    ...obj,
+    ...query,
+  };
+}, {});
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -10,7 +16,8 @@ const RootQuery = new GraphQLObjectType({
     setup: {
       type: GeoJSON.GeometryTypeUnion,
       args: undefined,
-      resolve: async (_: any, __: any, { dataSources }: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+      resolve: (_: unknown, __: unknown, { dataSources }: any) => {
         return true;
       },
     },
@@ -18,6 +25,7 @@ const RootQuery = new GraphQLObjectType({
       type: GeoJSON.FeatureCollectionObject,
       args: {
         table: {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           type: GraphQLString!,
         },
         counties: {
@@ -31,10 +39,22 @@ const RootQuery = new GraphQLObjectType({
         },
       },
       resolve: async (
-        _: any,
-        { table, state_abbr, counties, skipCache }: any,
+        _: unknown,
+        {
+          table,
+          state_abbr,
+          counties,
+          skipCache,
+        }: {
+          table: string;
+          state_abbr: string;
+          counties: string[];
+          skipCache: boolean;
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         { dataSources, redisClient }: any,
-        info: any
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        info: unknown
       ) => {
         if (state_abbr) {
           return skipCache
@@ -49,6 +69,7 @@ const RootQuery = new GraphQLObjectType({
           return await counties.reduce(
             async (fc, county) => {
               const featureCollection = await fc;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const res: any = skipCache
                 ? await redisClient.checkCache(`${table}-${county}`, async () => {
                     return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
@@ -75,20 +96,28 @@ const RootQuery = new GraphQLObjectType({
       type: GeoJSON.FeatureCollectionObject,
       args: {
         table: {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           type: GraphQLString!,
         },
         county: {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           type: GraphQLString!,
         },
       },
-      resolve: async (_: any, { table, county }: any, { dataSources, redisClient }: any, info: any) => {
-        return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
+      resolve: async (
+        _: unknown,
+        { table, county }: { table: string; county: string },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { dataSources, redisClient }: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+        info: any
+      ) => {
         return await redisClient.checkCache(`${table}-${county}`, async () => {
           return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
         });
       },
     },
-    ...bcatQueries,
+    ...combinedQueries,
   },
 });
 

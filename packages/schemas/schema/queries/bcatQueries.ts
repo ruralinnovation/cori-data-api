@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GraphQLArgumentConfig, GraphQLBoolean, GraphQLList, GraphQLString } from 'graphql';
-import GeoJSON from './geojson';
+import GeoJSON from '../geojson';
 
 export const bcatQueries: any = {
   auction_904_subsidy_awards_geojson: {
@@ -440,3 +440,5 @@ export const bcatQueries: any = {
     },
   },
 };
+
+export default bcatQueries;

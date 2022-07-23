@@ -1,11 +1,10 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
-import { GraphQLBoolean, GraphQLList, GraphQLString } from 'graphql';
+import { GraphQLArgumentConfig, GraphQLBoolean, GraphQLList, GraphQLString } from 'graphql';
 import GeoJSON from './geojson';
 
-export const bcatQueries = {
+export const bcatQueries: any = {
   auction_904_subsidy_awards_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
