@@ -57,7 +57,7 @@ const microservicesConfiguration: ServiceConfig[] = [
   },
   {
     logicalName: 'LeeService',
-    corePath: '/lee-magic',
+    corePath: '/lee-service',
     directoryName: 'lee-service',
   },
 ];
