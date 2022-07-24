@@ -26,7 +26,7 @@ export const apolloConfig = {
     ? {
         key: EnvConfig.APOLLO_KEY,
         graphRef: EnvConfig.APOLLO_GRAPH_REF,
-        graphId: isEnvTrue(EnvConfig.APOLLO_SCHEMA_REPORTING),
+        graphId: EnvConfig.APOLLO_GRAPH_REF,
       }
     : undefined,
   plugins: Object.values(plugins).map(plugin => plugin),

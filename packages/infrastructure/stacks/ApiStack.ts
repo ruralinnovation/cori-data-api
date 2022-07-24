@@ -7,7 +7,6 @@ import { ApolloGraphqlServer } from '../src/constructs/api/ApolloGraphqlServer/A
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Networking } from '../src/constructs/Networking';
 import { PythonDataServer } from '../src/constructs/api/PythonDataServer';
-import { apolloConfig } from '../src/constructs/api/ApolloGraphqlServer/ApolloGraphqlServer.handler';
 
 export interface DatabaseConfig {
   vpcId: string;
