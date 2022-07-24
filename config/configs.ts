@@ -100,7 +100,7 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   apolloStudioConfig: {
     apolloKey: 'Cori-Data-Api-DEV:HyRUT10wGqYylIA8soa8yg',
     apolloGraphRef: 'Cori-Data-Api-DEV@current',
-    apolloSchemaReporting: true,
+    apolloSchemaReporting: 'true',
   },
 };
 
@@ -145,7 +145,7 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   apolloStudioConfig: {
     apolloKey: '',
     apolloGraphRef: '',
-    apolloSchemaReporting: true,
+    apolloSchemaReporting: 'true',
   },
 };
 
