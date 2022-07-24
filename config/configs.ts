@@ -1,5 +1,4 @@
-import { ApiStackProps } from '../packages/infrastructure/src/stacks/ApiStack';
-import { ServiceConfig } from '../packages/infrastructure/stacks/ApiStack';
+import { ApiStackProps, ServiceConfig } from '../packages/infrastructure/stacks/ApiStack';
 
 export interface TestEnvConfig {
   region: string;
@@ -98,6 +97,11 @@ const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
     cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
   },
+  apolloStudioConfig: {
+    apolloKey: 'Cori-Data-Api-DEV:HyRUT10wGqYylIA8soa8yg',
+    apolloGraphRef: 'Cori-Data-Api-DEV@current',
+    apolloSchemaReporting: true,
+  },
 };
 
 const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
@@ -137,6 +141,11 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     userPoolId: 'us-east-1_QeA4600FA',
     apiUrl: 'https://d6q5pgqgx5oy5.cloudfront.net',
     cognitoClientId: '70o6i77h1orcnvonb9ua3fh58e',
+  },
+  apolloStudioConfig: {
+    apolloKey: '',
+    apolloGraphRef: '',
+    apolloSchemaReporting: true,
   },
 };
 

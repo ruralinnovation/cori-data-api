@@ -4,6 +4,8 @@ import { ApolloServer } from 'apollo-server-lambda';
 import compression from 'compression';
 import { schema } from 'schemas/dist';
 import * as plugins from './plugins';
+import { isEnvTrue } from './utils';
+import { EnvConfig } from './EnvConfig';
 
 // Using "import * as express from 'express';" results in "express is not a function" once deployed
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -11,6 +13,7 @@ const express = require('express');
 
 const cache = new Cache();
 
+const;
 export const apolloConfig = {
   schema,
   csrfPrevention: false,
@@ -20,6 +23,13 @@ export const apolloConfig = {
   dataSources: () => ({
     pythonApi: new PythonRestApi(),
   }),
+  apollo: isEnvTrue(EnvConfig.APOLLO_STUDIO_ENABLED)
+    ? {
+        key: EnvConfig.APOLLO_KEY,
+        graphRef: EnvConfig.APOLLO_GRAPH_REF,
+        graphId: isEnvTrue(EnvConfig.APOLLO_SCHEMA_REPORTING),
+      }
+    : undefined,
   plugins: Object.values(plugins).map(plugin => plugin),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context: ({ event, context, express }: any) => {
