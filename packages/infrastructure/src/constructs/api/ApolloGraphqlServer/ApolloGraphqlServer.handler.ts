@@ -13,7 +13,6 @@ const express = require('express');
 
 const cache = new Cache();
 
-const;
 export const apolloConfig = {
   schema,
   csrfPrevention: false,
