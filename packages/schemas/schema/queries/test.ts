@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { GraphQLBoolean, GraphQLList, GraphQLString } from 'graphql';
+import { GraphQLBoolean, GraphQLList, GraphQLString, GraphQLObjectType } from 'graphql';
 import GeoJSON from '../geojson';
 
 export default {
@@ -22,9 +22,9 @@ export default {
       info: any
     ) => {
       return skipCache
-        ? await pythonApi.getItem(`bcat-clone/county_adjacency_crosswalk/geojson?geoid_co=${county}`)
+        ? await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`)
         : await redisClient.checkCache(`county_adjacency_crosswalk-${county}`, async () => {
-            return await pythonApi.getItem(`bcat-clone/county_adjacency_crosswalk/geojson?geoid_co=${county}`);
+            return await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`);
           });
     },
   },
