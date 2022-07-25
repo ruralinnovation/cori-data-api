@@ -1,6 +1,6 @@
 {
   "name": "cori-data-api",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "CORI Data API Project",
   "main": "index.js",
   "scripts": {
