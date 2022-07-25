@@ -120,7 +120,7 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
   cacheEnabled: true,
   cacheConfig: {
     host: 'redis-19416.c283.us-east-1-4.ec2.cloud.redislabs.com',
-    port: 17358,
+    port: 19416,
     username: 'default',
     parameterName: '/redis/default_user_credentials',
     globalTTL: '86400',

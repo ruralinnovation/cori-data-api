@@ -95,6 +95,7 @@ export interface ApiStackProps extends StackProps {
 export class ApiStack extends Stack {
   /**
    * Used to connect values to integration test
+   *
    */
   pythonApiUrlOutput: CfnOutput;
   apolloApiUrlOutput: CfnOutput;

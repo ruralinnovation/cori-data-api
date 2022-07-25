@@ -75,7 +75,7 @@ export interface ApiStackProps extends StackProps {
   databaseConfig: DatabaseConfig;
 
   /**
-   *
+   * TODO
    */
   cacheEnabled: boolean;
   cacheConfig: CacheConfig;
