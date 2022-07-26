@@ -116,7 +116,7 @@ describe('ApiIntegrationTests', () => {
   });
 
   describe('Python API Response MVT Tiles', () => {
-    Object.entries(pythonIntegrationEndpoints).forEach(([name, val], i) => {
+    Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
       if (val.mvt) {
         it(name, async () => {
           try {
