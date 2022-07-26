@@ -117,7 +117,7 @@ describe('ApiIntegrationTests', () => {
 
   describe('Python API Response MVT Tiles', () => {
     Object.entries(pythonIntegrationEndpoints).forEach(([name, val], i) => {
-      if (val.mvt && i === 0) {
+      if (val.mvt) {
         it(name, async () => {
           try {
             const response = await apiClient.get(pythonIntegrationEndpoints.auction_904_subsidy_awards.mvt);

@@ -21,8 +21,6 @@ type RootQueryType {
   incumbent_electric_providers_geo_geojson(state_abbr: String, skipCache: Boolean): GeoJSONFeatureCollection
   county_adjacency_crosswalk_geojson(counties: [String], skipCache: Boolean): GeoJSONFeatureCollection
   county_adjacency_crosswalk_county_geojson(county: String, skipCache: Boolean): GeoJSONFeatureCollection
-  test(county: String, skipCache: Boolean): GeoJSONFeatureCollection
-  lee: Lee
 }
 
 """Geometry Types"""
@@ -157,7 +155,3 @@ type GeoJSONFeature implements GeoJSONInterface {
 
 """Arbitrary JSON value"""
 scalar JSONObject
-
-type Lee {
-  response: String
-}
