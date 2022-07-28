@@ -50,6 +50,11 @@ const microservicesConfiguration: ServiceConfig[] = [
     corePath: '/bcat',
     directoryName: 'bcat',
   },
+  {
+    logicalName: 'ACSService',
+    corePath: '/acs',
+    directoryName: 'acs',
+  },
 ];
 /**
  * Provides strongly typed configs for deployment
