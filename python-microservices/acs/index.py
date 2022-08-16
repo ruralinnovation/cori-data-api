@@ -27,9 +27,9 @@ def get():
     logger.info(os.environ)
 
     # get some short names of parameters used to construct the query
-        db_table = "acs.acs_5_yr_county"
-        columns = "*"
-        # id = CONFIG[table].get('id', None)
+    db_table = "acs.acs_5_yr_county"
+    columns = "*"
+    # id = CONFIG[table].get('id', None)
 
     query = f"""
         SELECT {columns} FROM {db_table} LIMIT 1;
