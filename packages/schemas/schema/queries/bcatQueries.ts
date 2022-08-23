@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { GraphQLArgumentConfig, GraphQLBoolean, GraphQLList, GraphQLString } from 'graphql';
+import { GraphQLArgumentConfig, GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLString } from 'graphql';
 import GeoJSON from '../geojson';
 
 export const bcatQueries: any = {
@@ -267,6 +267,39 @@ export const bcatQueries: any = {
       );
     },
   },
+  // county_summary_pages_geojson: {
+  //   type: GeoJSON.FeatureCollectionObject,
+  //   args: {
+  //     counties: {
+  //       type: new GraphQLList(GraphQLString)!,
+  //     },
+  //     page: {
+  //       type: new GraphQLInt,
+  //     }
+  //   },
+  //   resolve: async (
+  //     _: any,
+  //     { counties, page }: { counties: string[]; page: number | undefined },
+  //     { dataSources: { pythonApi } }: any,
+  //     info: any
+  //   ) => {
+  //     return await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${county}&page=${page}`);
+  //         if (res) {
+  //           return {
+  //             ...featureCollection,
+  //             features: featureCollection.features.concat(res.features),
+  //           };
+  //         } else {
+  //           return featureCollection;
+  //         }
+  //       },
+  //       Promise.resolve({
+  //         type: 'FeatureCollection',
+  //         features: [],
+  //       })
+  //     );
+  //   },
+  // },
   county_summary_county_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
