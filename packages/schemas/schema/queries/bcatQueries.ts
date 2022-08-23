@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { GraphQLArgumentConfig, GraphQLBoolean, GraphQLList, GraphQLString } from 'graphql';
+import { GraphQLBoolean, GraphQLList, GraphQLString } from 'graphql';
 import GeoJSON from '../geojson';
 
 export const bcatQueries: any = {
+  // Query Name
   auction_904_subsidy_awards_geojson: {
+    // Return Type
     type: GeoJSON.FeatureCollectionObject,
+    // Query Arguments
     args: {
       counties: {
         type: new GraphQLList(GraphQLString)!,
@@ -15,6 +18,7 @@ export const bcatQueries: any = {
         type: GraphQLBoolean,
       },
     },
+    // Resolver
     resolve: async (
       _: any,
       { counties, skipCache }: { counties: string[]; skipCache: boolean | undefined },

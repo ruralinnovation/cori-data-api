@@ -97,27 +97,6 @@ export class Cache {
     }
   }
   // eslint-disable-next-line @typescript-eslint/ban-types
-  checkCache_orig(key: string, cb: Function, maxAge: number = globalTTL): Promise<unknown> {
-    // eslint-disable-next-line no-async-promise-executor, @typescript-eslint/no-misused-promises
-    return new Promise(async (resolve, reject) => {
-      try {
-        const cacheRes = await this.getCacheValue(key);
-        if (!cacheRes) {
-          let dbValue = await cb();
-          if (!dbValue) {
-            dbValue = null;
-          }
-          this.rawCache.setex(key, maxAge, JSON.stringify(dbValue));
-          resolve(dbValue);
-        } else {
-          resolve(cacheRes);
-        }
-      } catch (err) {
-        reject(err);
-      }
-    });
-  }
-  // eslint-disable-next-line @typescript-eslint/ban-types
   checkCache(key: string, cb: Function, maxAge: number = globalTTL): Promise<unknown> {
     return new Promise((resolve, reject) => {
       try {
@@ -140,34 +119,3 @@ export class Cache {
     });
   }
 }
-
-/**
- * Original Cache Implementation
- */
-// export const checkCache = async (
-//   redisClient: typeof Redis,
-//   key: string,
-//   callback: Function,
-//   maxAge: number = globalTTL
-// ): Promise<Object | Array<any> | number> => {
-//   return new Promise(async (resolve, reject) => {
-//     redisClient.get(key, async (err, data) => {
-//       if (err) {
-//         return reject(err);
-//       }
-//       if (data != null) {
-//         console.log('Data ', data);
-//         console.log('read from cache');
-//         return resolve(JSON.parse(data));
-//       } else {
-//         console.log('read from db');
-//         let newData = await callback();
-//         if (!newData) {
-//           newData = null;
-//         }
-//         redisClient.setex(key, maxAge, JSON.stringify(newData));
-//         resolve(newData);
-//       }
-//     });
-//   });
-// };

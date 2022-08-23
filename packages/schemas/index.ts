@@ -128,8 +128,3 @@ export const schema = mergeSchemas({
     }),
   ],
 });
-
-// if (!existsSync('dist')) {
-//   mkdirSync('dist');
-// }
-// writeFileSync('dist/schema.graphql', printSchema(schema));
