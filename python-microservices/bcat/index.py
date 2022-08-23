@@ -17,6 +17,9 @@ def bad_request_error(msg):
     # HTTP  400
     raise BadRequestError(msg)
 
+# @app.get("/county_summary/geojson", compress=True)
+# def get_bcat_county_summary_by_page() # Query params page[, limit, offset]
+# # SQL query will have to sort by county id
 
 @app.get("/<table>/geojson", compress=True)
 def get_bcat(table):
