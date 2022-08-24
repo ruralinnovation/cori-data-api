@@ -102,12 +102,12 @@ def get_bcat(table):
                 'geometry',   ST_AsGeoJSON(geom)::jsonb,
                 'properties', to_jsonb(t.*) - 'x_id' - 'geom'
             )
-        FROM (
-            SELECT {columns} 
-            FROM {db_table}
-            {where}
-            {limit}
-            ) t
+            FROM (
+                SELECT {columns}
+                    FROM {db_table}
+                    {where}
+                    {limit}
+                ) t
         
         """
 
