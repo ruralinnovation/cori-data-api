@@ -111,6 +111,8 @@ def get_bcat(table):
         
         """
 
+    print(query)
+
     # execute the query string.
     features = execute(query)
 
