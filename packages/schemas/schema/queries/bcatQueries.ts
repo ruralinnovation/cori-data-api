@@ -5,6 +5,10 @@ import { GraphQLArgumentConfig, GraphQLBoolean, GraphQLInt, GraphQLList, GraphQL
 import GeoJSON from '../geojson';
 
 export const bcatQueries: any = {
+  // auction_904_subsidy_awards_schema_vl_mvt: {
+  //   type: [object]
+  // 
+  // },
   auction_904_subsidy_awards_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {

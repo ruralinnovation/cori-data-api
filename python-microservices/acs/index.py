@@ -19,7 +19,7 @@ def bad_request_error(msg):
 
 @app.get("/testing", compress=False)
 def get():
-    print("testing endpoint /testing")
+    print("testing acs endpoint /testing")
 
     """
     construct and execute a query to <table> with where clause based on <params>
