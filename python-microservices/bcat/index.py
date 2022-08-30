@@ -17,6 +17,987 @@ def bad_request_error(msg):
     # HTTP  400
     raise BadRequestError(msg)
 
+
+@app.get("/testing", compress=False)
+def get():
+    print("testing bcat endpoint /testing")
+
+    """
+    construct and execute a query to <table> with where clause based on <params>
+    """
+    logger.info(os.environ)
+
+    # get some short names of parameters used to construct the query
+    db_table = "bcat.bcat_auction_904_subsidy_awards"
+    columns = "*"
+    # id = CONFIG[table].get('id', None)
+
+    query = f"""
+        SELECT {columns} FROM {db_table} LIMIT 1;
+
+        """
+
+    query_result = execute(query)
+
+    logger.debug(query_result)
+
+    return {
+        "layergroupid": [
+            "fc9e6770986930363e107cd17d16f72c:1639516253094"
+        ],
+        "metadata": {
+            "layers": [
+             {
+               "type": "mapnik",
+               "id": "layer0",
+               "meta": {
+                 "cartocss": ":layer { polygon-fill: :aac }",
+                 "stats": {
+                   "sample": [
+                     {
+                       "tier": "Above Baseline",
+                       "geoid_co": "06001",
+                       "name_co": "Alameda",
+                       "subsidy_recipient": "Space Exploration Technologies Corp.",
+                       "cartodb_id": 14287
+                     },
+                     {
+                       "tier": "Above Baseline",
+                       "geoid_co": "06001",
+                       "name_co": "Alameda",
+                       "subsidy_recipient": "Space Exploration Technologies Corp.",
+                       "cartodb_id": 29235
+                     }
+                   ],
+                   "estimatedFeatureCount": 193,
+                   "geometryType": "ST_MultiPolygon",
+                   "columns": {
+                     "cartodb_id": {
+                       "type": "number",
+                       "min": 102,
+                       "max": 54477,
+                       "avg": 16740.0515,
+                       "sum": 3247570
+                     },
+                     "fid": {
+                       "type": "number",
+                       "min": 524,
+                       "max": 54288,
+                       "avg": 14038.1856,
+                       "sum": 2723408
+                     },
+                     "geoid": {
+                       "type": "string",
+                       "categories": [
+                         {
+                           "category": "060014001001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014002001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014002002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014003004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014004002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014007001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014007003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014008001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014010005",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014011004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014014002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014014003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014016001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014016002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014017001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014017002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014017003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014022003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014025002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014027002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014028002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014030002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014031001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014033001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014034001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014034002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014035012",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014036001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014037021",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014038002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014045024",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014046004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014049003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014049004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014053011",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014059013",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014059021",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014059022",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014060001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014060002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014060003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014061001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014061002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014061004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014073002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014074003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014077001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014078001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014078002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014079003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014080001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014080002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014081001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014081002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014081003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014083002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014087002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014088002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014089001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014089002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014090001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014090002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014090003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014090004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014094002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014096004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014097003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014097004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014099001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014099002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014099003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014100002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014105001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014201001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014201002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014204001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014211001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014214001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014214002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014215001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014217001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014218002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014219002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014220001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014220002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014221001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014221002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014222001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014224001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014226001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014229002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014235003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014238002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014239012",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014239022",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014251011",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014251023",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014251031",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014251032",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014251041",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014251042",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014261004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014262002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014272004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014273002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014273005",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014277001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014277003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014280001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014281004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014282001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014282002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014283011",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014283014",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014283023",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014284001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014285002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014287002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014301011",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014301013",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014301021",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014302001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014305001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014306002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014324001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014324002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014324003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014326001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014326002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014326005",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014328003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014331021",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014331041",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014332003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014332004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014333002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014334001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014334004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014337002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014338001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014338004",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014351031",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014351032",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014351033",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014356021",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014359003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014360001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014364012",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014364013",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014401001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014501011",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014501021",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014501023",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014503002",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014505012",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014505021",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014506011",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014506012",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014506021",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014506033",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014506034",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014506042",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014506071",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014506072",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507013",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507014",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507411",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507423",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507431",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507432",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507441",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507452",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507461",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507462",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014507521",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014511011",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014511014",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014511015",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014511022",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014512011",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014512013",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014512021",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014513001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014513003",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014514012",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014514042",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014515012",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014515041",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014516021",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014516024",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060014517032",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060019819001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060019820001",
+                           "frequency": 1
+                         },
+                         {
+                           "category": "060019832001",
+                           "frequency": 1
+                         }
+                       ]
+                     },
+                     "geoid_co": {
+                       "type": "string",
+                       "categories": [
+                         {
+                           "category": "06001",
+                           "frequency": 194
+                         }
+                       ]
+                     },
+                     "name_co": {
+                       "type": "string",
+                       "categories": [
+                         {
+                           "category": "Alameda",
+                           "frequency": 194
+                         }
+                       ]
+                     },
+                     "state_abbr": {
+                       "type": "string",
+                       "categories": [
+                         {
+                           "category": "CA",
+                           "frequency": 194
+                         }
+                       ]
+                     },
+                     "subsidy_recipient": {
+                       "type": "string",
+                       "categories": [
+                         {
+                           "category": "Space Exploration Technologies Corp.",
+                           "frequency": 118
+                         },
+                         {
+                           "category": "LTD Broadband LLC",
+                           "frequency": 40
+                         },
+                         {
+                           "category": "Etheric Communications LLC",
+                           "frequency": 29
+                         },
+                         {
+                           "category": "One Ring Networks, Inc",
+                           "frequency": 7
+                         }
+                       ]
+                     },
+                     "tier": {
+                       "type": "string",
+                       "categories": [
+                         {
+                           "category": "Above Baseline",
+                           "frequency": 118
+                         },
+                         {
+                           "category": "Gigabit",
+                           "frequency": 69
+                         },
+                         {
+                           "category": "Baseline",
+                           "frequency": 7
+                         }
+                       ]
+                     },
+                     "the_geom_webmercator": {
+                       "type": "geometry"
+                     }
+                   },
+                   "dimensions": {}
+                 },
+                 "dates_as_numbers": []
+               },
+               "tilejson": {
+                 "vector": {
+                   "tilejson": "2.2.0",
+                   "tiles": [
+                     "https://oscarto.ruralinnovation.us/user/admin/api/v1/map/fc9e6770986930363e107cd17d16f72c:1639516253094/layer0/{z}/{x}/{y}.mvt?api_key=OcrLh4ETkKlHN0LUgHxwmA"
+                   ]
+                 },
+                 "raster": {
+                   "tilejson": "2.2.0",
+                   "tiles": [
+                     "https://oscarto.ruralinnovation.us/user/admin/api/v1/map/fc9e6770986930363e107cd17d16f72c:1639516253094/layer0/{z}/{x}/{y}.png?api_key=OcrLh4ETkKlHN0LUgHxwmA"
+                   ]
+                 }
+               }
+             }
+        ],
+        "dataviews": {},
+        "analyses": [],
+        "tilejson": {
+            "vector": {
+               "tilejson": [
+                 "2.2.0"
+               ],
+               "tiles": [
+                 "https://oscarto.ruralinnovation.us/user/admin/api/v1/map/fc9e6770986930363e107cd17d16f72c:1639516253094/{z}/{x}/{y}.mvt?api_key=OcrLh4ETkKlHN0LUgHxwmA"
+               ]
+             },
+             "raster": {
+               "tilejson": [
+                 "2.2.0"
+               ],
+               "tiles": [
+                 "https://oscarto.ruralinnovation.us/user/admin/api/v1/map/fc9e6770986930363e107cd17d16f72c:1639516253094/{z}/{x}/{y}.png?api_key=OcrLh4ETkKlHN0LUgHxwmA"
+               ]
+             }
+        },
+        "url": {
+            "vector": {
+               "urlTemplate": [
+                 "https://oscarto.ruralinnovation.us/user/admin/api/v1/map/fc9e6770986930363e107cd17d16f72c:1639516253094/{z}/{x}/{y}.mvt?api_key=OcrLh4ETkKlHN0LUgHxwmA"
+               ],
+               "subdomains": []
+             },
+             "raster": {
+               "urlTemplate": [
+                 "https://oscarto.ruralinnovation.us/user/admin/api/v1/map/fc9e6770986930363e107cd17d16f72c:1639516253094/{z}/{x}/{y}.png?api_key=OcrLh4ETkKlHN0LUgHxwmA"
+               ],
+               "subdomains": []
+             }
+            }
+        },
+        "cdn_url": {},
+        "last_updated": [
+            "2021-12-14T21:10:53.094Z"
+        ]
+    }
+
+
 # @app.get("/county_summary/geojson", compress=True)
 # def get_bcat_county_summary_by_page() # Query params page[, limit, offset]
 # # SQL query will have to sort by county id
