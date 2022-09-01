@@ -115,5 +115,7 @@
     "allowAllOutbound": false
   },
   "ssm:account=190686435752:parameterName=/cori/int-test-user-name:region=us-east-1": "mf-int-test@yopmail.com",
-  "ssm:account=190686435752:parameterName=/cori/int-test-user-pw:region=us-east-1": "k^ynPg*JDkzW3MKy6Kh&tcD9"
+  "ssm:account=190686435752:parameterName=/cori/int-test-user-pw:region=us-east-1": "k^ynPg*JDkzW3MKy6Kh&tcD9",
+  "ssm:account=312512371189:parameterName=/cori/api/integration-test-username:region=us-east-1": "nahum@mergingfutures.com",
+  "ssm:account=312512371189:parameterName=/cori/api/integration-test-password:region=us-east-1": "Temporary54321!"
 }
