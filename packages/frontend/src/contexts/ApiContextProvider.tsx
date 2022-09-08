@@ -26,6 +26,7 @@ function ApiContextProvider(props: { children: any }) {
   useEffect(() => {
     if (user) {
       createApolloClient();
+      console.log('Apollo Client created');
     }
   }, [user]);
   const [state, setState] = useState<IApiContext>(null as any);

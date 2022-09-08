@@ -30,8 +30,6 @@ export const dataLayer2: FillLayer = {
 };
 
 function MapContainer() {
-  const [viewport, setViewport] = useState();
-
   const { loading, error, data } = useQuery(county_broadband_farm_bill_eligibility_geojson, {
     fetchPolicy: 'no-cache',
     variables: {
@@ -44,6 +42,10 @@ function MapContainer() {
     console.log('ERROR ', error);
   }, [error]);
 
+  useEffect(() => {
+    console.log('Data ', data);
+  }, [data]);
+
   if (loading) return <div>Loading Data</div>;
 
   return (
@@ -51,18 +53,14 @@ function MapContainer() {
       <Box sx={{ bgcolor: '#cfe8fc', height: '100vh' }}>
         {data && (
           <Map
+            mapboxAccessToken="pk.eyJ1IjoibWVyZ2luZ2Z1dHVyZXMiLCJhIjoiY2tpNWhvdGNqMWk0bjJ6bnpmMGt4dm51YyJ9.i4MvF31Xr5fxscllkRx04w"
             initialViewState={{
               longitude: -86.503,
               latitude: 35.562,
               zoom: 7,
             }}
             style={{ width: '100%', height: '100vh' }}
-            // interactiveLayerIds={['county_broadband_farm_bill_eligibility_geojson']}
             mapStyle="mapbox://styles/mergingfutures/ckyn2t9jv0una14prs29fkgy2">
-            {/* <Source
-              id="broadband_unserved_blocks_geojson"
-              type="geojson"
-              data={data.broadband_unserved_blocks_geojson}></Source> */}
             <Source type="geojson" id="test" data={data.county_broadband_farm_bill_eligibility_geojson}>
               <Layer {...dataLayer1} />
               <Layer {...dataLayer2} />
