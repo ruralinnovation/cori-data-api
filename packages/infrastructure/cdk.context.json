@@ -1,4 +1,6 @@
 {
+  "ssm:account=190686435752:parameterName=/cori/read_only_user_credentials:region=us-east-1": "RZ$Es8B9xbH7b*OQHojh#Eb9",
+  "ssm:account=190686435752:parameterName=/cori/redis-cluster-credentials:region=us-east-1": "erwLAwDVzdkm0Vp07tSf8dZwtx6KfMMK",
   "vpc-provider:account=190686435752:filter.vpc-id=vpc-0499b35a2f5231aae:region=us-east-1:returnAsymmetricSubnets=true": {
     "vpcId": "vpc-0499b35a2f5231aae",
     "vpcCidrBlock": "172.30.0.0/16",
@@ -48,15 +50,10 @@
       }
     ]
   },
-  "security-group:account=190686435752:region=us-east-1:securityGroupId=sg-0cdb6d6c66b8e6a4a": {
-    "securityGroupId": "sg-0cdb6d6c66b8e6a4a",
-    "allowAllOutbound": false
-  },
-  "ssm:account=190686435752:parameterName=cori-data-api-read_only_user_password:region=us-east-1": "Brs0EpCGidinyCQSSRL*Y2Ag%77MV&",
-  "ssm:account=190686435752:parameterName=/cori/read_only_user_credentials:region=us-east-1": "RZ$Es8B9xbH7b*OQHojh#Eb9",
   "security-group:account=190686435752:region=us-east-1:securityGroupId=sg-0be66ca1818bcc0e0": {
     "securityGroupId": "sg-0be66ca1818bcc0e0",
     "allowAllOutbound": false
   },
-  "ssm:account=190686435752:parameterName=/cori/redis-cluster-credentials:region=us-east-1": "erwLAwDVzdkm0Vp07tSf8dZwtx6KfMMK"
+  "ssm:account=190686435752:parameterName=/cori/int-test-user-name:region=us-east-1": "mf-int-test@yopmail.com",
+  "ssm:account=190686435752:parameterName=/cori/int-test-user-pw:region=us-east-1": "k^ynPg*JDkzW3MKy6Kh&tcD9"
 }
