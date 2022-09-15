@@ -1,2 +1,2 @@
-export * from './ApiStack';
+export * from '../../stacks/ApiStack';
 export * from './PipelineStack';

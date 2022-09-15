@@ -50,6 +50,12 @@ interface AppSyncConfig {
   additionalUserPools: AppSyncUserPoolConfig[];
 }
 
+interface ApolloStudioConfig {
+  apolloKey: string;
+  apolloGraphRef: string;
+  apolloSchemaReporting;
+}
+
 export interface ApiStackProps extends StackProps {
   env: {
     account: string;
@@ -90,7 +96,15 @@ export interface ApiStackProps extends StackProps {
    */
   existingCognito?: ExistingCognitoConfig;
 
+  /**
+   * TODO
+   */
   microservicesConfig: ServiceConfig[];
+
+  /**
+   *
+   */
+  apolloStudioConfig?: ApolloStudioConfig;
 }
 export class ApiStack extends Stack {
   /**
@@ -120,6 +134,7 @@ export class ApiStack extends Stack {
       cacheEnabled,
       retain,
       microservicesConfig,
+      apolloStudioConfig,
     } = this.props;
 
     const prefix = `${client}-data-api-${stage}`;
@@ -180,6 +195,9 @@ export class ApiStack extends Stack {
         CACHE_USERNAME: cacheConfig.username,
         CACHE_PASSWORD: cachePassword,
         CACHE_GLOBAL_TTL: cacheConfig.globalTTL || '86400',
+        APOLLO_KEY: apolloStudioConfig?.apolloKey || '',
+        APOLLO_GRAPH_REF: apolloStudioConfig?.apolloGraphRef || '',
+        APOLLO_SCHEMA_REPORTING: apolloStudioConfig?.apolloSchemaReporting || 'FALSE',
       },
     });
 
