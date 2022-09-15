@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:schema": "npm run play -w schemas",
-    "start:api": "npm run start -w infrastructure",
-    "start:client": "npm run start -w packages/frontend",
+    "start": "npm run start -w infrastructure",
     "build": "npm run build --ws",
     "build:infra": "npm run build -w infrastructure",
     "build:schemas": "npm run build -w schemas",
@@ -26,9 +25,7 @@
   "license": "ISC",
   "workspaces": [
     "packages/schemas",
-    "packages/infrastructure",
-    "packages/cicd",
-    "packages/frontend"
+    "packages/infrastructure"
   ],
   "devDependencies": {
     "@types/jest": "^26.0.10",
