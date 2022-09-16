@@ -11,6 +11,9 @@ export interface EnvConfigVars {
   CACHE_USERNAME: string;
   CACHE_PASSWORD: string;
   CACHE_GLOBAL_TTL: string;
+  APOLLO_KEY: string;
+  APOLLO_GRAPH_REF: string;
+  APOLLO_SCHEMA_REPORTING: string;
   [name: string]: string;
 }
 
@@ -35,4 +38,14 @@ export const EnvConfig: EnvConfigVars = {
   CACHE_USERNAME: getEnv('CACHE_USERNAME'),
   CACHE_PASSWORD: getEnv('CACHE_PASSWORD'),
   CACHE_GLOBAL_TTL: getEnv('CACHE_GLOBAL_TTL', '86400'),
+  get APOLLO_STUDIO_ENABLED() {
+    if (this.APOLLO_KEY !== 'NOT_SET' && this.APOLLO_GRAPH_REF !== 'NOT_SET') {
+      return 'TRUE';
+    } else {
+      return 'FALSE';
+    }
+  },
+  APOLLO_KEY: getEnv('APOLLO_KEY', 'NOT_SET'),
+  APOLLO_GRAPH_REF: getEnv('APOLLO_GRAPH_REF', 'NOT_SET'),
+  APOLLO_SCHEMA_REPORTING: getEnv('APOLLO_SCHEMA_REPORTING', 'true'),
 };
