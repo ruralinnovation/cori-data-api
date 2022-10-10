@@ -1,4 +1,4 @@
-import { Auth, Logger } from 'aws-amplify';
+  import { Auth, Logger } from 'aws-amplify';
 
 interface ICognitoConfig {
   userPoolId: string;
@@ -59,15 +59,19 @@ export default class ConfigurationService {
       },
       Auth: {
         region: this.region,
+        identityPoolId: this.cognito.identityPoolId,
         userPoolId: this.cognito.userPoolId,
         userPoolWebClientId: this.cognito.clientId,
         oauth: {
           domain: this.cognito.domain,
-          scope: ['email', 'openid', 'profile'],
+          mandatorySignIn: true,
           redirectSignIn: this.loginUrl,
           redirectSignOut: this.cognito.logoutUrl ? this.cognito.logoutUrl : this.loginUrl + '/logout/',
           responseType: 'code',
-          mandatorySignIn: true,
+          // scope: ['email']
+          // scope: ['openid']
+          scope: ['email', 'openid']
+          // scope: ['email', 'openid', 'profile']
         },
       },
     };
