@@ -6,6 +6,7 @@ type RootQueryType {
   setup: GeoJSONGeometryTypes
   feature_collection(table: String, counties: [String], state_abbr: String, skipCache: Boolean): GeoJSONFeatureCollection
   county_feature(table: String, county: String): GeoJSONFeatureCollection
+  acs_test: TestObject
   auction_904_subsidy_awards_geojson(counties: [String], skipCache: Boolean): GeoJSONFeatureCollection
   auction_904_subsidy_awards_county_geojson(county: String, skipCache: Boolean): GeoJSONFeatureCollection
   broadband_unserved_blocks_geojson(counties: [String], skipCache: Boolean): GeoJSONFeatureCollection
@@ -21,7 +22,6 @@ type RootQueryType {
   incumbent_electric_providers_geo_geojson(state_abbr: String, skipCache: Boolean): GeoJSONFeatureCollection
   county_adjacency_crosswalk_geojson(counties: [String], skipCache: Boolean): GeoJSONFeatureCollection
   county_adjacency_crosswalk_county_geojson(county: String, skipCache: Boolean): GeoJSONFeatureCollection
-  acs_test: TestObject
 }
 
 """Geometry Types"""
