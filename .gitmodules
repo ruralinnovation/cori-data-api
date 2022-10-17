@@ -1,0 +1,3 @@
+[submodule "packages/frontend"]
+	path = packages/frontend
+	url = git@github.com:ruralinnovation/cdk-amplify-frontend.git
