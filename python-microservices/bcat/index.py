@@ -17,6 +17,9 @@ def bad_request_error(msg):
     # HTTP  400
     raise BadRequestError(msg)
 
+# @app.get("/county_summary/geojson", compress=True)
+# def get_bcat_county_summary_by_page() # Query params page[, limit, offset]
+# # SQL query will have to sort by county id
 
 @app.get("/<table>/geojson", compress=True)
 def get_bcat(table):
@@ -99,14 +102,16 @@ def get_bcat(table):
                 'geometry',   ST_AsGeoJSON(geom)::jsonb,
                 'properties', to_jsonb(t.*) - 'x_id' - 'geom'
             )
-        FROM (
-            SELECT {columns} 
-            FROM {db_table}
-            {where}
-            {limit}
-            ) t
+            FROM (
+                SELECT {columns}
+                    FROM {db_table}
+                    {where}
+                    {limit}
+                ) t
         
         """
+
+    print(query)
 
     # execute the query string.
     features = execute(query)
