@@ -52,13 +52,13 @@ export default abstract class AmplifyService {
    * @param customProvider Cognito Identity Provider Id
    */
   public static federatedLogin(customProvider?: string) {
-    // if (customProvider) {
-    //   Auth.federatedSignIn({
-    //     customProvider,
-    //   });
-    // } else {
-    //   Auth.federatedSignIn();
-    // }
+    if (customProvider) {
+      Auth.federatedSignIn({
+        customProvider,
+      });
+    } else {
+      Auth.federatedSignIn();
+    }
   }
 
   public static async getAccessJwtToken(): Promise<string> {
@@ -97,15 +97,20 @@ export default abstract class AmplifyService {
   }
 
   public static async setHubListener(updateAuthUser?: any): Promise<void> {
+    console.log("Set Hub listener called with current updateAuthUser:", JSON.stringify(updateAuthUser));
+
     try {
       Hub.listen('auth', ({ payload: { event, data } }) => {
+
+        console.log("Call Hub listener called with event:", event);
+
         switch (event) {
           case 'signIn':
             this.getClaims()
               .then(claims => {
                 if (!claims) {
                   console.log('not auth');
-                  AmplifyService.federatedLogin();
+                  // AmplifyService.federatedLogin();
                 } else {
                   updateAuthUser({
                     username: claims.username,

@@ -8,28 +8,26 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from '@apollo/client';
-import { Amplify, Auth } from 'aws-amplify';
-import { Authenticator } from '@aws-amplify/ui-react';
+import { Auth } from 'aws-amplify';
 import aws_config from "../amplifyConfig";
 import AmplifyService from '../services/AmplifyService';
 import AppContext, { AppContextPropsType } from './AppContext';
+import ControlPanel from '../components/ControlPanel';
 
 export interface IApiContext { bcatApi: any; }
 export const ApiContext = createContext<IApiContext>(null as any);
 
-Amplify.configure(aws_config);
-
 function ApiContextProvider(props: { children: any }) {
-  const { config, authUser, updateAuthUser } = useContext<AppContextPropsType>(AppContext);
+  const { config, user, updateAuthUser } = useContext<AppContextPropsType>(AppContext);
   const [ready, setReady] = useState<boolean>(false);
   const [apolloClient, setApolloClient] = useState<ApolloClient<NormalizedCacheObject> | null>(null);
 
   useEffect(() => {
-    if (authUser) {
+    if (user) {
       createApolloClient()
         .then(c => console.log('Apollo Client created'));
     }
-  }, [authUser]);
+  }, [user]);
   const [state, setState] = useState<IApiContext>(null as any);
 
   useEffect(() => {
@@ -101,10 +99,15 @@ function ApiContextProvider(props: { children: any }) {
 
   return (
     <ApiContext.Provider value={state}>
-      {authUser && state && ready && apolloClient ? (
-        <ApolloProvider client={apolloClient}>{props.children}</ApolloProvider>
+      {user && state && ready && apolloClient ? (
+        <main>
+          <ApolloProvider client={apolloClient}>{props.children}</ApolloProvider>
+
+          <ControlPanel signOut={null} user={user} />
+        </main>
+
       ) : (
-        <div>LOADING</div>
+        <main>LOADING</main>
       )}
     </ApiContext.Provider>
   );

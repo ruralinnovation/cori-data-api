@@ -1,10 +1,10 @@
-  import { Auth, Logger } from 'aws-amplify';
+import { Auth, Logger } from 'aws-amplify';
 
 interface ICognitoConfig {
-  userPoolId: string;
+  domain: string;
   clientId: string;
   identityPoolId: string;
-  domain: string;
+  userPoolId: string;
   hostedAuthenticationUrl: string;
   logoutUrl: string;
 }
