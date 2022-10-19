@@ -21,12 +21,17 @@ import {
   GeolocateControl  } from 'react-map-gl';
 import bbox from '@turf/bbox';
 import { mapStyle, fillLayer, lineLayer } from './MapStyle';
-// /* eslint import/no-webpack-loader-syntax: off */
-// /* eslint-disable-next-line import/no-webpack-loader-syntax */
-// /* eslint-disable @typescript-eslint/no-var-requires */
-// /* @ts-ignore */
-// import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
-// (mapboxgl as any).workerClass = MapboxWorker;
+
+/** This worker-loader import is a work around for known react-map-gl build-time issue:
+ * https://github.com/visgl/react-map-gl/issues/1266
+ */
+/* eslint import/no-webpack-loader-syntax: off */
+/* eslint-disable-next-line import/no-webpack-loader-syntax */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* @ts-ignore */
+import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker';
+import mapboxgl from "mapbox-gl";
+(mapboxgl as any).workerClass = MapboxWorker;
 
 function MapContainer() {
 
