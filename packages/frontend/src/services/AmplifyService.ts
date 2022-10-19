@@ -1,6 +1,7 @@
 import { CognitoIdToken } from 'amazon-cognito-identity-js';
-import { Auth, Hub } from 'aws-amplify';
-import { Logger } from 'aws-amplify';
+import { Amplify, Auth, Hub, Logger } from 'aws-amplify';
+import aws_config from "../amplifyConfig";
+
 const logger = new Logger('AmplifyService');
 
 export interface IClaims {
@@ -20,6 +21,11 @@ export default abstract class AmplifyService {
       logger.error('unable to get sdk creds', error);
       throw error;
     }
+  }
+
+  public static configure() {
+    Amplify.configure(aws_config);
+    return(aws_config);
   }
 
   public static async isAuthenticated(): Promise<boolean> {
@@ -97,15 +103,20 @@ export default abstract class AmplifyService {
   }
 
   public static async setHubListener(updateAuthUser?: any): Promise<void> {
+    console.log("Set Hub listener called with current updateAuthUser:", JSON.stringify(updateAuthUser));
+
     try {
       Hub.listen('auth', ({ payload: { event, data } }) => {
+
+        console.log("Call Hub listener called with event:", event);
+
         switch (event) {
           case 'signIn':
             this.getClaims()
               .then(claims => {
                 if (!claims) {
                   console.log('not auth');
-                  AmplifyService.federatedLogin();
+                  // AmplifyService.federatedLogin();
                 } else {
                   updateAuthUser({
                     username: claims.username,

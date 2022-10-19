@@ -1,39 +1,16 @@
 {
   "name": "cori-data-api",
   "version": "1.0.0",
-  "description": "CORI Data API Project",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "test:schema": "npm run play -w schemas",
-    "start:api": "npm run start -w infrastructure",
-    "build": "npm run build --ws",
-    "build:infra": "npm run build -w infrastructure",
-    "build:schemas": "npm run build -w schemas",
-    "deploy": "npm run build && npm run deploy -w infrastructure",
-    "synth": "npm run build && npm run synth -w infrastructure",
-    "publish:schemas": "npm run build:schemas && npm run hive-publish -w schemas",
-    "diff": "npm run diff --w packages/infrastructure",
-    "ts": "npm run node -- -r ts-node/register",
-    "build:python-layer": "bash ./buildPythonDependencyLayer.sh",
-    "lint": "eslint ./packages ./config",
-    "lint:debug": "PARSER_NO_WATCH=true NODE_OPTIONS=--max-old-space-size=4096 DEBUG=* npx eslint ./packages/infrastructure",
-    "lint:fix": "eslint --fix ./packages ./config",
-    "format": "prettier --write ./packages ./config"
-  },
   "author": "Merging Futures LLC.",
+  "description": "CORI Data API Project",
   "license": "ISC",
-  "workspaces": [
-    "packages/schemas",
-    "packages/infrastructure"
-  ],
+  "main": "index.js",
   "devDependencies": {
     "@types/jest": "^26.0.10",
     "@types/ncp": "^2.0.5",
     "@types/rimraf": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^5.30.0",
     "@typescript-eslint/parser": "^5.30.0",
-    "aws-amplify": "^4.3.26",
     "aws-sdk": "^2.1164.0",
     "axios": "^0.27.2",
     "cd": "^0.3.3",
@@ -49,7 +26,34 @@
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.2.0",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.6.3"
-  }
+  },
+  "scripts": {
+    "postinstall": "npm install -w packages/frontend --legacy-peer-deps --no-save \"@aws-amplify/ui-react\"@latest \"@material-ui/core\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:schema": "npm run play -w schemas",
+    "start:api": "npm run start -w infrastructure",
+    "build": "npm run build --ws",
+    "build:infra": "npm run build -w infrastructure",
+    "build:python-layer": "bash ./buildPythonDependencyLayer.sh",
+    "build:schemas": "npm run build -w schemas",
+    "deploy": "npm run build && npm run deploy -w infrastructure",
+    "synth": "npm run build && npm run synth -w infrastructure",
+    "publish:schemas": "npm run build:schemas && npm run hive-publish -w schemas",
+    "diff": "npm run diff --w packages/infrastructure",
+    "ts": "npm run node -- -r ts-node/register",
+    "lint": "eslint ./packages ./config",
+    "lint:debug": "PARSER_NO_WATCH=true NODE_OPTIONS=--max-old-space-size=4096 DEBUG=* npx eslint ./packages/infrastructure",
+    "lint:fix": "eslint --fix ./packages ./config",
+    "format": "prettier --write ./packages ./config",
+    "frontend:build": "npm run build -w frontend",
+    "frontend:start": "npm run start -w frontend"
+  },
+  "workspaces": [
+    "packages/frontend",
+    "packages/schemas",
+    "packages/infrastructure"
+  ]
 }

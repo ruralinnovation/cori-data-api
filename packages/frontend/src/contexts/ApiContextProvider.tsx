@@ -1,3 +1,4 @@
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
   ApolloClient,
   ApolloLink,
@@ -7,29 +8,59 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from '@apollo/client';
-import { Auth, Logger } from 'aws-amplify';
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import AmplifyService from '../services/AmplifyService';
+import { Auth } from 'aws-amplify';
+import { AmplifyProvider, Authenticator } from '@aws-amplify/ui-react';
 import AppContext, { AppContextPropsType } from './AppContext';
+import AmplifyService from '../services/AmplifyService';
+import ControlPanel from '../components/ControlPanel';
 
-export interface IApiContext {
-  bcatApi: any;
-}
-
+export interface IApiContext { bcatApi: any; }
 export const ApiContext = createContext<IApiContext>(null as any);
 
 function ApiContextProvider(props: { children: any }) {
   const { config, user, updateAuthUser } = useContext<AppContextPropsType>(AppContext);
-  const [ready, setReady] = useState<boolean>(false);
-  const [apolloClient, setApolloClient] = useState<ApolloClient<NormalizedCacheObject> | null>(null);
+  const [ ready, setReady ] = useState<boolean>(false);
+  const [ state, setState ] = useState<IApiContext>(null as any);
+  const [ apolloClient, setApolloClient ] = useState<ApolloClient<NormalizedCacheObject> | null>(null);
+
+  const createApolloClient = async (authenticated: boolean) => {
+    Auth.currentSession()
+      .then(authSession => {
+        const token = authSession.getIdToken().getJwtToken();
+
+        const link = new HttpLink({
+          uri: `${config.apiUrl}/graphql`,
+        });
+        const authMiddleware = new ApolloLink((operation, forward) => {
+          operation.setContext({
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          });
+          return forward(operation);
+        });
+        const client = new ApolloClient({
+          link: concat(authMiddleware, link),
+          cache: new InMemoryCache({
+            dataIdFromObject: o => (o.id ? `${o.__typename}-${o.id}` : `${o.__typename}-${o.cursor}`),
+          }),
+          credentials: 'include',
+        });
+
+        setApolloClient(client);
+        setReady(true);
+      })
+      .catch(err => {
+        console.log("Error creating ApolloClient: ", err);
+      });
+  };
 
   useEffect(() => {
     if (user) {
-      createApolloClient();
-      console.log('Apollo Client created');
+      createApolloClient(true)
+        .then(c => console.log('Apollo Client created'));
     }
   }, [user]);
-  const [state, setState] = useState<IApiContext>(null as any);
 
   useEffect(() => {
     if (config) {
@@ -44,6 +75,10 @@ function ApiContextProvider(props: { children: any }) {
       AmplifyService.isAuthenticated()
         .then(bool => {
           console.log('Authenticationed ', bool);
+
+          createApolloClient(bool)
+            .then(c => console.log('Apollo Client created'));
+
           if (bool) {
             AmplifyService.getClaims()
               .then(claims => {
@@ -64,7 +99,13 @@ function ApiContextProvider(props: { children: any }) {
                 updateAuthUser(null);
               });
           } else {
-            AmplifyService.federatedLogin('');
+            // AmplifyService.federatedLogin('');
+            updateAuthUser({
+              username: "",
+              userType: "",
+              groups: [],
+              email: "",
+            });
           }
         })
         .catch(err => {
@@ -73,39 +114,38 @@ function ApiContextProvider(props: { children: any }) {
     }
   }, [config, updateAuthUser]);
 
-  const createApolloClient = async () => {
-    const token = (await Auth.currentSession()).getIdToken().getJwtToken();
-    const link = new HttpLink({
-      uri: `${config.apiUrl}/graphql`,
-    });
-    const authMiddleware = new ApolloLink((operation, forward) => {
-      operation.setContext({
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-      return forward(operation);
-    });
-    const client = new ApolloClient({
-      link: concat(authMiddleware, link),
-      cache: new InMemoryCache({
-        dataIdFromObject: o => (o.id ? `${o.__typename}-${o.id}` : `${o.__typename}-${o.cursor}`),
-      }),
-      credentials: 'include',
-    });
+  const getAuthStatus = (state: any) => {
+    const serialized_state = JSON.stringify(state);
+    setTimeout(() => console.log("getAuthStatus:", serialized_state));
+    return serialized_state;
+  };
 
-    setApolloClient(client);
-    setReady(true);
+  const getUserName = (user: any) => {
+    const serialized_user = JSON.stringify(user);
+    setTimeout(() => console.log("getUserName:", serialized_user));
+    return serialized_user;
   };
 
   return (
-    <ApiContext.Provider value={state}>
-      {user && state && ready && apolloClient ? (
-        <ApolloProvider client={apolloClient}>{props.children}</ApolloProvider>
-      ) : (
-        <div>LOADING</div>
-      )}
-    </ApiContext.Provider>
+    <AmplifyProvider>
+      <ApiContext.Provider value={state}>
+        {/*<Authenticator hide={[ SignIn ]} amplifyConfig={aws_config}>*/}
+        <Authenticator>
+          {({ signOut, user }) => (
+            (user && state && ready && apolloClient) ? (
+              <main>
+                <ApolloProvider client={apolloClient}>{props.children}</ApolloProvider>
+
+                <ControlPanel signOut={signOut} user={user} />
+              </main>
+
+            ) : (
+              <main>LOADING</main>
+            )
+          )}
+        </Authenticator>
+      </ApiContext.Provider>
+    </AmplifyProvider>
   );
 }
 
