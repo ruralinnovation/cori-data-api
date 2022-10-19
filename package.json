@@ -31,6 +31,7 @@
     "typescript": "^4.6.3"
   },
   "scripts": {
+    "postinstall": "npm install -w packages/frontend --legacy-peer-deps --no-save \"@aws-amplify/ui-react\"@latest \"@material-ui/core\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:schema": "npm run play -w schemas",
     "start:api": "npm run start -w infrastructure",
