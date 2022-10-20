@@ -146,13 +146,13 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
 };
 
 export const Config: IConfigs = {
-  'dev': {
+  'cori/dev': {
     ...coriDefaults,
     // microservicesConfig: microservicesConfiguration, // <- add custom config
     client: 'cori',
     stage: 'dev',
   },
-  'cori/dev': {
+  'dev': {
     ...coriDefaults,
     client: 'cori',
     stage: 'dev',

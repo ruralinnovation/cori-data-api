@@ -5,6 +5,7 @@
   "description": "CORI Data API Project",
   "license": "ISC",
   "main": "index.js",
+  "private": true,
   "devDependencies": {
     "@types/jest": "^26.0.10",
     "@types/ncp": "^2.0.5",

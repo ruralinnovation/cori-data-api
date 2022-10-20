@@ -72,22 +72,37 @@ export class PythonDataServer extends Construct {
       environment,
     };
 
-    if (stage === 'local') {
-      /**
-       * Local Lambda Instantiation for Local API
-       */
-      const localApiWrapper = new PythonLambda(this, 'LocalApi', {
-        ...defaults,
-        functionName: prefix + '-local-api',
-        entry: join(microservicesDirectory, 'local'),
-      });
-
-      this.apiGw.addLambda({
-        method: 'GET',
-        path: '/local/{proxy+}',
-        lambda: localApiWrapper.function,
-      });
-    } else {
+    // if (stage === 'local') {
+    //   /**
+    //    * Local Lambda Instantiation for Local API
+    //    */
+    //   const localApiWrapper = new PythonLambda(this, 'LocalApi', {
+    //     ...defaults,
+    //     functionName: prefix + '-local-api',
+    //     entry: join(microservicesDirectory, 'local'),
+    //   });
+    //
+    //   // this.apiGw.addLambda({
+    //   //   method: 'GET',
+    //   //   path: '/local/{proxy+}',
+    //   //   lambda: localApiWrapper.function,
+    //   // });
+    //
+    //   microservicesConfig.forEach(config => {
+    //     const service = new PythonLambda(this, config.logicalName, {
+    //       ...defaults,
+    //       functionName: prefix + `-${config.directoryName}-microservice-1`,
+    //       entry: join(microservicesDirectory, config.directoryName),
+    //     });
+    //
+    //     this.apiGw.addLambda({
+    //       method: 'GET',
+    //       path: `/local${config.corePath}/{proxy+}`,
+    //       lambda: service.function,
+    //     });
+    //   });
+    //
+    // } else {
       microservicesConfig.forEach(config => {
         const service = new PythonLambda(this, config.logicalName, {
           ...defaults,
@@ -102,5 +117,5 @@ export class PythonDataServer extends Construct {
         });
       });
     }
-  }
+  // }
 }
