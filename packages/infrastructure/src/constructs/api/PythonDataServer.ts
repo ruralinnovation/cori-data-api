@@ -67,7 +67,7 @@ export class PythonDataServer extends Construct {
       apiOriginPath: stage,
       securityGroups,
       runtime: Runtime.PYTHON_3_8,
-      layers: [pythonDependencyLayer] as LayerVersion[],
+      // layers: [pythonDependencyLayer] as LayerVersion[],
       memorySize: 256,
       environment,
     };
@@ -103,19 +103,19 @@ export class PythonDataServer extends Construct {
     //   });
     //
     // } else {
-      microservicesConfig.forEach(config => {
-        const service = new PythonLambda(this, config.logicalName, {
-          ...defaults,
-          functionName: prefix + `-${config.directoryName}-microservice-1`,
-          entry: join(microservicesDirectory, config.directoryName),
-        });
-
-        this.apiGw.addLambda({
-          method: 'GET',
-          path: `${config.corePath}/{proxy+}`,
-          lambda: service.function,
-        });
+    microservicesConfig.forEach(config => {
+      const service = new PythonLambda(this, config.logicalName, {
+        ...defaults,
+        functionName: prefix + `-${config.directoryName}-microservice-1`,
+        entry: join(microservicesDirectory, config.directoryName),
       });
-    }
+
+      this.apiGw.addLambda({
+        method: 'GET',
+        path: `${config.corePath}/{proxy+}`,
+        lambda: service.function,
+      });
+    });
+  }
   // }
 }
