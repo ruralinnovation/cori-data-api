@@ -1,0 +1,7 @@
+{
+  "environment": "dev",
+  "region": "us-east-1",
+  "apiUrl": "https://d6q5pgqgx5oy5.cloudfront.net",
+  "buildTime": "2022-05-20T13:23:42.602Z",
+  "version": "1.0.0"
+}
