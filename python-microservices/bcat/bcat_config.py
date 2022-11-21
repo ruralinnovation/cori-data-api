@@ -20,7 +20,7 @@ CONFIG = {
         'tile_columns': "geoid, name_co, subsidy_recipient, tier, geoid_co, state_abbr",
         'api_columns': "geoid, state_abbr, name_co, subsidy_recipient, tier, geom, geoid_co, valid_raw",
         'params': ['geoid_co', 'state_abbr', 'geom'],
-        'geom': 'geom',
+        'geom': 'geoms',
         'epsg': 4326,
         'simplify': 0.00002,
         'precision': 6,
