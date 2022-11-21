@@ -158,7 +158,7 @@ export const Config: IConfigs = {
     stage: 'dev',
   },
   'local': {
-    ...mfDefaults,
+    ...coriDefaults,
     client: 'mf',
     stage: 'local',
   },
@@ -166,8 +166,7 @@ export const Config: IConfigs = {
     ...coriDefaults,
     client: 'cori',
     stage: 'prod',
-  }
-
+  },
 };
 
 export const getConfig = (name: string): IMixedConfig => {
