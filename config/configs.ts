@@ -159,7 +159,7 @@ export const Config: IConfigs = {
   },
   'local': {
     ...coriDefaults,
-    client: 'mf',
+    client: 'cori',
     stage: 'local',
   },
   'prod': {
