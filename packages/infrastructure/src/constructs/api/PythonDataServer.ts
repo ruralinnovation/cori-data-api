@@ -52,11 +52,11 @@ export class PythonDataServer extends Construct {
      * Python Dependency Lambda Layer
      * Speeds up Lambda initialization
      */
-    const pythonDependencyLayer = new LayerVersion(this, 'DependencyLayer', {
-      removalPolicy: RemovalPolicy.DESTROY,
-      code: Code.fromAsset(join(microservicesDirectory, '/dependency-layer/dependency-layer.zip')),
-      compatibleRuntimes: [Runtime.PYTHON_3_8],
-    });
+    // const pythonDependencyLayer = new LayerVersion(this, 'DependencyLayer', {
+    //   removalPolicy: RemovalPolicy.DESTROY,
+    //   code: Code.fromAsset(join(microservicesDirectory, '/dependency-layer/dependency-layer.zip')),
+    //   compatibleRuntimes: [Runtime.PYTHON_3_8],
+    // });
 
     const defaults = {
       api: this.apiGw,
