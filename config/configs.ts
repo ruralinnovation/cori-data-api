@@ -158,16 +158,15 @@ export const Config: IConfigs = {
     stage: 'dev',
   },
   'local': {
-    ...mfDefaults,
-    client: 'mf',
+    ...coriDefaults,
+    client: 'cori',
     stage: 'local',
   },
   'prod': {
     ...coriDefaults,
     client: 'cori',
     stage: 'prod',
-  }
-
+  },
 };
 
 export const getConfig = (name: string): IMixedConfig => {

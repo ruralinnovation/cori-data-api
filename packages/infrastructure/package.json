@@ -24,7 +24,7 @@
     "build:assets": "ts-node ./bin/prepAssets.ts",
     "synth": "tsc && npx cdk synth  --profile mf-cori",
     "cdk:start": "tsc && npm run cdk -- --app \"npx ts-node --prefer-ts-exts bin/start-api.ts\"",
-    "start": "npm run cdk:start -- synth && cd cdk.out && sam local start-api -p 2000 -n env.json",
+    "start": "npm run cdk:start -- synth && cd cdk.out && sam-beta-cdk --debug local start-api -p 2000 -n env.json",
     "deploy": "npx cdk deploy --all --require-approval never --profile mf-cori",
     "diff": "tsc && npx cdk diff --profile mf-cori",
     "ts": "npm run node -- -r ts-node/register",
