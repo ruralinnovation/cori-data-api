@@ -1,5 +1,4 @@
-import { ApiStackProps } from '../packages/infrastructure/src/stacks/ApiStack';
-import { ServiceConfig } from '../packages/infrastructure/stacks/ApiStack';
+import { ApiStackProps, ServiceConfig } from '../packages/infrastructure/src/stacks';
 
 export interface TestEnvConfig {
   region: string;

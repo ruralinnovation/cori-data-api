@@ -7,7 +7,7 @@ import { PythonLambda } from '../lambda';
 import { microservicesDirectory } from '../../util';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { ApiGw } from './ApiGw';
-import { ServiceConfig } from '../../../stacks/ApiStack';
+import { ServiceConfig } from '../../stacks';
 
 interface PythonDataServerProps {
   prefix: string;
