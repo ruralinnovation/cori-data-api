@@ -21,32 +21,31 @@ def bad_request_error(msg):
 def get():
     print("testing acs endpoint /testing")
 
-    """
-    construct and execute a query to <table> with where clause based on <params>
-    """
-    logger.info(os.environ)
-
-    # get some short names of parameters used to construct the query
-    db_table = "acs.acs_5_yr_county"
-    columns = "*"
-    # id = CONFIG[table].get('id', None)
-
-    query = f"""
-        SELECT {columns} FROM {db_table} LIMIT 1;
-
-        """
-
-    query_result = execute(query)
-
-    logger.debug(query_result)
-
+#    """
+#    construct and execute a query to <table> with where clause based on <params>
+#    """
+#    logger.info(os.environ)
+#
+#    # get some short names of parameters used to construct the query
+#    db_table = "acs.acs_5_yr_county"
+#    columns = "*"
+#    # id = CONFIG[table].get('id', None)
+#
+#    query = f"""
+#        SELECT {columns} FROM {db_table} LIMIT 1;
+#
+#        """
+#
+#    query_result = execute(query)
+#
+#    logger.debug(query_result)
+#
+#    return {
+#        "message": query_result[0].variable
+#    }
     return {
-        "message": query_result[0].variable
+        "message": "success"
     }
-
-#     return {
-#         "message": "success"
-#     }
 
 # @app.get("/<table>/geojson", compress=False)
 # def get(table):
