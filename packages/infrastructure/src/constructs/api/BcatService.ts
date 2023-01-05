@@ -46,5 +46,17 @@ export class BcatService extends BasePythonService {
       path: '/bcat/{proxy+}',
       lambda: bcatService.function,
     });
+
+    api.addLambda({
+      method: 'OPTIONS',
+      path: '/bcat/{proxy+}',
+      lambda: bcatService.function,
+    });
+
+    api.addLambda({
+      method: 'POST',
+      path: '/bcat/{proxy+}',
+      lambda: bcatService.function,
+    });
   }
 }

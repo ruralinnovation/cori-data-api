@@ -7,7 +7,7 @@ import { PythonLambda } from '../lambda';
 import { microservicesDirectory } from '../../util';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { ApiGw } from './ApiGw';
-import { ServiceConfig } from '../../../stacks/ApiStack';
+import { ServiceConfig } from '../../stacks';
 
 interface PythonDataServerProps {
   prefix: string;
@@ -52,11 +52,11 @@ export class PythonDataServer extends Construct {
      * Python Dependency Lambda Layer
      * Speeds up Lambda initialization
      */
-    const pythonDependencyLayer = new LayerVersion(this, 'DependencyLayer', {
-      removalPolicy: RemovalPolicy.DESTROY,
-      code: Code.fromAsset(join(microservicesDirectory, '/dependency-layer/dependency-layer.zip')),
-      compatibleRuntimes: [Runtime.PYTHON_3_8],
-    });
+    // const pythonDependencyLayer = new LayerVersion(this, 'DependencyLayer', {
+    //   removalPolicy: RemovalPolicy.DESTROY,
+    //   code: Code.fromAsset(join(microservicesDirectory, '/dependency-layer/dependency-layer.zip')),
+    //   compatibleRuntimes: [Runtime.PYTHON_3_8],
+    // });
 
     const defaults = {
       api: this.apiGw,
@@ -67,40 +67,55 @@ export class PythonDataServer extends Construct {
       apiOriginPath: stage,
       securityGroups,
       runtime: Runtime.PYTHON_3_8,
-      layers: [pythonDependencyLayer] as LayerVersion[],
+      // layers: [pythonDependencyLayer] as LayerVersion[],
       memorySize: 256,
       environment,
     };
 
-    if (stage === 'local') {
-      /**
-       * Local Lambda Instantiation for Local API
-       */
-      const localApiWrapper = new PythonLambda(this, 'LocalApi', {
+    // if (stage === 'local') {
+    //   /**
+    //    * Local Lambda Instantiation for Local API
+    //    */
+    //   const localApiWrapper = new PythonLambda(this, 'LocalApi', {
+    //     ...defaults,
+    //     functionName: prefix + '-local-api',
+    //     entry: join(microservicesDirectory, 'local'),
+    //   });
+    //
+    //   // this.apiGw.addLambda({
+    //   //   method: 'GET',
+    //   //   path: '/local/{proxy+}',
+    //   //   lambda: localApiWrapper.function,
+    //   // });
+    //
+    //   microservicesConfig.forEach(config => {
+    //     const service = new PythonLambda(this, config.logicalName, {
+    //       ...defaults,
+    //       functionName: prefix + `-${config.directoryName}-microservice-1`,
+    //       entry: join(microservicesDirectory, config.directoryName),
+    //     });
+    //
+    //     this.apiGw.addLambda({
+    //       method: 'GET',
+    //       path: `/local${config.corePath}/{proxy+}`,
+    //       lambda: service.function,
+    //     });
+    //   });
+    //
+    // } else {
+    microservicesConfig.forEach(config => {
+      const service = new PythonLambda(this, config.logicalName, {
         ...defaults,
-        functionName: prefix + '-local-api',
-        entry: join(microservicesDirectory, 'local'),
+        functionName: prefix + `-${config.directoryName}-microservice-1`,
+        entry: join(microservicesDirectory, config.directoryName),
       });
 
       this.apiGw.addLambda({
         method: 'GET',
-        path: '/local/{proxy+}',
-        lambda: localApiWrapper.function,
+        path: `${config.corePath}/{proxy+}`,
+        lambda: service.function,
       });
-    } else {
-      microservicesConfig.forEach(config => {
-        const service = new PythonLambda(this, config.logicalName, {
-          ...defaults,
-          functionName: prefix + `-${config.directoryName}-microservice-1`,
-          entry: join(microservicesDirectory, config.directoryName),
-        });
-
-        this.apiGw.addLambda({
-          method: 'GET',
-          path: `${config.corePath}/{proxy+}`,
-          lambda: service.function,
-        });
-      });
-    }
+    });
   }
+  // }
 }

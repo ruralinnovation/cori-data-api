@@ -5,8 +5,8 @@ import { Cognito, ExistingCognitoConfig } from '../constructs/Cognito';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { ApolloGraphqlServer } from '../constructs/api/ApolloGraphqlServer/ApolloGraphqlServer';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { PythonDataServer } from '../constructs/api/PythonDataServer';
 import { Networking } from '../constructs/Networking';
+import { PythonDataServer } from '../constructs/api/PythonDataServer';
 
 export interface DatabaseConfig {
   vpcId: string;
@@ -149,6 +149,7 @@ export class ApiStack extends Stack {
       vpc: networking.vpc,
       securityGroups: [networking.lambdaSecurityGroup],
       microservicesConfig,
+      /* TODO: add cache env config here (see Apollo setup) */
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: stage,

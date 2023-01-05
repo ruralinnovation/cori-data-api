@@ -5,6 +5,7 @@
   "description": "CORI Data API Project",
   "license": "ISC",
   "main": "index.js",
+  "private": true,
   "devDependencies": {
     "@types/jest": "^26.0.10",
     "@types/ncp": "^2.0.5",
@@ -31,7 +32,7 @@
     "typescript": "^4.6.3"
   },
   "scripts": {
-    "postinstall": "npm install -w packages/frontend --legacy-peer-deps --no-save  \"@aws-amplify/auth\"@latest \"@aws-amplify/ui-react\"@latest \"@emotion/react\" \"@material-ui/core\" \"@mui/material\"",
+    "postinstall": "npm install -w packages/frontend --legacy-peer-deps --no-save  \"@aws-amplify/auth\"@latest \"@aws-amplify/notifications\"@latest \"@aws-amplify/ui-react\"@latest \"@emotion/react\" \"@material-ui/core\" \"@mui/material\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:schema": "npm run play -w schemas",
     "start:api": "npm run start -w infrastructure",
