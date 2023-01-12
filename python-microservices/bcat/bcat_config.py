@@ -21,7 +21,7 @@ CONFIG = {
         'api_columns': "geoid, state_abbr, name_co, subsidy_recipient, tier, geom, geoid_co, valid_raw",
         'params': ['geoid_co', 'state_abbr', 'geom'],
         'geom': 'geom',
-        'epsg': 4326,
+        'epsg': 4269,
         'simplify': 0.00002,
         'precision': 6,
         'id': 'geoid',

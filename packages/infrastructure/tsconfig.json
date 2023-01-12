@@ -3,5 +3,13 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "exclude": ["./dist/**/*", "cdk.out", "dist", "node_modules"]
+  "exclude": ["./dist/**/*", "cdk.out", "dist", "node_modules"],
+  "watchOptions": {
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority",
+    "synchronousWatchDirectory": true,
+    "excludeDirectories": ["**/node_modules", "_build"],
+    "excludeFiles": ["**/*.json"]
+  }
 }
