@@ -27,10 +27,6 @@ export const pythonIntegrationEndpoints = {
     geo: '/bcat/county_summary/geojson?geoid_co=47001,47003',
     mvt: null,
   },
-  fiber_cable_unserved_blocks: {
-    geo: '/bcat/fiber_cable_unserved_blocks/geojson?geoid_co=47001,47003',
-    mvt: '/bcat/fiber_cable_unserved_blocks/tiles/10/278/408.pbf',
-  },
   incumbent_electric_providers_geo: {
     geo: '/bcat/incumbent_electric_providers_geo/geojson?state_abbr=TN',
     mvt: '/bcat/incumbent_electric_providers_geo/tiles/10/278/408.pbf',

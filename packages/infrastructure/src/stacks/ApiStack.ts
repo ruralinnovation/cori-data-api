@@ -12,8 +12,8 @@ export interface DatabaseConfig {
   vpcId: string;
   databaseSecurityGroupId: string;
   host: string;
-  dbname: string;
-  dbuser: string;
+  dbname?: string;
+  dbuser?: string;
   parameterName: string;
 }
 export interface CacheConfig {
@@ -154,10 +154,10 @@ export class ApiStack extends Stack {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: stage,
         SECRET: dbPassword,
-        DB_USER: databaseConfig.dbuser,
+        DB_USER: databaseConfig.dbuser || "postgres",
         REGION: props.env.region,
         DB_HOST: databaseConfig.host,
-        DB_NAME: databaseConfig.dbname,
+        DB_NAME: databaseConfig.dbname || "postgres",
       },
     });
 
