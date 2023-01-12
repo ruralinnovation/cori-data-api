@@ -1,4 +1,4 @@
-import { ApiStackProps, ServiceConfig } from '../packages/infrastructure/src/stacks';
+import { ApiStackProps, DatabaseConfig, ServiceConfig } from '../packages/infrastructure/src/stacks';
 
 export interface TestEnvConfig {
   region: string;
@@ -13,15 +13,18 @@ export interface TestEnvConfig {
  * Extends stack props with deploy/start configuration
  */
 export interface IMixedConfig extends ApiStackProps {
-  dbname?: string;
-  dbuser?: string;
-  dbpassword?: string;
 
   /**
    * Each pipeline creates a new bucket, which can push us past the bucket quota.
    * This allows us to re-use an existing one.
    */
   artifactBucketName?: string;
+
+  /**
+   * DataConfig
+   */
+  databaseConfig: DatabaseConfig;
+  dbpassword?: string;
 
   /**
    * Source Repo Name in GitHub
@@ -116,10 +119,10 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     region: 'us-east-1',
   },
   databaseConfig: {
-    vpcId: 'vpc-08f5e17f5b75ccee9',
-    databaseSecurityGroupId: 'sg-01ddcc192d814136f',
     host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
-    parameterName: '/postgresql/read_only_user_credentials'
+    parameterName: '/postgresql/read_only_user_credentials',
+    databaseSecurityGroupId: 'sg-01ddcc192d814136f',
+    vpcId: 'vpc-08f5e17f5b75ccee9',
   },
   cacheEnabled: true,
   cacheConfig: {
@@ -149,41 +152,61 @@ export const Config: IConfigs = {
     ...coriDefaults,
     // microservicesConfig: microservicesConfiguration, // <- add custom config
     client: 'cori',
-    dbuser: 'read_only_user',
+    databaseConfig: {
+      ...coriDefaults.databaseConfig,
+      dbname: 'data',
+      dbuser: 'read_only_user',
+    },
     stage: 'dev',
   },
   'dev': {
     ...coriDefaults,
     client: 'cori',
-    dbname: 'data',
-    dbuser: 'read_only_user',
+    databaseConfig: {
+      ...coriDefaults.databaseConfig,
+      dbname: 'data',
+      dbuser: 'read_only_user',
+    },
     stage: 'dev',
   },
   'development': {
     ...coriDefaults,
     client: 'cori',
-    dbname: 'data',
-    dbuser: 'read_only_user',
+    databaseConfig: {
+      ...coriDefaults.databaseConfig,
+      dbname: 'data',
+      dbuser: 'read_only_user',
+    },
     stage: 'dev',
   },
   'local': {
     ...coriDefaults,
     client: 'cori',
-    dbname: 'data',
-    dbuser: 'read_only_user',
+    databaseConfig: {
+      ...coriDefaults.databaseConfig,
+      dbname: 'data',
+      dbuser: 'read_only_user',
+    },
     stage: 'local',
   },
   'prod': {
     ...coriDefaults,
     client: 'cori',
-    dbname: 'data',
-    dbuser: 'read_only_user',
+    databaseConfig: {
+      ...coriDefaults.databaseConfig,
+      dbname: 'data',
+      dbuser: 'read_only_user',
+    },
     stage: 'prod',
   },
 };
 
 export const getConfig = (name: string): IMixedConfig => {
   const config = Config[name];
+
+  console.log("Get config:")
+  console.log(name);
+  console.log(config);
 
   if (!config) {
     throw new Error(`Unknown config: ${name}`);
