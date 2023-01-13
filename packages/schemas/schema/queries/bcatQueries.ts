@@ -223,10 +223,10 @@ export const bcatQueries: any = {
       info: any
     ) => {
       return skipCache
-        ? await pythonApi.getItem(`bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=${state_abbr}`)
+        ? await pythonApi.getItem(`bcat/county_rural_dev_broadband_protected_borrowers/geojson?state_abbr=${state_abbr}`)
         : await redisClient.checkCache(`county_rural_dev_broadband_protected_borrowers-${state_abbr}`, async () => {
             return await pythonApi.getItem(
-              `bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=${state_abbr}`
+              `bcat/county_rural_dev_broadband_protected_borrowers/geojson?state_abbr=${state_abbr}`
             );
           });
     },

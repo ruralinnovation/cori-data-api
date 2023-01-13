@@ -20,7 +20,7 @@ export const pythonIntegrationEndpoints = {
     mvt: '/bcat/county_ilecs_geo/tiles/10/278/408.pbf',
   },
   county_rural_dev_broadband_protected_borrowers: {
-    geo: '/bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=TN',
+    geo: '/bcat/county_rural_dev_broadband_protected_borrowers/geojson?state_abbr=TN',
     mvt: '/bcat/county_rural_dev_broadband_protected_borrowers/tiles/10/278/408.pbf',
   },
   county_summary: {

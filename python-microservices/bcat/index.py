@@ -432,7 +432,7 @@ def get_bcat(table):
 
     result = {
         'type': 'FeatureCollection',
-        'features': [f[0] for f in features],
+        'features': [f[0] for f in features]
         }
 
     return result

@@ -60,8 +60,8 @@ CONFIG = {
     },
     'county_rural_dev_broadband_protected_borrowers': {
         'table': 'bcat.bcat_county_rural_dev_broadband_protected_borrowers',
-        'api_columns': "geoid, land_sqmi, water_sqmi, geom, valid_raw, geoid_st, statens, affgeoid, stusps, lsad, region, division, mtfcc, funcstat, lat, lon",
-        'params': ['geom', 'stusps'],
+        'api_columns': "geoid, land_sqmi, water_sqmi, geom, valid_raw, geoid_st, statens, affgeoid, state_abbr, lsad, region, division, mtfcc, funcstat, lat, lon",
+        'params': ['geom', 'state_abbr'],
         'geom': 'geom',
         'epsg': 4269,
         'id': None,
