@@ -1,57 +1,21 @@
 CREATE ROLE read_only_access;
 GRANT CONNECT ON DATABASE data to read_only_access;
-GRANT USAGE ON SCHEMA 
+GRANT USAGE ON SCHEMA
+	acs,
+    bcat,
+	location_analysis,
     public,
-	acs,
-    bcat,
-	ascendium,
-	canada,
-	core_data,
-	cori_model,
-	eda,
-	employment_data,
-	location_analysis,
-	metadata,
-	opensourcecompass,
-	rii_analysis,
-	rii_diagnostic,
-	rwjf,
-	sch_analysis,
 	sch_broadband,
-	sch_census_tiger,
-	sch_layer,
-	sch_source,
-	tiger,
-	tiger_data,
-	tn_broadband,
-	topology,
-	vt_broadband to read_only_access;
-GRANT SELECT ON ALL TABLES IN SCHEMA 
-	public,
-	acs,
+	sch_census_tiger
+	to read_only_access;
+GRANT SELECT ON ALL TABLES IN SCHEMA
+    acs,
     bcat,
-	ascendium,
-	canada,
-	core_data,
-	cori_model,
-	eda,
-	employment_data,
-	location_analysis,
-	metadata,
-	opensourcecompass,
-	rii_analysis,
-	rii_diagnostic,
-	rwjf,
-	sch_analysis,
-	sch_broadband,
-	sch_census_tiger,
-	sch_layer,
-	sch_source,
-	tiger,
-	tiger_data,
-	tn_broadband,
-	topology,
-	vt_broadband to read_only_access;
+    location_analysis,
+    public,
+    sch_broadband,
+    sch_census_tiger
+    to read_only_access;
 
 CREATE USER read_only_user WITH PASSWORD '';
 GRANT read_only_access TO read_only_user;

@@ -5,15 +5,15 @@ import { Cognito, ExistingCognitoConfig } from '../constructs/Cognito';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { ApolloGraphqlServer } from '../constructs/api/ApolloGraphqlServer/ApolloGraphqlServer';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { PythonDataServer } from '../constructs/api/PythonDataServer';
 import { Networking } from '../constructs/Networking';
+import { PythonDataServer } from '../constructs/api/PythonDataServer';
 
 export interface DatabaseConfig {
   vpcId: string;
   databaseSecurityGroupId: string;
   host: string;
-  dbname: string;
-  dbuser: string;
+  dbname?: string;
+  dbuser?: string;
   parameterName: string;
 }
 export interface CacheConfig {
@@ -149,14 +149,15 @@ export class ApiStack extends Stack {
       vpc: networking.vpc,
       securityGroups: [networking.lambdaSecurityGroup],
       microservicesConfig,
+      /* TODO: add cache env config here (see Apollo setup) */
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: stage,
         SECRET: dbPassword,
-        DB_USER: databaseConfig.dbuser,
+        DB_USER: databaseConfig.dbuser || "postgres",
         REGION: props.env.region,
         DB_HOST: databaseConfig.host,
-        DB_NAME: databaseConfig.dbname,
+        DB_NAME: databaseConfig.dbname || "postgres",
       },
     });
 

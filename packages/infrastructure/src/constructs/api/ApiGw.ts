@@ -106,10 +106,12 @@ export class ApiGw extends Construct {
 
     lambda.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com')); //Need to grant apigateway permission to invoke lambda when there are multiple stages
 
-    try {
-      this.addCorsMockIntegration(resource); // throws if added multiple times
-    } catch {
-      // Allow multiple resources of the same name with different methods
+    if (this.props.stage !== 'local') {
+      try {
+        this.addCorsMockIntegration(resource); // throws if added multiple times
+      } catch {
+        // Allow multiple resources of the same name with different methods
+      }
     }
   }
 

@@ -13,7 +13,6 @@ mvt tiles county_broadband_pending_rural_dev                     /bcat/county_br
 mvt tiles county_ilecs_geo                                       /bcat/county_ilecs_geo/tiles/10/278/408.pbf
 mvt tiles county_rural_dev_broadband_protected_borrowers         /bcat/county_rural_dev_broadband_protected_borrowers/tiles/10/278/408.pbf
 # mvt tiles county_summary                                       /bcat/county_summary/tiles/10/278/408.pbf
-mvt tiles fiber_cable_unserved_blocks                            /bcat/fiber_cable_unserved_blocks/tiles/10/278/408.pbf
 mvt tiles incumbent_electric_providers_geo                       /bcat/incumbent_electric_providers_geo/tiles/10/278/408.pbf
 # mvt tiles county_adjacency_crosswalk                           /bcat/county_adjacency_crosswalk/tiles/10/278/408.pbf
 

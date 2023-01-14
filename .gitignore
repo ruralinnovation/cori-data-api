@@ -1,4 +1,5 @@
 *.idea
+*.run
 node_modules
 **/cdk.out/*
 **/packages/infrastructure/dist/**
