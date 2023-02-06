@@ -20,21 +20,10 @@ def bad_request_error(msg):
 
 
 """
-acs testing endpoints
+acs tables
 """
-@app.get("/testing")
-def get():
-    print("testing acs endpoint /testing")
-
-    logger.info("testing acs endpoint /testing on system:")
-    logger.info(os.environ)
-
-    return {
-        "message": "success"
-    }
-
 @app.get("/<table>", compress=False)
-def get_bcat(table):
+def get_acs(table):
     """
     construct and execute a query to <table> with where clause based on <params>
     """
@@ -152,7 +141,7 @@ def get_bcat(table):
                     'properties', to_jsonb(t.*) - 'geom'
                 )
                 FROM (
-                    SELECT DISTINCT acs_code, variable, year, ST_GeomFromText('POLYGON EMPTY') as geom
+                    SELECT DISTINCT {order_by}, variable, ST_GeomFromText('POLYGON EMPTY') as geom
                         FROM {db_table}
                         ORDER BY {order_by}
                     ) t
@@ -170,6 +159,21 @@ def get_bcat(table):
 
     return result
 
+
+"""
+acs testing endpoints
+"""
+# @app.get("/testing")
+# def get():
+#     print("testing acs endpoint /testing")
+#
+#     logger.info("testing acs endpoint /testing on system:")
+#     logger.info(os.environ)
+#
+#     return {
+#         "message": "success"
+#     }
+#
 
 # You can continue to use other utilities just as before
 @tracer.capture_lambda_handler

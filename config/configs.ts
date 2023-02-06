@@ -199,6 +199,16 @@ export const Config: IConfigs = {
     },
     stage: 'prod',
   },
+  'production': {
+    ...coriDefaults,
+    client: 'cori',
+    databaseConfig: {
+      ...coriDefaults.databaseConfig,
+      dbname: 'data',
+      dbuser: 'read_only_user',
+    },
+    stage: 'prod',
+  }
 };
 
 export const getConfig = (name: string): IMixedConfig => {
