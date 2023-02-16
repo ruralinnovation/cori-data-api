@@ -48,6 +48,12 @@ export class ApolloGraphqlServer extends Construct {
     });
 
     this.apiGw.addLambda({
+      method: 'OPTIONS',
+      path: '/graphql',
+      lambda: this.function,
+    });
+
+    this.apiGw.addLambda({
       method: 'POST',
       path: '/graphql',
       lambda: this.function,
