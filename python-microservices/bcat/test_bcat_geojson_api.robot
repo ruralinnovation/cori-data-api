@@ -24,7 +24,6 @@ two geoid_cos broadband_unserved_blocks                        /bcat/broadband_u
 # two geoid_cos county_ilecs_geo                               /bcat/county_ilecs_geo/geojson                                    geoid_co=47001,47003
 # two geo county_rural_dev_broadband_protected_borrowers    /bcat/county_rural_dev_broadband_protected_borrowers/geojson      geoid_co=47001,47003
 two geoid_cos county_summary                                   /bcat/county_summary/geojson                                      geoid_co=47001,47003
-two geoid_co fiber_cable_unserved_blocks                      /bcat/fiber_cable_unserved_blocks/geojson                         geoid_co=47001,47003
 # two geoid_co incumbent_electric_providers_geo               /bcat/incumbent_electric_providers_geo/geojson                    geoid_co=47001,47003
 two geoid_co county_adjacency_crosswalk                       /bcat/county_adjacency_crosswalk/geojson                          geoid_co=47001,47003
 

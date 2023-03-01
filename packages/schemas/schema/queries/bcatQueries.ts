@@ -4,10 +4,13 @@
 import { GraphQLArgumentConfig, GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLString } from 'graphql';
 import GeoJSON from '../geojson';
 
+// TODO: Remove after testing call to local Python REST API
+import { fetch } from 'cross-fetch';
+
 export const bcatQueries: any = {
   // auction_904_subsidy_awards_schema_vl_mvt: {
   //   type: [object]
-  // 
+  //
   // },
   auction_904_subsidy_awards_geojson: {
     type: GeoJSON.FeatureCollectionObject,
@@ -223,10 +226,10 @@ export const bcatQueries: any = {
       info: any
     ) => {
       return skipCache
-        ? await pythonApi.getItem(`bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=${state_abbr}`)
+        ? await pythonApi.getItem(`bcat/county_rural_dev_broadband_protected_borrowers/geojson?state_abbr=${state_abbr}`)
         : await redisClient.checkCache(`county_rural_dev_broadband_protected_borrowers-${state_abbr}`, async () => {
             return await pythonApi.getItem(
-              `bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=${state_abbr}`
+              `bcat/county_rural_dev_broadband_protected_borrowers/geojson?state_abbr=${state_abbr}`
             );
           });
     },
@@ -247,8 +250,15 @@ export const bcatQueries: any = {
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
+
       return await counties.reduce(
         async (fc, county) => {
+          // TODO: Remove after testing call to local Python REST API
+          console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${county}`);
+          fetch(`${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${county}`)
+            .catch((err) => console.log(err))
+            .then((res) => console.log(res));
+
           const featureCollection = await fc;
           const res: any = skipCache
             ? await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${county}`)
@@ -320,6 +330,12 @@ export const bcatQueries: any = {
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
+      // TODO: Remove after testing call to local Python REST API
+      console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${county}`);
+      fetch(`${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${county}`)
+        .catch((err) => console.log(err))
+        .then((res) => console.log(res));
+
       return skipCache
         ? await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${county}`)
         : await redisClient.checkCache(`county_summary-${county}`, async () => {

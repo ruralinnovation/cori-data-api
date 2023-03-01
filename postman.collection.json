@@ -1173,12 +1173,12 @@
                       }
                     ],
                     "url": {
-                      "raw": "{{pythonApiUrl}}/bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=TN",
+                      "raw": "{{pythonApiUrl}}/bcat/county_rural_dev_broadband_protected_borrowers/geojson?state_abbr=TN",
                       "host": ["{{pythonApiUrl}}"],
                       "path": ["bcat", "county_rural_dev_broadband_protected_borrowers", "geojson"],
                       "query": [
                         {
-                          "key": "stusps",
+                          "key": "state_abbr",
                           "value": "TN"
                         }
                       ]
@@ -1217,12 +1217,12 @@
                       }
                     ],
                     "url": {
-                      "raw": "{{localApiUrl}}/bcat/county_rural_dev_broadband_protected_borrowers/geojson?stusps=TN",
+                      "raw": "{{localApiUrl}}/bcat/county_rural_dev_broadband_protected_borrowers/geojson?state_abbr=TN",
                       "host": ["{{localApiUrl}}"],
                       "path": ["bcat", "county_rural_dev_broadband_protected_borrowers", "geojson"],
                       "query": [
                         {
-                          "key": "stusps",
+                          "key": "state_abbr",
                           "value": "TN"
                         }
                       ]

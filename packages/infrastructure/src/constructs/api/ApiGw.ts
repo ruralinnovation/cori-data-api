@@ -52,6 +52,8 @@ export class ApiGw extends Construct {
       },
       cloudWatchRole: props.cloudWatchRole,
       binaryMediaTypes: props.binaryMediaTypes || undefined,
+      minimumCompressionSize: 10485760  // disable compression for any
+                                        // response that is smaller than 10M
     });
 
     this.addGatewayResponses();
@@ -60,8 +62,14 @@ export class ApiGw extends Construct {
       this.attachCognitoAuthorizer(props.userPool);
     }
 
-    this.apiDomain = `${this.api.restApiId}.execute-api.${Aws.REGION}.amazonaws.com`;
-    this.apiEndpoint = `https://${this.apiDomain}/${props.stage}/`;
+    if (props.stage === 'local') {
+      console.log("props.stage===" + props.stage);
+      this.apiDomain = `localhost`;
+      this.apiEndpoint = `https://d6q5pgqgx5oy5.cloudfront.net/`; // `http://localhost:2000/`;
+    } else {
+      this.apiDomain = `${this.api.restApiId}.execute-api.${Aws.REGION}.amazonaws.com`;
+      this.apiEndpoint = `https://${this.apiDomain}/${props.stage}/`;
+    }
   }
 
   public attachCognitoAuthorizer(userPool: IUserPool) {
