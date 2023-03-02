@@ -107,7 +107,7 @@ export class AppSyncApiLambda extends ApiLambda {
       this.addMethod(method, config.path);
       if (method === 'GET') {
         this.attachReadResolver(config.typeName, config.fieldName, this.createResourcePath(config.path), 'GET');
-      } else if (['PUT', 'POST'].includes(method)) {
+      } else if (['PUT', 'POST', 'OPTIONS'].includes(method)) {
         this.attachUpdateResolver(
           config.typeName,
           config.fieldName,
