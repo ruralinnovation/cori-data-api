@@ -1,3 +1,6 @@
 [submodule "packages/frontend"]
 	path = packages/frontend
 	url = git@github.com:ruralinnovation/cdk-amplify-frontend.git
+[submodule "packages/cori.data.api"]
+	path = packages/cori.data.api
+	url = https://github.com/ruralinnovation/cori.data.api.git

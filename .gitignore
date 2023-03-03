@@ -172,3 +172,11 @@ cython_debug/
 log.html
 output.xml
 report.html
+
+AWS_SAM_CLI_64_PY3.msi
+aws-sam-cli-linux-x86_64.zip
+amplify.yml
+aws-config.js
+.graphqlconfig
+sam-beta-installation
+spec
