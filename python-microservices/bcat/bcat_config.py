@@ -15,6 +15,28 @@ bcat configuration
 """
 
 CONFIG = {
+    'auction_904_authorized': {
+        'table': 'bcat.bcat_auction_904_authorized',
+        'tile_columns': "geoid_bl, geoid_co, applicant, tier, latency, frn, sac, da_numbers, county, state, winning_bidder, winning_bid_total_in_state, number_of_locations_in_state",
+        'api_columns': "geoid_bl, geoid_co, applicant, tier, latency, frn, sac, da_numbers, county, state, winning_bidder, winning_bid_total_in_state, number_of_locations_in_state, geom",
+        'params': ['geoid_bl', 'geoid_co', 'applicant', 'county', 'state', 'geom'],
+        'geom': 'geom',
+        'epsg': 4269,
+        'simplify': 0.00002,
+        'precision': 6,
+        'id': 'geoid_bl',
+    },
+    'auction_904_defaults_denials': {
+        'table': 'bcat.bcat_auction_904_defaults_denials',
+        'tile_columns': "geoid_bl, geoid_co, applicant, da_numbers, county, state",
+        'api_columns': "geoid_bl, geoid_co, applicant, da_numbers, county, state, geom",
+        'params': ['geoid_bl', 'geoid_co', 'applicant', 'county', 'state', 'geom'],
+        'geom': 'geom',
+        'epsg': 4269,
+        'simplify': 0.00002,
+        'precision': 6,
+        'id': 'geoid_bl',
+    },
     'auction_904_subsidy_awards': {
         'table': 'bcat.bcat_auction_904_subsidy_awards',
         'tile_columns': "geoid, name_co, subsidy_recipient, tier, geoid_co, state_abbr",
