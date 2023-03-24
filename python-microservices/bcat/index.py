@@ -225,7 +225,7 @@ def get_bcat_props(table):
         print("URL query params is empty")
 
     if id:
-        columns = columns.replace(f'{id},', f'"{id}" as x_id,')
+        columns = columns.replace(f'{id},', f'"{id}" as x_id, {id},')
     else:
         # if no id then use somewhat hacky ctid to bigint method.
         # WARNING: only works if there are no changes to table rows!!
@@ -328,7 +328,7 @@ def get_bcat(table):
     id = CONFIG[table].get('id', None)
 
     if id:
-        columns = columns.replace(f'{id},', f'"{id}" as x_id,')
+        columns = columns.replace(f'{id},', f'"{id}" as x_id, {id},')
     else:
         # if no id then use somewhat hacky ctid to bigint method.
         # WARNING: only works if there are no changes to table rows!!
