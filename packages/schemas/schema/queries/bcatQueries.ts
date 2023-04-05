@@ -29,12 +29,12 @@ export const bcatQueries: any = {
       info: any
     ) => {
       return await counties.reduce(
-        async (fc, county) => {
+        async (fc, geoid_co) => {
           const featureCollection = await fc;
           const res: any = skipCache
-            ? await pythonApi.getItem(`bcat/auction_904_subsidy_awards/geojson?geoid_co=${county}`)
-            : await redisClient.checkCache(`auction_904_subsidy_awards-${county}`, async () => {
-                return await pythonApi.getItem(`bcat/auction_904_subsidy_awards/geojson?geoid_co=${county}`);
+            ? await pythonApi.getItem(`bcat/auction_904_subsidy_awards/geojson?geoid_co=${geoid_co}`)
+            : await redisClient.checkCache(`auction_904_subsidy_awards-${geoid_co}`, async () => {
+                return await pythonApi.getItem(`bcat/auction_904_subsidy_awards/geojson?geoid_co=${geoid_co}`);
               });
           if (res) {
             return {
@@ -55,7 +55,7 @@ export const bcatQueries: any = {
   auction_904_subsidy_awards_county_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
-      county: {
+      geoid_co: {
         type: GraphQLString!,
       },
       skipCache: {
@@ -64,14 +64,14 @@ export const bcatQueries: any = {
     },
     resolve: async (
       _: any,
-      { county, skipCache }: { county: string; skipCache: boolean | undefined },
+      { geoid_co, skipCache }: { geoid_co: string; skipCache: boolean | undefined },
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
       return skipCache
-        ? await pythonApi.getItem(`bcat/auction_904_subsidy_awards/geojson?geoid_co=${county}`)
-        : await redisClient.checkCache(`auction_904_subsidy_awards-${county}`, async () => {
-            return await pythonApi.getItem(`bcat/auction_904_subsidy_awards/geojson?geoid_co=${county}`);
+        ? await pythonApi.getItem(`bcat/auction_904_subsidy_awards/geojson?geoid_co=${geoid_co}`)
+        : await redisClient.checkCache(`auction_904_subsidy_awards-${geoid_co}`, async () => {
+            return await pythonApi.getItem(`bcat/auction_904_subsidy_awards/geojson?geoid_co=${geoid_co}`);
           });
     },
   },
@@ -92,12 +92,12 @@ export const bcatQueries: any = {
       info: any
     ) => {
       return await counties.reduce(
-        async (fc, county) => {
+        async (fc, geoid_co) => {
           const featureCollection = await fc;
           const res: any = skipCache
-            ? await pythonApi.getItem(`bcat/broadband_unserved_blocks/geojson?geoid_co=${county}`)
-            : await redisClient.checkCache(`broadband_unserved_blocks-${county}`, async () => {
-                return await pythonApi.getItem(`bcat/broadband_unserved_blocks/geojson?geoid_co=${county}`);
+            ? await pythonApi.getItem(`bcat/broadband_unserved_blocks/geojson?geoid_co=${geoid_co}`)
+            : await redisClient.checkCache(`broadband_unserved_blocks-${geoid_co}`, async () => {
+                return await pythonApi.getItem(`bcat/broadband_unserved_blocks/geojson?geoid_co=${geoid_co}`);
               });
           if (res) {
             return {
@@ -118,7 +118,7 @@ export const bcatQueries: any = {
   broadband_unserved_blocks_county_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
-      county: {
+      geoid_co: {
         type: GraphQLString!,
       },
       skipCache: {
@@ -127,14 +127,14 @@ export const bcatQueries: any = {
     },
     resolve: async (
       _: any,
-      { county, skipCache }: { county: string; skipCache: boolean | undefined },
+      { geoid_co, skipCache }: { geoid_co: string; skipCache: boolean | undefined },
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
       return skipCache
-        ? await pythonApi.getItem(`bcat/broadband_unserved_blocks/geojson?geoid_co=${county}`)
-        : await redisClient.checkCache(`broadband_unserved_blocks-${county}`, async () => {
-            return await pythonApi.getItem(`bcat/broadband_unserved_blocks/geojson?geoid_co=${county}`);
+        ? await pythonApi.getItem(`bcat/broadband_unserved_blocks/geojson?geoid_co=${geoid_co}`)
+        : await redisClient.checkCache(`broadband_unserved_blocks-${geoid_co}`, async () => {
+            return await pythonApi.getItem(`bcat/broadband_unserved_blocks/geojson?geoid_co=${geoid_co}`);
           });
     },
   },
@@ -252,18 +252,18 @@ export const bcatQueries: any = {
     ) => {
 
       return await counties.reduce(
-        async (fc, county) => {
+        async (fc, geoid_co) => {
           // TODO: Remove after testing call to local Python REST API
-          console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${county}`);
-          fetch(`${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${county}`)
+          console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${geoid_co}`);
+          fetch(`${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${geoid_co}`)
             .catch((err) => console.log(err))
             .then((res) => console.log(res));
 
           const featureCollection = await fc;
           const res: any = skipCache
-            ? await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${county}`)
-            : await redisClient.checkCache(`county_summary-${county}`, async () => {
-                return await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${county}`);
+            ? await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${geoid_co}`)
+            : await redisClient.checkCache(`county_summary-${geoid_co}`, async () => {
+                return await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${geoid_co}`);
               });
           if (res) {
             return {
@@ -297,7 +297,7 @@ export const bcatQueries: any = {
   //     { dataSources: { pythonApi } }: any,
   //     info: any
   //   ) => {
-  //     return await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${county}&page=${page}`);
+  //     return await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${geoid_co}&page=${page}`);
   //         if (res) {
   //           return {
   //             ...featureCollection,
@@ -317,7 +317,7 @@ export const bcatQueries: any = {
   county_summary_county_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
-      county: {
+      geoid_co: {
         type: GraphQLString!,
       },
       skipCache: {
@@ -326,20 +326,20 @@ export const bcatQueries: any = {
     },
     resolve: async (
       _: any,
-      { county, skipCache }: { county: string; skipCache: boolean | undefined },
+      { geoid_co, skipCache }: { geoid_co: string; skipCache: boolean | undefined },
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
       // TODO: Remove after testing call to local Python REST API
-      console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${county}`);
-      fetch(`${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${county}`)
+      console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${geoid_co}`);
+      fetch(`${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${geoid_co}`)
         .catch((err) => console.log(err))
         .then((res) => console.log(res));
 
       return skipCache
-        ? await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${county}`)
-        : await redisClient.checkCache(`county_summary-${county}`, async () => {
-            return await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${county}`);
+        ? await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${geoid_co}`)
+        : await redisClient.checkCache(`county_summary-${geoid_co}`, async () => {
+            return await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${geoid_co}`);
           });
     },
   },
@@ -360,12 +360,12 @@ export const bcatQueries: any = {
       info: any
     ) => {
       return await counties.reduce(
-        async (fc, county) => {
+        async (fc, geoid_co) => {
           const featureCollection = await fc;
           const res: any = skipCache
-            ? await pythonApi.getItem(`bcat/fiber_cable_unserved_blocks/geojson?geoid_co=${county}`)
-            : await redisClient.checkCache(`fiber_cable_unserved_blocks-${county}`, async () => {
-                return await pythonApi.getItem(`bcat/fiber_cable_unserved_blocks/geojson?geoid_co=${county}`);
+            ? await pythonApi.getItem(`bcat/fiber_cable_unserved_blocks/geojson?geoid_co=${geoid_co}`)
+            : await redisClient.checkCache(`fiber_cable_unserved_blocks-${geoid_co}`, async () => {
+                return await pythonApi.getItem(`bcat/fiber_cable_unserved_blocks/geojson?geoid_co=${geoid_co}`);
               });
           if (res) {
             return {
@@ -386,7 +386,7 @@ export const bcatQueries: any = {
   fiber_cable_unserved_blocks_county_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
-      county: {
+      geoid_co: {
         type: GraphQLString!,
       },
       skipCache: {
@@ -395,14 +395,14 @@ export const bcatQueries: any = {
     },
     resolve: async (
       _: any,
-      { county, skipCache }: { county: string; skipCache: boolean | undefined },
+      { geoid_co, skipCache }: { geoid_co: string; skipCache: boolean | undefined },
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
       return skipCache
-        ? await pythonApi.getItem(`bcat/fiber_cable_unserved_blocks/geojson?geoid_co=${county}`)
-        : await redisClient.checkCache(`fiber_cable_unserved_blocks-${county}`, async () => {
-            return await pythonApi.getItem(`bcat/fiber_cable_unserved_blocks/geojson?geoid_co=${county}`);
+        ? await pythonApi.getItem(`bcat/fiber_cable_unserved_blocks/geojson?geoid_co=${geoid_co}`)
+        : await redisClient.checkCache(`fiber_cable_unserved_blocks-${geoid_co}`, async () => {
+            return await pythonApi.getItem(`bcat/fiber_cable_unserved_blocks/geojson?geoid_co=${geoid_co}`);
           });
     },
   },
@@ -446,12 +446,12 @@ export const bcatQueries: any = {
       info: any
     ) => {
       return await counties.reduce(
-        async (fc, county) => {
+        async (fc, geoid_co) => {
           const featureCollection = await fc;
           const res: any = skipCache
-            ? await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`)
-            : await redisClient.checkCache(`county_adjacency_crosswalk-${county}`, async () => {
-                return await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`);
+            ? await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${geoid_co}`)
+            : await redisClient.checkCache(`county_adjacency_crosswalk-${geoid_co}`, async () => {
+                return await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${geoid_co}`);
               });
           if (res) {
             return {
@@ -472,7 +472,7 @@ export const bcatQueries: any = {
   county_adjacency_crosswalk_county_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
-      county: {
+      geoid_co: {
         type: GraphQLString!,
       },
       skipCache: {
@@ -481,14 +481,14 @@ export const bcatQueries: any = {
     },
     resolve: async (
       _: any,
-      { county, skipCache }: { county: string[]; skipCache: boolean | undefined },
+      { geoid_co, skipCache }: { geoid_co: string[]; skipCache: boolean | undefined },
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
       return skipCache
-        ? await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`)
-        : await redisClient.checkCache(`county_adjacency_crosswalk-${county}`, async () => {
-            return await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`);
+        ? await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${geoid_co}`)
+        : await redisClient.checkCache(`county_adjacency_crosswalk-${geoid_co}`, async () => {
+            return await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${geoid_co}`);
           });
     },
   },
