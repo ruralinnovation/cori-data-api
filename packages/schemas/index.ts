@@ -67,14 +67,14 @@ const RootQuery = new GraphQLObjectType({
             throw new Error('When no state abbr is specified you MUSt filter by state_abbr');
           }
           return await counties.reduce(
-            async (fc, county) => {
+            async (fc, geoid_co) => {
               const featureCollection = await fc;
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const res: any = skipCache
-                ? await redisClient.checkCache(`${table}-${county}`, async () => {
-                    return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
+                ? await redisClient.checkCache(`${table}-${geoid_co}`, async () => {
+                    return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${geoid_co}`);
                   })
-                : await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
+                : await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${geoid_co}`);
               if (res) {
                 return {
                   ...featureCollection,
@@ -99,21 +99,21 @@ const RootQuery = new GraphQLObjectType({
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           type: GraphQLString!,
         },
-        county: {
+        geoid_co: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           type: GraphQLString!,
         },
       },
       resolve: async (
         _: unknown,
-        { table, county }: { table: string; county: string },
+        { table, geoid_co }: { table: string; geoid_co: string },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         { dataSources, redisClient }: any,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
         info: any
       ) => {
-        return await redisClient.checkCache(`${table}-${county}`, async () => {
-          return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${county}`);
+        return await redisClient.checkCache(`${table}-${geoid_co}`, async () => {
+          return await dataSources.pythonApi.getItem(`bcat/${table}/geojson?geoid_co=${geoid_co}`);
         });
       },
     },
