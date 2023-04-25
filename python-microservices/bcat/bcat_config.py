@@ -91,10 +91,10 @@ CONFIG = {
     'county_summary': {
         'table': 'bcat.bcat_county_summary',
         'api_columns': "geoid_co, name_co, broadband_100_20_pct_blocks_served, cable_pct_blocks_served, fiber_pct_blocks_served, fiber_providers, cable_providers, co_fiber_pct_blocks_served, pct_hh_no_fiber_cable, pct_hh_served_fiber_cable, pct_hh_served_cable, pct_hh_served_fiber, hh_no_fiber_cable, hh_served_fiber_cable, hh_served_cable, hh_served_fiber, total_households, lat, lon, state_name, geoid_st, state_abbr, geom",
-        'params': ['geoid_co', 'state_abbr', 'geom'],
+        'params': ['geoid_co', 'name_co', 'geoid_st', 'state_abbr', 'geom'],
         'geom': 'geom',
         'epsg': 4269,
-        'id': None,
+        'id': 'geoid_co',
     },
     'fiber_cable_unserved_blocks': {
         'table': 'bcat.bcat_fiber_cable_unserved_blocks',
