@@ -179,7 +179,7 @@ def get_bcat_props(table):
     params = CONFIG[table]['params']
     simplify = CONFIG[table].get('simplify', 0.0)
     id = CONFIG[table].get('id', None)
-    order_by = "geoid_co, name_co, geoid_st, state_abbr, state_name"
+    order_by = ', '.join([x for x in params if x != 'geom']) # "geoid_co, name_co, geoid_st, state_abbr, state_name"
 #     if (columns != "*"):
 #         order_by = columns
 
@@ -231,10 +231,10 @@ def get_bcat_props(table):
         # WARNING: only works if there are no changes to table rows!!
         columns += ", ((ctid::text::point)[0]::bigint<<32 | (ctid::text::point)[1]::bigint) as x_id"
 
-    if geom:
-        columns = columns.replace(f'{geom},', f'st_simplify(st_transform({geom}, {webmercator_srid}), {simplify}) as geom, ')
-    else:
-        columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
+#     if geom:
+#         columns = columns.replace(f'{geom},', f'st_simplify(st_transform({geom}, {webmercator_srid}), {simplify}) as geom, ')
+#     else:
+#         columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
 
     # option to limit the total number of records returned. dont include this key in the config to disable
     limit = ''
@@ -250,7 +250,6 @@ def get_bcat_props(table):
                 json_build_object(
                     'type',       'Feature',
                     'id',         x_id,
-                    'geometry',   ST_AsGeoJSON(geom)::jsonb,
                     'properties', to_jsonb(t.*) - 'x_id' - 'geom'
                 )
                 FROM (
@@ -267,11 +266,10 @@ def get_bcat_props(table):
             SELECT
                 json_build_object(
                     'type',       'Feature',
-                    'geometry',   ST_AsGeoJSON(geom)::jsonb,
-                    'properties', to_jsonb(t.*) - 'geom'
+                    'properties', to_jsonb(t.*)
                 )
                 FROM (
-                    SELECT DISTINCT {order_by}, ST_GeomFromText('POLYGON EMPTY') as geom
+                    SELECT DISTINCT {order_by}
                         FROM {db_table}
                         ORDER BY {order_by}
                     ) t
@@ -324,6 +322,7 @@ def get_bcat(table):
     columns = CONFIG[table].get('api_columns', '*')
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
+    order_by = ', '.join([x for x in params if x != 'geom']) # "geoid_co, name_co, geoid_st, state_abbr, state_name"
     simplify = CONFIG[table].get('simplify', 0.0)
     id = CONFIG[table].get('id', None)
 
@@ -382,6 +381,7 @@ def get_bcat(table):
                     FROM {db_table}
                     {where}
                     {limit}
+                    ORDER BY {order_by}
                 ) t
 
         """
