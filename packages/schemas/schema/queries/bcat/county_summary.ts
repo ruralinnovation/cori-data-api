@@ -21,7 +21,7 @@ const county_summary = {
     info: any
   ) => {
 
-    const geoids = (counties !== null && counties.length > 0) ?
+    const geoids = (typeof counties !== 'undefined' && counties !== null && counties.length > 0) ?
       counties.map(c => c.toString()).join(",") :
       "all";
 
