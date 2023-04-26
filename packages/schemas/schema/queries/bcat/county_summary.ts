@@ -25,28 +25,29 @@ const county_summary = {
       counties.map(c => c.toString()).join(",") :
       "all";
 
+    const rest_uri = `${pythonApi.baseURL}bcat/county_summary${
+      (geoids === "all") ? "?limit=0" : "?geoid_co=" + geoids
+    }`;
+
     // return await counties.reduce(
     //   async (fc, geoid_co) => {
     return await (
       (async () => {
 
-        console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/county_summary${
-          (geoids === "all") ? "" : "geoid_co=" + geoids
-        }`);
-
-        // TODO: Remove after testing call to local Python REST API
-        fetch(`${pythonApi.baseURL}bcat/county_summary?geoid_co=${
-          (geoids === "all") ? "" : "geoid_co=" + geoids
-        }`)
-          .catch((err) => console.log(err))
-          .then((res) => console.log(res));
+        console.log("Query pythonApi: ", rest_uri);
 
         //     const featureCollection = await fc;
         const res: any = (geoids === "all") ? await (async () => {
             const fc = (skipCache)
-              ? await pythonApi.getItem(`bcat/county_summary`)
-              : await redisClient.checkCache(`county_summary`, async () => {
-                return await pythonApi.getItem(`bcat/county_summary`);
+              ? await pythonApi.getItem(`bcat/county_summary?limit=0`)
+              : await redisClient.checkCache(`county_summary-0`, async () => {
+
+                // TODO: Remove after testing call to local Python REST API
+                fetch(rest_uri)
+                  .catch((err) => console.log("Test Python REST error: ", err))
+                  .then((res) => console.log("Test Python REST response: ", res));
+
+                return await pythonApi.getItem(`bcat/county_summary?limit=0`);
               });
 
             // console.log("FeatureCollection: ",
@@ -73,6 +74,12 @@ const county_summary = {
           (skipCache)
             ? await pythonApi.getItem(`bcat/county_summary?geoid_co=${geoids}`)
             : await redisClient.checkCache(`county_summary-${geoids}`, async () => {
+
+              // TODO: Remove after testing call to local Python REST API
+              fetch(rest_uri)
+                .catch((err) => console.log("Test Python REST error: ", err))
+                .then((res) => console.log("Test Python REST response: ", res));
+
               return await pythonApi.getItem(`bcat/county_summary?geoid_co=${geoids}`);
             });
 
