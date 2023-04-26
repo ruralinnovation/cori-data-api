@@ -15,6 +15,12 @@ bcat configuration
 """
 
 CONFIG = {
+    'global': {
+        'params': [ 'limit', 'offset', 'page' ],
+        'epsg': 4269,
+        'simplify': 0.00002,
+        'precision': 6
+    },
     'auction_904_authorized': {
         'table': 'bcat.bcat_auction_904_authorized',
         'tile_columns': "geoid_bl, geoid_co, applicant, tier, latency, frn, sac, da_numbers, county, state, winning_bidder, winning_bid_total_in_state, number_of_locations_in_state",
@@ -24,7 +30,7 @@ CONFIG = {
         'epsg': 4269,
         'simplify': 0.00002,
         'precision': 6,
-        'id': 'geoid_bl',
+        'id': 'geoid_bl'
     },
     'auction_904_defaults_denials': {
         'table': 'bcat.bcat_auction_904_defaults_denials',
@@ -35,7 +41,7 @@ CONFIG = {
         'epsg': 4269,
         'simplify': 0.00002,
         'precision': 6,
-        'id': 'geoid_bl',
+        'id': 'geoid_bl'
     },
     'auction_904_subsidy_awards': {
         'table': 'bcat.bcat_auction_904_subsidy_awards',
@@ -46,7 +52,7 @@ CONFIG = {
         'epsg': 4269,
         'simplify': 0.00002,
         'precision': 6,
-        'id': 'geoid',
+        'id': 'geoid'
     },
     'broadband_unserved_blocks': {
         'table': 'bcat.bcat_broadband_unserved_blocks',
@@ -54,7 +60,7 @@ CONFIG = {
         'params': ['geoid_co', 'state_abbr', 'geom'],
         'geom': 'geom',
         'epsg': 4269,
-        'id': None,
+        'id': None
     },
     'county_broadband_farm_bill_eligibility': {
         'table': 'bcat.bcat_county_broadband_farm_bill_eligibility',
@@ -62,7 +68,7 @@ CONFIG = {
         'params': ['state_abbr', 'geom'],
         'geom': 'geom',
         'epsg': 4269,
-        'id': None,
+        'id': None
     },
     'county_broadband_pending_rural_dev': {
         'table': 'bcat.bcat_county_broadband_pending_rural_dev',
@@ -70,7 +76,7 @@ CONFIG = {
         'params': ['state_abbr', 'geom'],
         'geom': 'geom',
         'epsg': 4269,
-        'id': None,
+        'id': None
     },
     'county_ilecs_geo': {
         'table': 'bcat.bcat_county_ilecs_geo',
@@ -78,7 +84,7 @@ CONFIG = {
         'params': ['state_abbr', 'geom'],
         'geom': 'geom',
         'epsg': 4269,
-        'id': None,
+        'id': None
     },
     'county_rural_dev_broadband_protected_borrowers': {
         'table': 'bcat.bcat_county_rural_dev_broadband_protected_borrowers',
@@ -86,7 +92,7 @@ CONFIG = {
         'params': ['geom', 'state_abbr'],
         'geom': 'geom',
         'epsg': 4269,
-        'id': None,
+        'id': None
     },
     'county_summary': {
         'table': 'bcat.bcat_county_summary',
@@ -94,7 +100,7 @@ CONFIG = {
         'params': ['geoid_co', 'name_co', 'geoid_st', 'state_abbr', 'geom'],
         'geom': 'geom',
         'epsg': 4269,
-        'id': 'geoid_co',
+        'id': 'geoid_co'
     },
     'fiber_cable_unserved_blocks': {
         'table': 'bcat.bcat_fiber_cable_unserved_blocks',
@@ -102,7 +108,7 @@ CONFIG = {
         'params': ['geoid_co', 'state_abbr', 'geom'],
         'geom': 'geom',
         'epsg': 4269,
-        'id': None,
+        'id': None
     },
     'incumbent_electric_providers_geo': {
         'table': 'bcat.bcat_incumbent_electric_providers_geo',
@@ -110,7 +116,7 @@ CONFIG = {
         'params': ['state_abbr', 'geom'],
         'geom': 'geom',
         'epsg': 4269,
-        'id': None,
+        'id': None
     },
     'county_adjacency_crosswalk': {
         'table': 'bcat.county_adjacency_crosswalk',
@@ -118,6 +124,6 @@ CONFIG = {
         'params': ['geoid_co', 'state_abbr'],
         'geom': None,
         'epsg': None,
-        'id': None,
+        'id': None
     },
 }
