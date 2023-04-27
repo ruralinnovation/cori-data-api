@@ -166,6 +166,7 @@ const GeoJSON = {
     description: 'A set of multiple features.',
     interfaces: () => [GeoJSON.GeoJSONInterface],
     fields: () => ({
+      // id: { type: Str },
       type: { type: new NonNull(GeoJSON.TypeEnum) },
       crs: { type: GeoJSON.CoordinateReferenceSystemObject },
       bbox: { type: new List(Float) },

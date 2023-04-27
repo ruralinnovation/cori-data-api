@@ -456,9 +456,9 @@ def get_bcat(table):
                 SELECT {columns}
                     FROM {db_table}
                     {where}
+                    ORDER BY {order_by}
                     LIMIT {limit}
                     OFFSET {offset}
-                    ORDER BY {order_by}
                 ) t
 
         """
