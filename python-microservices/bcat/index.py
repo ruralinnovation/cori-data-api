@@ -252,6 +252,9 @@ def get_bcat_props(table):
 
                 page = int(query_params['page'])
 
+                if page > 0:
+                    offset = page * limit
+
                 del query_params['page']
 
             # since we want to handle one or more parameter values coerce all to list
@@ -426,6 +429,9 @@ def get_bcat(table):
             if 'page' in query_params:
 
                 page = int(query_params['page'])
+
+                if page > 0:
+                    offset = page * limit
 
                 del query_params['page']
 
