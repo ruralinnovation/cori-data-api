@@ -1,5 +1,5 @@
 import GeoJSON from "../../geojson";
-import { GraphQLBoolean, GraphQLList, GraphQLString } from "graphql/type";
+import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLString } from "graphql/type";
 
 // TODO: Remove after testing call to local Python REST API
 import { fetch } from "cross-fetch";
@@ -10,13 +10,28 @@ const county_summary = {
     counties: {
       type: new GraphQLList(GraphQLString)!,
     },
+    limit: {
+      type: GraphQLInt
+    },
+    offset: {
+      type: GraphQLInt
+    },
+    page: {
+      type: GraphQLInt
+    },
     skipCache: {
       type: GraphQLBoolean,
     },
   },
   resolve: async (
     _: any,
-    { counties, skipCache }: { counties: string[]; skipCache: boolean | undefined },
+    { counties, limit, offset, page, skipCache }: {
+      counties: string[];
+      limit: number | undefined;
+      offset: number | undefined;
+      page: number | undefined;
+      skipCache: boolean | undefined;
+    },
     { dataSources: { pythonApi }, redisClient }: any,
     info: any
   ) => {
@@ -25,8 +40,22 @@ const county_summary = {
       counties.map(c => c.toString()).join(",") :
       "all";
 
+    const page_size = (typeof limit !== 'undefined' && limit === limit) ?
+      limit :
+      10;
+
+    const count_offset = (typeof offset !== 'undefined' && offset === offset) ?
+      offset :
+      0;
+
+    const page_number = (typeof page !== 'undefined' && page === page) ?
+      page :
+      0;
+
     const rest_uri = `${pythonApi.baseURL}bcat/county_summary${
-      (geoids === "all") ? "?limit=0" : "?geoid_co=" + geoids
+      (geoids === "all") ? 
+        "?limit=0" : 
+        `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`
     }`;
 
     // return await counties.reduce(
@@ -42,23 +71,26 @@ const county_summary = {
               ? await pythonApi.getItem(`bcat/county_summary?limit=0`)
               : await redisClient.checkCache(`county_summary-0`, async () => {
 
+
                 // TODO: Remove after testing call to local Python REST API
                 fetch(rest_uri)
                   .catch((err) => console.log("Test Python REST error: ", err))
-                  .then((res) => console.log("Test Python REST response: ", res));
+                  .then((res) => {
+                    console.log("Test Python REST response: ", res);
+                    const tc = (<any>(<Response>res));
+                    console.log("FeatureCollection: ",
+                      (tc.hasOwnProperty("features")) ?
+                        (<Array<any>>tc.features)
+                          .map(f => ({
+                            ...f,
+                            "id": f.properties.geoid_co
+                          })) :
+                        tc.features
+                    );
+                  });
 
                 return await pythonApi.getItem(`bcat/county_summary?limit=0`);
               });
-
-            // console.log("FeatureCollection: ",
-            //   (fc.hasOwnProperty("features")) ?
-            //     (<Array<any>>fc.features)
-            //       .map(f => ({
-            //         ...f,
-            //         "id": f.properties.geoid_co
-            //       })) :
-            //     fc.features
-            // );
 
             return ({
               type: 'FeatureCollection',
@@ -72,15 +104,18 @@ const county_summary = {
             });
           })():
           (skipCache)
-            ? await pythonApi.getItem(`bcat/county_summary?geoid_co=${geoids}`)
-            : await redisClient.checkCache(`county_summary-${geoids}`, async () => {
+            ? await pythonApi.getItem(`bcat/county_summary`
+              + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`)
+            : await redisClient.checkCache(`county_summary-`
+              + `${geoids}-${page_size}-${count_offset}-${page_number}`, async () => {
 
               // TODO: Remove after testing call to local Python REST API
               fetch(rest_uri)
                 .catch((err) => console.log("Test Python REST error: ", err))
                 .then((res) => console.log("Test Python REST response: ", res));
 
-              return await pythonApi.getItem(`bcat/county_summary?geoid_co=${geoids}`);
+              return await pythonApi.getItem(`bcat/county_summary`
+                + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
             });
 
         // console.log("res: ", await res);

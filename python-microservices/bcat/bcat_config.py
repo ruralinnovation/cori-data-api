@@ -32,7 +32,18 @@ CONFIG = {
         'precision': 6,
         'id': 'geoid_bl'
     },
-    'auction_904_defaults_denials': {
+    'auction_904_ready': {
+        'table': 'data.bcat.bcat_auction_904_ready_to_authorize',
+        'tile_columns': "geoid_bl, geoid_co, applicant, frn, sac, county, state",
+        'api_columns': "geoid_bl, geoid_co, applicant, frn, sac, county, state, geom",
+        'params': ['geoid_bl', 'geoid_co', 'applicant', 'county', 'state', 'geom'],
+        'geom': 'geom',
+        'epsg': 4269,
+        'simplify': 0.00002,
+        'precision': 6,
+        'id': 'geoid_bl'
+    },
+    'auction_904_defaults': {
         'table': 'bcat.bcat_auction_904_defaults_denials',
         'tile_columns': "geoid_bl, geoid_co, applicant, da_numbers, county, state",
         'api_columns': "geoid_bl, geoid_co, applicant, da_numbers, county, state, geom",
