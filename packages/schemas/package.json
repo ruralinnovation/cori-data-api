@@ -8,10 +8,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && npm run merge-schemas",
-    "build:dev": "tsc && tsc --watch & npm run merge-schemas",
+    "build:dev": "tsc --watch & npm run merge-schemas",
     "build:schemas": "npm run merge-schemas",
-    "merge-schemas": "ts-node merge-schemas.ts",
-    "hive-publish": "npx hive schema:publish dist/schema.graphql --service api --force"
+    "merge-schemas": "npm run ts ./merge-schemas.ts",
+    "hive-publish": "npx hive schema:publish dist/schema.graphql --service api --force",
+    "ts": "npm install cross-env nodemon ts-node && cross-env nodemon '--watch' schema "
   },
   "author": "Merging Futures LLC.",
   "license": "ISC",
