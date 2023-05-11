@@ -270,23 +270,37 @@ def get_bcat_props(table):
     if criteria:
         where = 'WHERE ' + ' AND '.join(criteria)
         # build the query statement
-        query = f"""
-            SELECT
-                json_build_object(
-                    {id_in_result}
-                    'type',       'Feature',
-                    'properties', to_jsonb(t.*) - 'x_id'
-                )
-                FROM (
-                    SELECT {columns}
-                        FROM {db_table}
-                        {where}
-                        ORDER BY {order_by}
-                        LIMIT {limit}
-                        OFFSET {offset}
-                    ) t
-
-            """
+        if limit == 0:
+            query = f"""
+                SELECT
+                    json_build_object(
+                        'type',       'Feature',
+                        'properties', to_jsonb(t.*)
+                    )
+                    FROM (
+                        SELECT DISTINCT {order_by}
+                            FROM {db_table}
+                            {where}
+                            ORDER BY {order_by}
+                            LIMIT 10000
+                        ) t
+                """
+        else:
+            query = f"""
+                SELECT
+                    json_build_object(
+                        {id_in_result}
+                        'type',       'Feature',
+                        'properties', to_jsonb(t.*) - 'x_id'
+                    )
+                    FROM (
+                        SELECT {columns}
+                            FROM {db_table}
+                            {where}
+                            ORDER BY {order_by}
+                            LIMIT 10000
+                        ) t
+                """
     elif limit == 0:
         query = f"""
             SELECT
