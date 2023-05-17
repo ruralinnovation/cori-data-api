@@ -13,6 +13,18 @@
 
 - A Node Version Manager [Installing NVM](https://github.com/nvm-sh/nvm) or [Installing n](https://github.com/tj/n)
 
+### Getting started
+
+Run npm install:
+
+    $ npm install
+
+Set local environment (shell) varibles:
+
+    $ export INTEGRATION_TESTING_USERNAME=<aws-cognito-username>
+    $ export INTEGRATION_TESTING_PASSWORD=<aws-cognito-pasword>
+
+
 ### Directory Structure
 
 #### Overview

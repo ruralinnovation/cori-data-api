@@ -42,6 +42,10 @@ export async function getLocalGitBranch(): Promise<string> {
     return process.env.GIT_BRANCH;
   }
   const output: string = await exec('git status', false);
-  const [, branch] = /^On\sbranch\s([\S]*).*/.exec(output.toString()) || [];
+  console.log(`$ git status
+${output}
+`)
+  const [, branch] = /On\sbranch\s((?:dev|local|prod)).*/.exec(output.toString()) || [];
+  console.log("git branch: ", branch);
   return branch;
 }
