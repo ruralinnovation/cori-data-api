@@ -28,7 +28,19 @@ export const getTestConfig = async (): Promise<TestEnvConfig> => {
       cognitoClientId: process.env.COGNITO_CLIENT_ID!,
     };
     console.log('Test Config', cfg);
-    return cfg;
+
+    // Check config values before returning
+    if (((c) => {
+      for (let k in c) {
+        if (c.hasOwnProperty(k) && typeof c[k] === 'undefined') {
+          console.log(k + " is undefined");
+          return false
+        }
+      }
+      return true;
+    })(cfg)) {
+      return cfg;
+    }
   }
 
   const branch = await getLocalGitBranch();

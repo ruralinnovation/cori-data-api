@@ -38,6 +38,8 @@ export function exec(command: string, logToConsole = true): Promise<string> {
  * Note: does not work on CI where git is not available. Set the GIT_BRANCH env variable instead.
  */
 export async function getLocalGitBranch(): Promise<string> {
+  console.log("Check local git branch");
+
   if (process.env.GIT_BRANCH) {
     return process.env.GIT_BRANCH;
   }
