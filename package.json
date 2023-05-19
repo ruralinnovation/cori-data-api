@@ -55,6 +55,7 @@
     "ts": "npm run node -- -r ts-node/register"
   },
   "workspaces": [
+    "packages/cori.data.api",
     "packages/frontend",
     "packages/schemas",
     "packages/infrastructure"

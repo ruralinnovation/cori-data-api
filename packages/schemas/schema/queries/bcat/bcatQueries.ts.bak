@@ -15,7 +15,7 @@ export const bcatQueries: any = {
   auction_904_subsidy_awards_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
-      counties: {
+      geoid_co: {
         type: new GraphQLList(GraphQLString)!,
       },
       skipCache: {
@@ -24,11 +24,11 @@ export const bcatQueries: any = {
     },
     resolve: async (
       _: any,
-      { counties, skipCache }: { counties: string[]; skipCache: boolean | undefined },
+      { geoid_co, skipCache }: { geoid_co: string[]; skipCache: boolean | undefined },
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
-      return await counties.reduce(
+      return await geoid_co.reduce(
         async (fc, geoid_co) => {
           const featureCollection = await fc;
           const res: any = skipCache
@@ -78,7 +78,7 @@ export const bcatQueries: any = {
   broadband_unserved_blocks_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
-      counties: {
+      geoid_co: {
         type: new GraphQLList(GraphQLString)!,
       },
       skipCache: {
@@ -87,11 +87,11 @@ export const bcatQueries: any = {
     },
     resolve: async (
       _: any,
-      { counties, skipCache }: { counties: string[]; skipCache: boolean | undefined },
+      { geoid_co, skipCache }: { geoid_co: string[]; skipCache: boolean | undefined },
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
-      return await counties.reduce(
+      return await geoid_co.reduce(
         async (fc, geoid_co) => {
           const featureCollection = await fc;
           const res: any = skipCache
@@ -237,7 +237,7 @@ export const bcatQueries: any = {
   county_summary_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
-      counties: {
+      geoid_co: {
         type: new GraphQLList(GraphQLString)!,
       },
       skipCache: {
@@ -246,12 +246,12 @@ export const bcatQueries: any = {
     },
     resolve: async (
       _: any,
-      { counties, skipCache }: { counties: string[]; skipCache: boolean | undefined },
+      { geoid_co, skipCache }: { geoid_co: string[]; skipCache: boolean | undefined },
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
 
-      return await counties.reduce(
+      return await geoid_co.reduce(
         async (fc, geoid_co) => {
           // TODO: Remove after testing call to local Python REST API
           console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${geoid_co}`);
@@ -284,7 +284,7 @@ export const bcatQueries: any = {
   // county_summary_pages_geojson: {
   //   type: GeoJSON.FeatureCollectionObject,
   //   args: {
-  //     counties: {
+  //     geoid_co: {
   //       type: new GraphQLList(GraphQLString)!,
   //     },
   //     page: {
@@ -293,7 +293,7 @@ export const bcatQueries: any = {
   //   },
   //   resolve: async (
   //     _: any,
-  //     { counties, page }: { counties: string[]; page: number | undefined },
+  //     { geoid_co, page }: { geoid_co: string[]; page: number | undefined },
   //     { dataSources: { pythonApi } }: any,
   //     info: any
   //   ) => {
@@ -346,7 +346,7 @@ export const bcatQueries: any = {
   fiber_cable_unserved_blocks_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
-      counties: {
+      geoid_co: {
         type: new GraphQLList(GraphQLString)!,
       },
       skipCache: {
@@ -355,11 +355,11 @@ export const bcatQueries: any = {
     },
     resolve: async (
       _: any,
-      { counties, skipCache }: { counties: string[]; skipCache: boolean | undefined },
+      { geoid_co, skipCache }: { geoid_co: string[]; skipCache: boolean | undefined },
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
-      return await counties.reduce(
+      return await geoid_co.reduce(
         async (fc, geoid_co) => {
           const featureCollection = await fc;
           const res: any = skipCache
@@ -432,7 +432,7 @@ export const bcatQueries: any = {
   county_adjacency_crosswalk_geojson: {
     type: GeoJSON.FeatureCollectionObject,
     args: {
-      counties: {
+      geoid_co: {
         type: new GraphQLList(GraphQLString)!,
       },
       skipCache: {
@@ -441,11 +441,11 @@ export const bcatQueries: any = {
     },
     resolve: async (
       _: any,
-      { counties, skipCache }: { counties: string[]; skipCache: boolean | undefined },
+      { geoid_co, skipCache }: { geoid_co: string[]; skipCache: boolean | undefined },
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
-      return await counties.reduce(
+      return await geoid_co.reduce(
         async (fc, geoid_co) => {
           const featureCollection = await fc;
           const res: any = skipCache
