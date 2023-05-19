@@ -24,6 +24,11 @@ Set local environment (shell) varibles:
     $ export INTEGRATION_TESTING_USERNAME=<aws-cognito-username>
     $ export INTEGRATION_TESTING_PASSWORD=<aws-cognito-pasword>
 
+At this point, you should be able to build the api and run the test suite:
+
+    $ npm run build
+    $ npm run test
+
 
 ### Directory Structure
 

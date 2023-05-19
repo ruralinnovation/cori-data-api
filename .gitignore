@@ -2,6 +2,7 @@
 *.run
 node_modules
 **/cdk.out/*
+**/*.graphqlconfig
 **/packages/infrastructure/dist/**
 **node_modules**
 ./swagger/dist/**
@@ -177,6 +178,6 @@ AWS_SAM_CLI_64_PY3.msi
 aws-sam-cli-linux-x86_64.zip
 amplify.yml
 aws-config.js
-.graphqlconfig
+fullstack-graphql-book
 sam-beta-installation
 spec

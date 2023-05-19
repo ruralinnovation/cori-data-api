@@ -4,7 +4,7 @@ import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLString } from "graphql/
 // TODO: Remove after testing call to local Python REST API
 import { fetch } from "cross-fetch";
 
-const county_summary = {
+const auction_904_authorized = {
   type: GeoJSON.FeatureCollectionObject,
   args: {
     geoid_co: {
@@ -42,7 +42,7 @@ const county_summary = {
 
     const page_size = (typeof limit !== 'undefined' && limit === limit) ?
       limit :
-      10;
+      0;
 
     const count_offset = (typeof offset !== 'undefined' && offset === offset) ?
       offset :
@@ -52,9 +52,9 @@ const county_summary = {
       page :
       0;
 
-    const rest_uri = `${pythonApi.baseURL}bcat/county_summary${
-      (geoids === "all") ? 
-        "?limit=0" : 
+    const rest_uri = `${pythonApi.baseURL}bcat/auction_904_authorized${
+      (geoids === "all") ?
+        `?limit=${page_size}&offset=${count_offset}&page=${page_number}` : 
         `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`
     }`;
 
@@ -68,8 +68,9 @@ const county_summary = {
         //     const featureCollection = await fc;
         const res: any = (geoids === "all") ? await (async () => {
             const fc = (skipCache)
-              ? await pythonApi.getItem(`bcat/county_summary?limit=0`)
-              : await redisClient.checkCache(`county_summary-0`, async () => {
+              ? await pythonApi.getItem(`bcat/auction_904_authorized?limit=${page_size}&offset=${count_offset}&page=${page_number}`)
+              : await redisClient.checkCache(`auction_904_authorized-`
+                + `${page_size}-${count_offset}-${page_number}`, async () => {
 
 
                 // TODO: Remove after testing call to local Python REST API
@@ -89,7 +90,7 @@ const county_summary = {
                     );
                   });
 
-                return await pythonApi.getItem(`bcat/county_summary?limit=0`);
+                return await pythonApi.getItem(`bcat/auction_904_authorized?limit=${page_size}&offset=${count_offset}&page=${page_number}`);
               });
 
             return ({
@@ -104,9 +105,9 @@ const county_summary = {
             });
           })():
           (skipCache)
-            ? await pythonApi.getItem(`bcat/county_summary`
+            ? await pythonApi.getItem(`bcat/auction_904_authorized`
               + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`)
-            : await redisClient.checkCache(`county_summary-`
+            : await redisClient.checkCache(`auction_904_authorized-`
               + `${geoids}-${page_size}-${count_offset}-${page_number}`, async () => {
 
               // TODO: Remove after testing call to local Python REST API
@@ -114,7 +115,7 @@ const county_summary = {
                 .catch((err) => console.log("Test Python REST error: ", err))
                 .then((res) => console.log("Test Python REST response: ", res));
 
-              return await pythonApi.getItem(`bcat/county_summary`
+              return await pythonApi.getItem(`bcat/auction_904_authorized`
                 + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
             });
 
@@ -146,4 +147,4 @@ const county_summary = {
   }
 };
 
-export default county_summary;
+export default auction_904_authorized;
