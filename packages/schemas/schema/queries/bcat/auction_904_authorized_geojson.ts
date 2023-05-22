@@ -1,5 +1,5 @@
 import GeoJSON from "../../geojson";
-import { GraphQLBoolean, GraphQLInt, GraphQLString } from "graphql/type";
+import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLString } from "graphql/type";
 
 // TODO: Remove after testing call to local Python REST API
 import { fetch } from "cross-fetch";
@@ -9,6 +9,9 @@ const auction_904_authorized_geojson = {
   args: {
     geoid_co: {
       type: GraphQLString!,
+    },
+    geoid_bl: {
+      type: new GraphQLList(GraphQLString)!,
     },
     limit: {
       type: GraphQLInt
@@ -25,8 +28,9 @@ const auction_904_authorized_geojson = {
   },
   resolve: async (
     _: any,
-    { geoid_co, limit, offset, page, skipCache }: {
+    { geoid_co, geoid_bl, limit, offset, page, skipCache }: {
       geoid_co: string;
+      geoid_bl: string[];
       limit: number | undefined;
       offset: number | undefined;
       page: number | undefined;
@@ -35,6 +39,10 @@ const auction_904_authorized_geojson = {
     { dataSources: { pythonApi }, redisClient }: any,
     info: any
   ) => {
+
+    const geoids = (typeof geoid_bl !== 'undefined' && geoid_bl !== null && geoid_bl.length > 0) ?
+      geoid_bl.map(c => c.toString()).join(",") :
+      "";
 
     const page_size = (typeof limit !== 'undefined' && limit === limit) ?
       limit :
@@ -50,9 +58,11 @@ const auction_904_authorized_geojson = {
 
     // TODO: Remove after testing call to local Python REST API
     console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/auction_904_authorized/geojson`
-      + `?geoid_co=${geoid_co}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
+      + `?geoid_co=${geoid_co}` + ((!!geoids)? `&geoid_bl=${geoids}` : ``)
+      + `&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
     const test_req = fetch(`${pythonApi.baseURL}bcat/auction_904_authorized/geojson`
-      + `?geoid_co=${geoid_co}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
+      + `?geoid_co=${geoid_co}` + ((!!geoids)? `&geoid_bl=${geoids}` : ``)
+      + `&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
 
     test_req
       .catch((err) => console.log("Test Python REST error: ", err))
@@ -64,11 +74,13 @@ const auction_904_authorized_geojson = {
 
     return skipCache
       ? await pythonApi.getItem(`bcat/auction_904_authorized/geojson`
-        + `?geoid_co=${geoid_co}&limit=${page_size}&offset=${count_offset}&page=${page_number}`)
+        + `?geoid_co=${geoid_co}` + ((!!geoids)? `&geoid_bl=${geoids}` : ``)
+        + `&limit=${page_size}&offset=${count_offset}&page=${page_number}`)
       : await redisClient.checkCache(`auction_904_authorized-`
-        + `${geoid_co}-${page_size}-${count_offset}-${page_number}`, async () => {
+        + `${geoid_co}` + ((!!geoids) ? `-${geoids}` : ``) + `-${page_size}-${count_offset}-${page_number}`, async () => {
         return await pythonApi.getItem(`bcat/auction_904_authorized/geojson`
-          + `?geoid_co=${geoid_co}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
+          + `?geoid_co=${geoid_co}` + ((!!geoids)? `&geoid_bl=${geoids}` : ``)
+          + `&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
       });
   },
 };
