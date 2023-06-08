@@ -20,6 +20,13 @@ const county_summary_geojson = {
     { dataSources: { pythonApi }, redisClient }: any,
     info: any
   ) => {
+
+    if (!!skipCache && typeof redisClient.disconnect === 'function') {
+      // Disconnect from redis when ever skipCache == true
+      console.log("Disconnect from redis when ever skipCache == true")
+      redisClient.disconnect();
+    }
+    
     // TODO: Remove after testing call to local Python REST API
     console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${geoid_co}`);
     const test_req = fetch(`${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${geoid_co}`);

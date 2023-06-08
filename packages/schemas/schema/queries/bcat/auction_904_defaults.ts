@@ -52,6 +52,12 @@ const auction_904_defaults = {
       page :
       0;
 
+    if (!!skipCache && typeof redisClient.disconnect === 'function') {
+      // Disconnect from redis when ever skipCache == true
+      console.log("Disconnect from redis when ever skipCache == true")
+      redisClient.disconnect();
+    }
+
     const rest_uri = `${pythonApi.baseURL}bcat/auction_904_defaults${
       (geoids === "all") ?
         `?limit=${page_size}&offset=${count_offset}&page=${page_number}` : 

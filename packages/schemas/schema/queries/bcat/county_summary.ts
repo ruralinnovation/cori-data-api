@@ -52,6 +52,12 @@ const county_summary = {
       page :
       0;
 
+    if (!!skipCache && typeof redisClient.disconnect === 'function') {
+      // Disconnect from redis when ever skipCache == true
+      console.log("Disconnect from redis when ever skipCache == true")
+      redisClient.disconnect();
+    }
+
     const rest_uri = `${pythonApi.baseURL}bcat/county_summary${
       (geoids === "all") ? 
         "?limit=0" : 
