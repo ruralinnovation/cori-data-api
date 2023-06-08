@@ -48,6 +48,12 @@ const auction_904_subsidy_awards_geojson = {
       page :
       0;
 
+    if (!!skipCache && typeof redisClient.disconnect === 'function') {
+      // Disconnect from redis when ever skipCache == true
+      console.log("Disconnect from redis when ever skipCache == true")
+      redisClient.disconnect();
+    }
+
     // TODO: Remove after testing call to local Python REST API
     console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/auction_904_subsidy_awards/geojson`
       + `?geoid_co=${geoid_co}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
