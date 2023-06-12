@@ -40,7 +40,7 @@ export class Cache {
   cache: BaseRedisCache;
   constructor(cacheOptions?: CacheOptions) {
     this.cacheOptions = cacheOptions || defaultCacheOptions;
-    this.getRawCache();
+    // this.getRawCache();
   }
   getRawCache() {
     if (this.rawCache && this.rawCache.status === "ready") {
