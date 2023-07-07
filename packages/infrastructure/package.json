@@ -61,7 +61,7 @@
     "clean": "rimraf dist",
     "clean:modules": "rimraf node_modules",
     "deploy": "npx cdk deploy --all --require-approval never --profile mf-cori",
-    "dev": "npm run build:dev & npm run cdk:start -- synth && cd cdk.out && sam-beta-cdk --debug local start-api -p 2000 -n env.json",
+    "dev": "npm run cdk:start -- synth && cd cdk.out && sam-beta-cdk --debug local start-api -p 2000 -n env.json",
     "diff": "tsc && npx cdk diff --profile mf-cori",
     "build:orig": "tsc && npm run build:assets",
     "build:assets": "ts-node ./bin/prepAssets.ts",

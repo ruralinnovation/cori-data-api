@@ -58,6 +58,7 @@
     "packages/cori.data.api",
     "packages/frontend",
     "packages/schemas",
-    "packages/infrastructure"
+    "packages/infrastructure",
+    "packages/fullstack-graphql-book"
   ]
 }
