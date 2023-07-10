@@ -47,6 +47,7 @@
     "nanoid": "^3.3.4",
     "nodemon": "^2.0.16",
     "pg": "^8.11.1",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.1",
     "source-map-support": "^0.5.16",
     "util": "^0.12.4",

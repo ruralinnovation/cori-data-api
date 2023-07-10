@@ -40,7 +40,7 @@
     "build:frontend": "npm run build -w frontend",
     "dev:api": "npm run build:api && npm run build:dev -w schemas & npm run dev -w infrastructure",
     "deploy": "npm run build && npm run deploy -w infrastructure",
-    "diff": "npm run diff --w packages/infrastructure",
+    "diff": "npm run diff -w infrastructure",
     "synth": "npm run build && npm run synth -w infrastructure",
     "publish:schemas": "npm run build:schemas && npm run hive-publish -w schemas",
     "lint": "eslint ./packages ./config",
@@ -49,7 +49,7 @@
     "format": "prettier --write ./packages ./config",
     "start:api": "npm run start -w infrastructure",
     "start:frontend": "npm run start -w frontend",
-    "postinstall": "npm install -w packages/frontend --legacy-peer-deps --no-save  \"@aws-amplify/auth\"@latest \"@aws-amplify/notifications\"@latest \"@aws-amplify/ui-react\"@latest \"@emotion/react\" \"@material-ui/core\" \"@mui/material\"",
+    "postinstall": "npm install -w frontend --legacy-peer-deps --no-save  \"@aws-amplify/auth\"@latest \"@aws-amplify/notifications\"@latest \"@aws-amplify/ui-react\"@latest \"@emotion/react\" \"@material-ui/core\" \"@mui/material\"",
     "test": "npm run test:integration -w infrastructure",
     "test:schema": "npm run play -w schemas",
     "ts": "npm run node -- -r ts-node/register"
