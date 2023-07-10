@@ -1,7 +1,5 @@
 import GeoJSON from "../../geojson";
 import { GraphQLBoolean, GraphQLString } from "graphql/type";
-
-// TODO: Remove after testing call to local Python REST API
 import { fetch } from "cross-fetch";
 
 const county_summary_geojson = {
@@ -22,22 +20,10 @@ const county_summary_geojson = {
   ) => {
 
     if (!!skipCache && typeof redisClient.disconnect === 'function') {
-      // Disconnect from redis when ever skipCache == true
-      console.log("Disconnect from redis when ever skipCache == true")
+      // Disconnect from redis whenever skipCache == true
+      console.log("Disconnect from redis whenever skipCache == true")
       redisClient.disconnect();
     }
-    
-    // TODO: Remove after testing call to local Python REST API
-    console.log(`Query pythonApi: ${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${geoid_co}`);
-    const test_req = fetch(`${pythonApi.baseURL}bcat/county_summary/geojson?geoid_co=${geoid_co}`);
-
-    test_req
-      .catch((err) => console.log("Test Python REST error: ",err))
-      .then((res) => console.log("Test Python REST response: ",res));
-
-    const check_res = await test_req;
-
-    console.log(test_req);
 
     return skipCache
       ? await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${geoid_co}`)
