@@ -58,54 +58,21 @@ export class PythonDataServer extends Construct {
     //   compatibleRuntimes: [Runtime.PYTHON_3_8],
     // });
 
-    const defaults = {
-      api: this.apiGw,
-      // cfUrl: this.hosting.url,
-      timeout: Duration.seconds(360),
-      vpc,
-      allowPublicSubnet: true,
-      apiOriginPath: stage,
-      securityGroups,
-      runtime: Runtime.PYTHON_3_8,
-      // layers: [pythonDependencyLayer] as LayerVersion[],
-      memorySize: 256,
-      environment,
-    };
-
-    // if (stage === 'local') {
-    //   /**
-    //    * Local Lambda Instantiation for Local API
-    //    */
-    //   const localApiWrapper = new PythonLambda(this, 'LocalApi', {
-    //     ...defaults,
-    //     functionName: prefix + '-local-api',
-    //     entry: join(microservicesDirectory, 'local'),
-    //   });
-    //
-    //   // this.apiGw.addLambda({
-    //   //   method: 'GET',
-    //   //   path: '/local/{proxy+}',
-    //   //   lambda: localApiWrapper.function,
-    //   // });
-    //
-    //   microservicesConfig.forEach(config => {
-    //     const service = new PythonLambda(this, config.logicalName, {
-    //       ...defaults,
-    //       functionName: prefix + `-${config.directoryName}-microservice-1`,
-    //       entry: join(microservicesDirectory, config.directoryName),
-    //     });
-    //
-    //     this.apiGw.addLambda({
-    //       method: 'GET',
-    //       path: `/local${config.corePath}/{proxy+}`,
-    //       lambda: service.function,
-    //     });
-    //   });
-    //
-    // } else {
     microservicesConfig.forEach(config => {
       const service = new PythonLambda(this, config.logicalName, {
-        ...defaults,
+        ...({
+          api: this.apiGw,
+          // cfUrl: this.hosting.url,
+          timeout: Duration.seconds(360),
+          allowPublicSubnet: true,
+          apiOriginPath: stage,
+          vpc,
+          securityGroups,
+          runtime: Runtime.PYTHON_3_8,
+          // layers: [pythonDependencyLayer] as LayerVersion[],
+          memorySize: 256,
+          environment,
+        }),
         functionName: prefix + `-${config.directoryName}-microservice-1`,
         entry: join(microservicesDirectory, config.directoryName),
       });
@@ -117,5 +84,4 @@ export class PythonDataServer extends Construct {
       });
     });
   }
-  // }
 }

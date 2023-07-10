@@ -169,6 +169,8 @@ export class ApiStack extends Stack {
       stage,
       userPool: cognito.userPool,
       logRetention: RetentionDays.FOUR_MONTHS,
+      vpc: networking.vpc,
+      securityGroups: [networking.lambdaSecurityGroup],
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: stage,
