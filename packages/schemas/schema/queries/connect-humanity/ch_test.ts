@@ -1,10 +1,19 @@
-import { GraphQLObjectType, GraphQLString } from "graphql/index";
+import { GraphQLFloat, GraphQLNonNull, GraphQLObjectType, GraphQLScalarType, GraphQLString } from "graphql/index";
+import { specifiedScalarTypes } from "graphql/type/scalars";
+import { GraphQLInt } from "graphql/type";
 
-const acs_test = {
+const ch_test = {
   type: new GraphQLObjectType({
-    name: 'TestObject',
+    name: 'CHTestObject',
     fields: () => ({
-      message: { type: GraphQLString }
+      "geoid_co": { type: GraphQLString },
+      "message": { type: GraphQLString },
+      "name": { type: GraphQLString },
+      "value": { type: GraphQLFloat },
+      "category": { type: GraphQLString },
+      "variable": { type: GraphQLString },
+      "category_pl": { type: GraphQLString },
+      "description": { type: GraphQLString },
     })
   }),
   args: null,
@@ -16,9 +25,6 @@ const acs_test = {
   // ) =>  await pythonApi.getItem(`acs/testing`);
   ) =>  {
     const value = {
-      "acs_test": {
-        "message": "value of a an \"acs_test\" encapsulated property"
-      },
       "geoid_co": "33009",
       "message": ("value of a top level property"),
       "name": "pct_bb_25_3",
@@ -35,4 +41,4 @@ const acs_test = {
   }
 };
 
-export default acs_test;
+export default ch_test;
