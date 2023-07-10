@@ -198,6 +198,7 @@ export class ApiStack extends Stack {
         APOLLO_KEY: apolloStudioConfig?.apolloKey || '',
         APOLLO_GRAPH_REF: apolloStudioConfig?.apolloGraphRef || '',
         APOLLO_SCHEMA_REPORTING: apolloStudioConfig?.apolloSchemaReporting || 'FALSE',
+        DB_SECRET: dbPassword,
       },
     });
 

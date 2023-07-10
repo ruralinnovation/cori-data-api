@@ -170,7 +170,9 @@ export class ApiStack extends Stack {
       userPool: cognito.userPool,
       logRetention: RetentionDays.FOUR_MONTHS,
       environment: {
-        LOGGING_LEVEL: 'debug',
+        LOGGING_LEVEL: this.props.loggingLevel,
+        STAGE: stage,
+        SECRET: dbPassword,
         PYTHON_API_URL: bcat.apiGw.apiEndpoint,
         PYTHON_API_STAGE: stage,
         // CF_URL: this.hosting.url,   // Circular dep
@@ -180,6 +182,7 @@ export class ApiStack extends Stack {
         CACHE_USERNAME: cacheConfig.username,
         CACHE_PASSWORD: cachePassword,
         CACHE_GLOBAL_TTL: '86400',
+        DB_SECRET: dbPassword,
       },
     });
 
