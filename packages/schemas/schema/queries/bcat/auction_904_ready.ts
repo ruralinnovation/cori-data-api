@@ -1,5 +1,7 @@
 import GeoJSON from "../../geojson";
 import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLString } from "graphql/type";
+
+// TODO: Remove after testing call to local Python REST API
 import { fetch } from "cross-fetch";
 
 const auction_904_ready = {
@@ -51,8 +53,8 @@ const auction_904_ready = {
       0;
 
     if (!!skipCache && typeof redisClient.disconnect === 'function') {
-      // Disconnect from redis whenever skipCache == true
-      console.log("Disconnect from redis whenever skipCache == true")
+      // Disconnect from redis when ever skipCache == true
+      console.log("Disconnect from redis when ever skipCache == true")
       redisClient.disconnect();
     }
 
@@ -76,6 +78,24 @@ const auction_904_ready = {
               : await redisClient.checkCache(`auction_904_ready-`
                 + `${page_size}-${count_offset}-${page_number}`, async () => {
 
+
+                // TODO: Remove after testing call to local Python REST API
+                fetch(rest_uri)
+                  .catch((err) => console.log("Test Python REST error: ", err))
+                  .then((res) => {
+                    console.log("Test Python REST response: ", res);
+                    const tc = (<any>(<Response>res));
+                    console.log("FeatureCollection: ",
+                      (tc.hasOwnProperty("features")) ?
+                        (<Array<any>>tc.features)
+                          .map(f => ({
+                            ...f,
+                            "id": f.properties.geoid_co
+                          })) :
+                        tc.features
+                    );
+                  });
+
                 return await pythonApi.getItem(`bcat/auction_904_ready?limit=${page_size}&offset=${count_offset}&page=${page_number}`);
               });
 
@@ -95,6 +115,11 @@ const auction_904_ready = {
               + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`)
             : await redisClient.checkCache(`auction_904_ready-`
               + `${geoids}-${page_size}-${count_offset}-${page_number}`, async () => {
+
+              // TODO: Remove after testing call to local Python REST API
+              fetch(rest_uri)
+                .catch((err) => console.log("Test Python REST error: ", err))
+                .then((res) => console.log("Test Python REST response: ", res));
 
               return await pythonApi.getItem(`bcat/auction_904_ready`
                 + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);

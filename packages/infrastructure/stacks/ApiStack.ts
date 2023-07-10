@@ -184,8 +184,6 @@ export class ApiStack extends Stack {
       stage,
       userPool: cognito.userPool,
       logRetention: RetentionDays.FOUR_MONTHS,
-      vpc: networking.vpc,
-      securityGroups: [networking.lambdaSecurityGroup],
       environment: {
         LOGGING_LEVEL: 'debug',
         PYTHON_API_URL: pythonServer.apiGw.apiEndpoint,
@@ -200,7 +198,6 @@ export class ApiStack extends Stack {
         APOLLO_KEY: apolloStudioConfig?.apolloKey || '',
         APOLLO_GRAPH_REF: apolloStudioConfig?.apolloGraphRef || '',
         APOLLO_SCHEMA_REPORTING: apolloStudioConfig?.apolloSchemaReporting || 'FALSE',
-        DB_SECRET: dbPassword,
       },
     });
 

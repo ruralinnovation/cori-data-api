@@ -4,7 +4,6 @@ import { ApolloServer } from 'apollo-server-lambda';
 import compression from 'compression';
 import { schema } from 'schemas/dist';
 import * as plugins from './plugins';
-import DBDataSource from "./datasources/DBDataSource";
 
 // Using "import * as express from 'express';" results in "express is not a function" once deployed
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -19,8 +18,7 @@ export const apolloConfig = {
     endpoint: '/playground',
   },
   dataSources: () => ({
-    dbConfiguration: new DBDataSource(),
-    pythonApi: new PythonRestApi()
+    pythonApi: new PythonRestApi(),
   }),
   plugins: Object.values(plugins).map(plugin => plugin),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
