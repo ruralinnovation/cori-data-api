@@ -55,7 +55,7 @@
   },
   "scripts": {
     "bootstrap:pipeline": "npm run cdk:pipeline -- bootstrap --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess",
-    "build": "tsc",
+    "build": "tsc && echo \"infrastructure code compiled\"",
     "build:dev": "tsc --watch",
     "cdk": "cdk",
     "cdk:start": "npm run cdk -- --app \"npx ts-node --prefer-ts-exts bin/start-api.ts\"",
