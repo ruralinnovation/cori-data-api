@@ -4,12 +4,6 @@ import GeoJSON from './schema/geojson';
 import * as queries from './schema/queries';
 
 const combinedQueries = Object.values(queries).reduce((obj, query) => {
-
-  // console.log("Parsing queries for combined query schema: ", {
-  //   ...obj,
-  //   ...query,
-  // });
-
   return {
     ...obj,
     ...query,

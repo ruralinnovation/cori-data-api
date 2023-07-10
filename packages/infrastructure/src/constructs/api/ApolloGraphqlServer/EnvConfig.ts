@@ -11,7 +11,6 @@ export interface EnvConfigVars {
   CACHE_USERNAME: string;
   CACHE_PASSWORD: string;
   CACHE_GLOBAL_TTL: string;
-  DB_SECRET: string;
   [name: string]: string;
 }
 
@@ -36,5 +35,4 @@ export const EnvConfig: EnvConfigVars = {
   CACHE_USERNAME: getEnv('CACHE_USERNAME'),
   CACHE_PASSWORD: getEnv('CACHE_PASSWORD'),
   CACHE_GLOBAL_TTL: getEnv('CACHE_GLOBAL_TTL', '86400'),
-  DB_SECRET: getEnv('SECRET')
 };
