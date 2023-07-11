@@ -6,7 +6,7 @@ import { EnvConfigVars } from './EnvConfig';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { ApiGw } from '../ApiGw';
-import { IVpc, SecurityGroup } from "aws-cdk-lib/aws-ec2";
+import { ISubnet, IVpc, SecurityGroup, SubnetSelection } from "aws-cdk-lib/aws-ec2";
 
 interface ApolloGraphqlServerProps {
   prefix: string;
@@ -19,6 +19,7 @@ interface ApolloGraphqlServerProps {
 
   securityGroups?: SecurityGroup[];
   vpc: IVpc;
+  vpcSubnets: SubnetSelection;
 }
 
 export class ApolloGraphqlServer extends Construct {
@@ -28,7 +29,7 @@ export class ApolloGraphqlServer extends Construct {
   constructor(scope: Construct, id: string, props: ApolloGraphqlServerProps) {
     super(scope, id);
 
-    const { prefix, stage, userPool, vpc, securityGroups, logRetention, environment } = props;
+    const { prefix, stage, userPool, vpc, vpcSubnets, securityGroups, logRetention, environment } = props;
 
     /**
      * Typescript Apollo Server GraphQL Api
@@ -52,6 +53,7 @@ export class ApolloGraphqlServer extends Construct {
       functionName,
       securityGroups,
       vpc,
+      vpcSubnets,
       timeout: Duration.seconds(40),
       logRetention: logRetention,
     });
