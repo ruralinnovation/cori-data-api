@@ -171,6 +171,7 @@ export class ApiStack extends Stack {
       userPool: cognito.userPool,
       securityGroups: [networking.lambdaSecurityGroup],
       vpc: networking.vpc,
+      vpcSubnets: networking.vpcSubnets,
       environment: {
         LOGGING_LEVEL: 'debug',
         PYTHON_API_URL: bcat.apiGw.apiEndpoint,
