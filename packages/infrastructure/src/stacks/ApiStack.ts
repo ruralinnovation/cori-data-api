@@ -153,7 +153,7 @@ export class ApiStack extends Stack {
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: stage,
-        SECRET: dbPassword,
+        DB_SECRET: dbPassword,
         DB_USER: databaseConfig.dbuser || "postgres",
         REGION: props.env.region,
         DB_HOST: databaseConfig.host,
@@ -180,6 +180,7 @@ export class ApiStack extends Stack {
         CACHE_USERNAME: cacheConfig.username,
         CACHE_PASSWORD: cachePassword,
         CACHE_GLOBAL_TTL: '86400',
+        DB_SECRET: dbPassword
       },
     });
 

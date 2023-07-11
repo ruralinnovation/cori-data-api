@@ -25,11 +25,11 @@ const ch_test = {
   resolve: async (
     _: any,
     __: any,
-    { dataSources: { dbConfiguration } }: any,
+    { dataSources: { pythonApi } }: any,
     info: any
   ) =>  {
-    console.log("Can now access dbConfiguration.getDBConfig...",  typeof dbConfiguration.getDBConfig);
-    const config = dbConfiguration.getDBConfig('proj_connect_humanity')[process.env.NODE_ENV || "development"];
+    console.log("Can now access pythonApi.getDBConfig...",  typeof pythonApi.getDBConfig);
+    const config = pythonApi.getDBConfig('proj_connect_humanity')[process.env.NODE_ENV || "development"];
 
     const sequelize = new Sequelize(config.database, config.user, config.password, config);
 
