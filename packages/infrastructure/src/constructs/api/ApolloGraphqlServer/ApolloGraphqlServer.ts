@@ -45,7 +45,7 @@ export class ApolloGraphqlServer extends Construct {
 
     this.function = new NodejsFunction(this, 'handler', {
       ...props,
-      allowPublicSubnet: true,
+      // allowPublicSubnet: true,
       memorySize: 256,
       runtime: Runtime.NODEJS_14_X,
       environment,
