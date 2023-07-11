@@ -15,21 +15,18 @@ const acs_test = {
     info: any
   // ) =>  await pythonApi.getItem(`acs/testing`);
   ) =>  {
+    console.log("Can now access pythonApi.getDBConfig...",  typeof pythonApi.getDBConfig);
+    const config = pythonApi.getDBConfig('proj_connect_humanity')[process.env.NODE_ENV || "development"];
+
     const value = {
+      ...config,
       "acs_test": {
         "message": "value of a an \"acs_test\" encapsulated property"
       },
-      "geoid_co": "33009",
-      "message": ("value of a top level property"),
-      "name": "pct_bb_25_3",
-      "value": 0.8366,
-      "category": "bb",
-      "variable": "25_3",
-      "category_pl": "Broadband",
-      "description": "Percent of broadband serviceable locations with access to 25/3",
+      "message": ("value of a top level property")
     };
 
-    // console.log("acs_test resolver will return value: ", value);
+    console.log("acs_test resolver will return value: ", value);
 
     return value;
   }
