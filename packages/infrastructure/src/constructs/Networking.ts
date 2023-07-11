@@ -19,10 +19,10 @@ export class Networking extends Construct {
       vpcId: databaseConfig.vpcId,
     });
 
-    this.lambdaSecurityGroup = new SecurityGroup(this, 'OutboundPythonLambdaSecurityGroup', {
+    this.lambdaSecurityGroup = new SecurityGroup(this, 'CORIDataAPILambdaSecurityGroup', {
       securityGroupName: `${prefix}-vpc-microservices-sg`,
       vpc: this.vpc,
-      allowAllOutbound: false,
+      allowAllOutbound: true,
       description: 'Security group for RDS access',
     });
 
