@@ -51,9 +51,9 @@ export class ApolloGraphqlServer extends Construct {
       runtime: Runtime.NODEJS_14_X,
       environment,
       functionName,
-      securityGroups,
-      vpc,
-      vpcSubnets,
+      // vpc,
+      // vpcSubnets,
+      // securityGroups,
       timeout: Duration.seconds(40),
       logRetention: logRetention,
     });
