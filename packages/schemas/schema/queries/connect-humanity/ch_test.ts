@@ -74,4 +74,5 @@ SELECT geoid, geoid_tr, CONCAT(statefp, countyfp) as geoid_co, pct_bb_25_3, st_s
   }
 };
 
+
 export default ch_test;
