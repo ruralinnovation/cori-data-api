@@ -34,12 +34,8 @@ const ch_test = {
     const sequelize = new Sequelize(config.database, config.user, config.password, config);
 
     const value = {
-      ...config,
-      "acs_test": {
-        "message": "value of a an \"acs_test\" encapsulated property"
-      },
-      "message": ("value of a top level property"),
       "geoid_co": "33009",
+      "message": ("value of a top level property"),
       "name": "pct_bb_25_3",
       "value": 0.8366,
       "category": "bb",

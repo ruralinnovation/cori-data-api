@@ -146,8 +146,8 @@ export class ApiStack extends Stack {
       prefix,
       stage,
       userPool: cognito.userPool,
-      securityGroups: [networking.lambdaSecurityGroup],
       vpc: networking.vpc,
+      securityGroups: [networking.lambdaSecurityGroup],
       microservicesConfig,
       /* TODO: add cache env config here (see Apollo setup) */
       environment: {
@@ -167,11 +167,8 @@ export class ApiStack extends Stack {
     const apollo = new ApolloGraphqlServer(this, 'ApolloServer', {
       prefix,
       stage,
-      logRetention: RetentionDays.FOUR_MONTHS,
       userPool: cognito.userPool,
-      securityGroups: [networking.lambdaSecurityGroup],
-      vpc: networking.vpc,
-      vpcSubnets: networking.vpcSubnets,
+      logRetention: RetentionDays.FOUR_MONTHS,
       environment: {
         LOGGING_LEVEL: 'debug',
         PYTHON_API_URL: bcat.apiGw.apiEndpoint,
