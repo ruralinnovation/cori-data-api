@@ -1,7 +1,7 @@
 import {
   ISecurityGroup,
   IVpc,
-  Port,
+  Port, PrivateSubnet,
   SecurityGroup,
   SubnetSelection,
   SubnetType,
@@ -24,13 +24,27 @@ export class Networking extends Construct {
 
     const { prefix, databaseConfig } = props;
 
-    this.vpc = Vpc.fromLookup(this, 'CoriDbVpc', {
+    this.vpc = Vpc.fromLookup(this, 'CoriDataAPIVpc', {
       vpcId: databaseConfig.vpcId
     });
 
-    this.vpcSubnets = this.vpc.selectSubnets({
-      subnetType: SubnetType.PRIVATE_WITH_NAT,
+    const privateSubnet = new PrivateSubnet(this, 'CoriDataAPIPrivateSubnet', {
+      availabilityZone: 'us-east-1c',
+      cidrBlock: '172.30.10.0/24',
+      vpcId: databaseConfig.vpcId,
+
+      // the properties below are optional
+      mapPublicIpOnLaunch: false,
     });
+
+    privateSubnet.addDefaultNatRoute('nat-05efdd7ba7b190a56');
+
+    this.vpcSubnets = this.vpc.selectSubnets({
+      subnets: [ privateSubnet ]
+    });
+
+    console.log("VPC SUBNETS! ", this.vpc.selectSubnets().subnetIds);
+    console.log("VPC PRIVATE SUBNETS? ", this.vpc.privateSubnets);
 
     this.lambdaSecurityGroup = new SecurityGroup(this, 'CORIDataAPILambdaSecurityGroup', {
       securityGroupName: `${prefix}-vpc-microservices-sg`,
