@@ -182,8 +182,11 @@ export class ApiStack extends Stack {
     const apolloServer = new ApolloGraphqlServer(this, 'ApolloServer', {
       prefix,
       stage,
-      userPool: cognito.userPool,
       logRetention: RetentionDays.FOUR_MONTHS,
+      userPool: cognito.userPool,
+      securityGroups: [networking.lambdaSecurityGroup],
+      vpc: networking.vpc,
+      vpcSubnets: networking.vpcSubnets,
       environment: {
         LOGGING_LEVEL: 'debug',
         PYTHON_API_URL: pythonServer.apiGw.apiEndpoint,
