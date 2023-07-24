@@ -1,4 +1,4 @@
-[submodule "packages/cori.data.api"]
+[submodule "cori.data.api"]
 	path = packages/cori.data.api
 	url = https://github.com/ruralinnovation/cori.data.api.git
 [submodule "frontend"]
