@@ -189,6 +189,16 @@ export const Config: IConfigs = {
     },
     stage: 'local',
   },
+  'pre': {
+    ...coriDefaults,
+    client: 'cori',
+    databaseConfig: {
+      ...coriDefaults.databaseConfig,
+      dbname: 'data',
+      dbuser: 'read_only_user',
+    },
+    stage: 'dev',
+  },
   'prod': {
     ...coriDefaults,
     client: 'cori',
