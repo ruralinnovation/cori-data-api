@@ -52,7 +52,6 @@
     "format": "prettier --write ./packages ./config",
     "start:api": "npm run start -w infrastructure",
     "start:frontend": "npm run start -w frontend",
-    "postinstall": "npm install -w packages/frontend --legacy-peer-deps --no-save  \"@aws-amplify/auth\"@latest \"@aws-amplify/notifications\"@latest \"@aws-amplify/ui-react\"@latest \"@emotion/react\" \"@material-ui/core\" \"@mui/material\"",
     "test": "npm run test:integration -w infrastructure",
     "test:schema": "npm run play -w schemas",
     "ts": "npm run node -- -r ts-node/register"
