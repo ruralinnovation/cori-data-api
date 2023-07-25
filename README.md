@@ -21,7 +21,6 @@ Run npm install:
 
 Set local environment (shell) varibles:
 
-    $ export GIT_BRANCH=<git-branch-with-matching-config>
     $ export INTEGRATION_TESTING_PASSWORD=<aws-cognito-pasword>
     $ export INTEGRATION_TESTING_PASSWORD=<aws-cognito-pasword>
 
