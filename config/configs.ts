@@ -50,14 +50,16 @@ export interface IMixedConfig extends ApiStackProps {
  */
 const microservicesConfiguration: ServiceConfig[] = [
   {
-    logicalName: 'BCATService',
-    corePath: '/bcat',
-    directoryName: 'bcat',
-  },
-  {
+    /* Test/Trial of Python REST service */
     logicalName: 'ACSService',
     corePath: '/acs',
     directoryName: 'acs',
+  },
+  {
+    /* Used by Broadband County Assessment Tool */
+    logicalName: 'BCATService',
+    corePath: '/bcat',
+    directoryName: 'bcat',
   },
 ];
 /**
@@ -190,6 +192,9 @@ export const Config: IConfigs = {
     stage: 'local',
   },
   'pre': {
+    // 'pre-deploy' (before dev/development)
+    // ... used to test changes to the entire
+    // pipeline encase 'dev' is disrupted
     ...coriDefaults,
     client: 'cori',
     databaseConfig: {
@@ -197,7 +202,7 @@ export const Config: IConfigs = {
       dbname: 'data',
       dbuser: 'read_only_user',
     },
-    stage: 'dev',
+    stage: 'pre',
   },
   'prod': {
     ...coriDefaults,
