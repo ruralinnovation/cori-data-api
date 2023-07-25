@@ -21,7 +21,7 @@ interface BcatServiceProps {
   environment: {
     LOGGING_LEVEL: string;
     STAGE: string;
-    SECRET: string;
+    DB_SECRET: string;
     DB_USER: string;
     REGION: string;
     DB_HOST: string;
