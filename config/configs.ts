@@ -179,20 +179,21 @@ export const Config: IConfigs = {
       dbname: 'data',
       dbuser: 'read_only_user',
     },
-    stage: 'local',
+    stage: 'local'
   },
   'pre': {
     // 'pre-deploy' (before dev/development)
     // ... used to test changes to the entire
     // pipeline in case 'dev' is disrupted
     ...coriDefaults,
+    artifactBucketName: "cori-data-api-pre-deploy-hosting-cloudfront-log-bucket",
     client: 'cori',
     databaseConfig: {
       ...coriDefaults.databaseConfig,
       dbname: 'data',
       dbuser: 'read_only_user',
     },
-    stage: 'pre',
+    stage: 'pre'
   },
   'prod': {
     ...coriDefaults,
@@ -202,7 +203,7 @@ export const Config: IConfigs = {
       dbname: 'data',
       dbuser: 'read_only_user',
     },
-    stage: 'prod',
+    stage: 'prod'
   },
   'production': {
     ...coriDefaults,
@@ -212,7 +213,7 @@ export const Config: IConfigs = {
       dbname: 'data',
       dbuser: 'read_only_user',
     },
-    stage: 'prod',
+    stage: 'prod'
   }
 };
 
