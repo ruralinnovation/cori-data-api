@@ -194,7 +194,7 @@ export const Config: IConfigs = {
   'pre': {
     // 'pre-deploy' (before dev/development)
     // ... used to test changes to the entire
-    // pipeline encase 'dev' is disrupted
+    // pipeline in case 'dev' is disrupted
     ...coriDefaults,
     client: 'cori',
     databaseConfig: {
