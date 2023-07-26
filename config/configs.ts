@@ -196,7 +196,6 @@ export const Config: IConfigs = {
     // ... used to test changes to the entire
     // pipeline in case 'dev' is disrupted
     ...coriDefaults,
-    artifactBucketName: "cori-data-api-pre-hosting-cloudfront-log-bucket",
     client: 'cori',
     databaseConfig: {
       ...coriDefaults.databaseConfig,
