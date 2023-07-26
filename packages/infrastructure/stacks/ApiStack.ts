@@ -184,6 +184,9 @@ export class ApiStack extends Stack {
       stage,
       userPool: cognito.userPool,
       logRetention: RetentionDays.FOUR_MONTHS,
+      securityGroups: [networking.lambdaSecurityGroup],
+      vpc: networking.vpc,
+      vpcSubnets: networking.vpcSubnets,
       environment: {
         LOGGING_LEVEL: 'debug',
         PYTHON_API_URL: pythonServer.apiGw.apiEndpoint,
