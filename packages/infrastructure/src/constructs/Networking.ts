@@ -44,7 +44,7 @@ export class Networking extends Construct {
     console.log("Attempted to create private subnet: ", privateSubnet);
 
     this.lambdaSecurityGroup = new SecurityGroup(this, 'CORIDataAPILambdaSecurityGroup', {
-      securityGroupName: `${prefix}-vpc-microservices-sg`,
+      securityGroupName: `cda-${prefix}-lambda-rds-access`,
       vpc: this.vpc,
       allowAllOutbound: false,
       description: 'Security group for RDS access',
