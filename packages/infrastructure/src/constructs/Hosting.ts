@@ -23,7 +23,7 @@ export interface HostingProps extends Retainable {
 
 export class Hosting extends Construct {
   readonly distribution: CloudFrontWebDistribution;
-  readonly loggingBucket: Bucket;
+  // readonly loggingBucket: Bucket;
   readonly url: string;
 
   private buildApiOrigin(config: ApiOriginConfig): SourceConfiguration {
@@ -54,20 +54,30 @@ export class Hosting extends Construct {
   constructor(scope: Construct, id: string, props: HostingProps) {
     super(scope, id);
 
-    this.loggingBucket = new Bucket(this, 'LogBucket', {
-      bucketName: props.prefix + '-cloudfront-log-bucket',
-      removalPolicy: props.retain ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
-    });
+    // this.loggingBucket = new Bucket(this, 'LogBucket', {
+    //   bucketName: props.prefix + '-cloudfront-log-bucket',
+    //   removalPolicy: props.retain ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
+    // });
 
-    this.distribution = new CloudFrontWebDistribution(this, 'Distribution', {
-      comment: props.prefix,
-      originConfigs: props.apiOriginConfigs.map(x => this.buildApiOrigin(x)),
-      defaultRootObject: 'index.html',
-      loggingConfig: {
-        bucket: this.loggingBucket,
-        prefix: 'cloudfront-logs/',
-      },
-    });
+    this.distribution = (props.prefix.match(/pre-/) === null) ?
+      new CloudFrontWebDistribution(this, 'Distribution', {
+        comment: props.prefix,
+        originConfigs: props.apiOriginConfigs.map(x => this.buildApiOrigin(x)),
+        defaultRootObject: 'index.html',
+        loggingConfig: {
+          // bucket: this.loggingBucket,
+          bucket: new Bucket(this, 'LogBucket', {
+            bucketName: props.prefix + '-cloudfront-log-bucket',
+            removalPolicy: props.retain ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
+          }),
+          prefix: 'cloudfront-logs/',
+        },
+      }) : // DISABLE LOGGING TO S3 BUCKET FOR PRE STAGE DEPLOYMENT STACK
+      new CloudFrontWebDistribution(this, 'Distribution', {
+        comment: props.prefix,
+        originConfigs: props.apiOriginConfigs.map(x => this.buildApiOrigin(x)),
+        defaultRootObject: 'index.html'
+      });
     this.url = `https://${this.distribution.distributionDomainName}`;
   }
 }
