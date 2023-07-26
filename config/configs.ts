@@ -159,7 +159,7 @@ export const Config: IConfigs = {
       dbname: 'data',
       dbuser: 'read_only_user',
     },
-    stage: 'dev',
+    stage: 'dev'
   },
   'dev': {
     ...coriDefaults,
@@ -169,7 +169,7 @@ export const Config: IConfigs = {
       dbname: 'data',
       dbuser: 'read_only_user',
     },
-    stage: 'dev',
+    stage: 'dev'
   },
   'development': {
     ...coriDefaults,
@@ -179,7 +179,7 @@ export const Config: IConfigs = {
       dbname: 'data',
       dbuser: 'read_only_user',
     },
-    stage: 'dev',
+    stage: 'dev'
   },
   'local': {
     ...coriDefaults,
