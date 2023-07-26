@@ -1,4 +1,4 @@
-import { ISecurityGroup, IVpc, Port, SecurityGroup, SubnetSelection, SubnetType, Vpc } from 'aws-cdk-lib/aws-ec2';
+import { ISecurityGroup, IVpc, Port, PrivateSubnet, SecurityGroup, SubnetSelection, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Construct } from 'constructs';
 import { DatabaseConfig } from '../stacks/ApiStack';
 
@@ -20,9 +20,27 @@ export class Networking extends Construct {
       vpcId: databaseConfig.vpcId
     });
 
-    this.vpcSubnets = this.vpc.selectSubnets({
-      subnetType: SubnetType.PRIVATE_WITH_NAT,
+    const privateSubnet = new PrivateSubnet(this, 'CoriDataAPIPrivateSubnet', {
+      availabilityZone: 'us-east-1c',
+      cidrBlock: '172.30.10.0/24',
+      vpcId: databaseConfig.vpcId,
+
+      // the properties below are optional
+      mapPublicIpOnLaunch: false,
     });
+
+    privateSubnet.addDefaultNatRoute('nat-05efdd7ba7b190a56');
+
+    // this.vpcSubnets = this.vpc.selectSubnets({
+    //   subnetType: SubnetType.PRIVATE_WITH_NAT,
+    // });
+
+    this.vpcSubnets = this.vpc.selectSubnets({
+      subnets: [ privateSubnet ]
+    });
+
+    console.log("VPC SUBNETS! ", this.vpc.selectSubnets().subnetIds);
+    console.log("VPC PRIVATE SUBNETS? ", this.vpc.privateSubnets);
 
     this.lambdaSecurityGroup = new SecurityGroup(this, 'CORIDataAPILambdaSecurityGroup', {
       securityGroupName: `${prefix}-vpc-microservices-sg`,
