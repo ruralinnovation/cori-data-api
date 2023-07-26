@@ -4,7 +4,7 @@ import psycopg
 
 DB_ARGS = {
     'user': os.environ['DB_USER'],
-    'password': os.environ['SECRET'],
+    'password': os.environ['DB_SECRET'],
     'host': os.environ['DB_HOST'],
     'dbname': os.environ['DB_NAME'],
     }

@@ -41,6 +41,7 @@
     "build:python-layer": "bash ./buildPythonDependencyLayer.sh",
     "build:schemas": "npm run build -w schemas",
     "build:frontend": "npm run build -w frontend",
+    "clean": "npm run clean -w infrastructure",
     "dev:api": "npm run build:api && npm run build:dev -w schemas & npm run dev -w infrastructure",
     "deploy": "npm run build && npm run deploy -w infrastructure",
     "diff": "npm run diff --w packages/infrastructure",
