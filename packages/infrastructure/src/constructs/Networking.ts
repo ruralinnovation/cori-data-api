@@ -41,6 +41,7 @@ export class Networking extends Construct {
 
     console.log("VPC SUBNETS! ", this.vpc.selectSubnets().subnetIds);
     console.log("VPC PRIVATE SUBNETS? ", this.vpc.privateSubnets);
+    console.log("Attempted to create private subnet: ", privateSubnet);
 
     this.lambdaSecurityGroup = new SecurityGroup(this, 'CORIDataAPILambdaSecurityGroup', {
       securityGroupName: `${prefix}-vpc-microservices-sg`,
