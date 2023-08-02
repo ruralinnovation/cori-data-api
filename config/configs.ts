@@ -50,7 +50,7 @@ export interface IMixedConfig extends ApiStackProps {
  */
 const microservicesConfiguration: ServiceConfig[] = [
   {
-    /* Test/Trial of Python REST service */
+    /* Test */
     logicalName: 'ACSService',
     corePath: '/acs',
     directoryName: 'acs',
@@ -60,6 +60,12 @@ const microservicesConfiguration: ServiceConfig[] = [
     logicalName: 'BCATService',
     corePath: '/bcat',
     directoryName: 'bcat',
+  },
+  {
+    /* Used by Broadband Climate Risk Mitigation Tool */
+    logicalName: 'ConnectHumanityService',
+    corePath: '/ch',
+    directoryName: 'ch',
   },
 ];
 /**
