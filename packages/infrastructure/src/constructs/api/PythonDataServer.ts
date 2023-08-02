@@ -110,6 +110,8 @@ export class PythonDataServer extends Construct {
         entry: join(microservicesDirectory, config.directoryName),
       });
 
+      console.log("Add lambda function for service: ", prefix, config);
+
       this.apiGw.addLambda({
         method: 'GET',
         path: `${config.corePath}/{proxy+}`,
