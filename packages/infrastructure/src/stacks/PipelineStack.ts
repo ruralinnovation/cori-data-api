@@ -141,6 +141,8 @@ export class PipelineStack extends Stack {
       }),
     });
 
+    console.log("Add API Stage with microservices: ", props.ApiConfig.microservicesConfig);
+
     this.addApiStage(props.ApiConfig);
   }
 

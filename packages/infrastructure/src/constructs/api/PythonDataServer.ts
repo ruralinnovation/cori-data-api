@@ -72,6 +72,8 @@ export class PythonDataServer extends Construct {
       environment,
     };
 
+    console.log("Setting up PythonDataServer with microservices: ", microservicesConfig);
+
     // if (stage === 'local') {
     //   /**
     //    * Local Lambda Instantiation for Local API
@@ -109,6 +111,9 @@ export class PythonDataServer extends Construct {
         functionName: prefix + `-${config.directoryName}-microservice-1`,
         entry: join(microservicesDirectory, config.directoryName),
       });
+
+      console.log("Add lambda function for service: ", prefix);
+      console.log(config);
 
       this.apiGw.addLambda({
         method: 'GET',

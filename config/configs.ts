@@ -50,7 +50,7 @@ export interface IMixedConfig extends ApiStackProps {
  */
 const microservicesConfiguration: ServiceConfig[] = [
   {
-    /* Test/Trial of Python REST service */
+    /* Test */
     logicalName: 'ACSService',
     corePath: '/acs',
     directoryName: 'acs',
@@ -60,6 +60,12 @@ const microservicesConfiguration: ServiceConfig[] = [
     logicalName: 'BCATService',
     corePath: '/bcat',
     directoryName: 'bcat',
+  },
+  {
+    /* Used by Broadband Climate Risk Mitigation Tool */
+    logicalName: 'ConnectHumanityService',
+    corePath: '/ch',
+    directoryName: 'ch',
   },
 ];
 /**
@@ -153,6 +159,16 @@ export const Config: IConfigs = {
   'cori/dev': {
     ...coriDefaults,
     // microservicesConfig: microservicesConfiguration, // <- add custom config
+    client: 'cori',
+    databaseConfig: {
+      ...coriDefaults.databaseConfig,
+      dbname: 'data',
+      dbuser: 'read_only_user',
+    },
+    stage: 'dev'
+  },
+  'dev': {
+    ...coriDefaults,
     client: 'cori',
     databaseConfig: {
       ...coriDefaults.databaseConfig,
