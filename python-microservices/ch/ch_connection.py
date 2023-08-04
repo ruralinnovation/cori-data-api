@@ -1,5 +1,7 @@
+import decimal
 import os
 import psycopg
+import types
 
 
 DB_ARGS = {
@@ -11,6 +13,24 @@ DB_ARGS = {
 # ideally this allows us to reuse a connection
 conn = None
 
+def replace_decimals(obj):
+    if isinstance(obj, list):
+        for i in xrange(len(obj)):
+            obj[i] = replace_decimals(obj[i])
+        return obj
+    elif isinstance(obj, dict):
+        for k, v in obj.items():
+            obj[k] = replace_decimals(obj[k])
+        return obj
+    elif isinstance(obj, decimal.Decimal):
+#         return str(obj)
+        # In my original code I'm converting to int or float, comment the line above if necessary.
+        if obj % 1 == 0:
+            return int(obj)
+        else:
+            return float(obj)
+    else:
+        return obj
 
 def execute(query):
     global conn
@@ -20,7 +40,8 @@ def execute(query):
     with conn.cursor() as cur:
         try:
             cur.execute(query)
-            return cur.fetchall()
+            # return cur.fetchall()
+            return [ replace_decimals(dict(line)) for line in [zip([ column[0] for column in cur.description], row) for row in cur.fetchall()] ]
         except Exception as error:
             print(error)
             cur.execute("ROLLBACK")
