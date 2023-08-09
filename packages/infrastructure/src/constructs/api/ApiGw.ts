@@ -53,6 +53,7 @@ export class ApiGw extends Construct {
       },
       cloudWatchRole: props.cloudWatchRole,
       binaryMediaTypes: props.binaryMediaTypes || undefined,
+      minimumCompressionSize: 256,
       // minimumCompressionSize: 10485760,   // disable compression for any
       //                                     // response that is smaller than 10M
       // defaultCorsPreflightOptions: {
@@ -97,6 +98,7 @@ export class ApiGw extends Construct {
     path,
     lambda,
     options = {
+    // // TODO: do the following preset options have equivalents in IntegrationOptions or MethodOptions
     //   defaultCorsPreflightOptions: {
     //     allowOrigins: Cors.ALL_ORIGINS,
     //     allowMethods: Cors.ALL_METHODS // this is also the default
@@ -118,29 +120,29 @@ export class ApiGw extends Construct {
 
     const _options = options;
     if (this.authorizer && method !== 'OPTIONS') {
-      // // For each GET, POST or PUT methods, explicitly add OPTIONS
-      resource.addMethod(
-        'OPTIONS',
-        new AwsIntegration({
-          proxy: true,
-          service: 'lambda',
-          path: `2015-03-31/functions/${lambda.functionArn}/invocations`,
-          options
-        }),
-        {
-          methodResponses: [
-            {
-              statusCode: '204',
-              responseParameters: {
-                'method.response.header.Access-Control-Allow-Headers': true,
-                'method.response.header.Access-Control-Allow-Methods': true,
-                'method.response.header.Access-Control-Allow-Credentials': true,
-                'method.response.header.Access-Control-Allow-Origin': true
-              },
-            },
-          ],
-        }
-      );
+      // // TODO: For each GET, POST or PUT methods, explicitly add OPTIONS
+      // resource.addMethod(
+      //   'OPTIONS',
+      //   new AwsIntegration({
+      //     proxy: true,
+      //     service: 'lambda',
+      //     path: `2015-03-31/functions/${lambda.functionArn}/invocations`,
+      //     options
+      //   }),
+      //   {
+      //     methodResponses: [
+      //       {
+      //         statusCode: '204',
+      //         responseParameters: {
+      //           'method.response.header.Access-Control-Allow-Headers': true,
+      //           'method.response.header.Access-Control-Allow-Methods': true,
+      //           'method.response.header.Access-Control-Allow-Credentials': true,
+      //           'method.response.header.Access-Control-Allow-Origin': true
+      //         },
+      //       },
+      //     ],
+      //   }
+      // );
       _options.authorizer = this.authorizer;
     }
     resource.addMethod(method, integration, _options);
