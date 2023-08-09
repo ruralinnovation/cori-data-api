@@ -56,11 +56,11 @@ export class ApolloGraphqlServer extends Construct {
       logRetention: logRetention,
     });
 
-    this.apiGw.addLambda({
-      method: 'OPTIONS',
-      path: '/graphql',
-      lambda: this.function,
-    });
+    // this.apiGw.addLambda({
+    //   method: 'OPTIONS',
+    //   path: '/graphql',
+    //   lambda: this.function,
+    // });
 
     this.apiGw.addLambda({
       method: 'POST',

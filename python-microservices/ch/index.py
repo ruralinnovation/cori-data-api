@@ -287,7 +287,7 @@ def get_ch_values(tab):
         query_values.append(value_literal)
 
     query = f"""
-        SELECT {query_params[geoid]} as {geoid}, cw.*, v.value
+        SELECT '{query_params[geoid]}' as {geoid}, cw.*, v.value
             FROM sch_proj_climate.ch_app_crosswalk cw
                 INNER JOIN (
                     SELECT *
@@ -314,6 +314,21 @@ def get_ch_values(tab):
 
     return result
 
+
+# #@app.exception_handler
+# @app.option("/*", compress=False)
+# def _not_found(self, method: str) -> ResponseBuilder:
+#     """Called when no matching route was found and includes support for the cors preflight response"""
+#     headers: Dict[str, Union[str, List[str]]] = {}
+#     if self._cors:
+#         logger.debug("CORS is enabled, updating headers.")
+#         headers.update(self._cors.to_dict())
+#
+#         if method == "OPTIONS":
+#             logger.debug("Pre-flight request detected. Returning CORS with null response")
+#             headers["Access-Control-Allow-Methods"] = ",".join(sorted(self._cors_methods))
+#             return ResponseBuilder(Response(status_code=204, content_type=None, headers=headers, **body="{}"**
+#
 
 # You can continue to use other utilities just as before
 @tracer.capture_lambda_handler

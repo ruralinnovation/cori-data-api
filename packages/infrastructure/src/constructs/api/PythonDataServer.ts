@@ -115,6 +115,12 @@ export class PythonDataServer extends Construct {
       console.log("Add lambda function for service: ", prefix);
       console.log(config);
 
+      // this.apiGw.addLambda({
+      //   method: 'OPTIONS',
+      //   path: `${config.corePath}`,
+      //   lambda: service.function,
+      // });
+
       this.apiGw.addLambda({
         method: 'GET',
         path: `${config.corePath}/{proxy+}`,
