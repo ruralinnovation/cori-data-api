@@ -110,16 +110,18 @@ export class PythonDataServer extends Construct {
         entry: join(microservicesDirectory, config.directoryName),
       });
 
-      this.apiGw.addLambda({
-        method: 'OPTIONS',
-        path: `${config.corePath}`,
-        lambda: service.function,
-      });
+      // this.apiGw.addLambda({
+      //   method: 'OPTIONS',
+      //   path: `${config.corePath}/{proxy+}`,
+      //   lambda: service.function,
+      //   options: {}
+      // });
 
       this.apiGw.addLambda({
         method: 'GET',
         path: `${config.corePath}/{proxy+}`,
         lambda: service.function,
+        options: {}
       });
     });
   }
