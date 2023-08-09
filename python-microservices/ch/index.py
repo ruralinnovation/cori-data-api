@@ -5,12 +5,12 @@ from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver, Response
 from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 
-from acs_config import CONFIG
-from acs_connection import execute
+from ch_config import CONFIG
+from ch_connection import execute
 
-logger = Logger(service="ACSService")
-tracer = Tracer(service="ACSService")
-app = APIGatewayRestResolver(strip_prefixes=["/acs"])
+logger = Logger(service="ConnectHumanityService")
+tracer = Tracer(service="ConnectHumanityService")
+app = APIGatewayRestResolver(strip_prefixes=["/ch"])
 
 
 @app.get(rule="/bad-request-error")
@@ -20,13 +20,13 @@ def bad_request_error(msg):
 
 
 """
-acs testing endpoints
+ch testing endpoints
 """
 @app.get("/testing")
 def get():
-    print("testing acs endpoint /testing")
+    print("testing ch endpoint /testing")
 
-    logger.info("testing acs endpoint /testing on system:")
+    logger.info("testing ch endpoint /testing on system:")
     logger.info(os.environ)
 
     return {
@@ -35,14 +35,17 @@ def get():
 
 
 """
-acs variable count
+ch variables
 """
-@app.get("/<table>/count", compress=False)
-def get_acs_count(table):
+@app.get("/<tab>/vars", compress=False)
+def list_ch_vars(tab):
+
+    table = f'ch_app_var_xwalk_{tab}'
+
     """
-    construct and execute a query to <table> with where clause based on <params>
+    List available variables in <table> with where clause based on <params>
     """
-    print(f'testing acs endpoint /testing/{table} on system:')
+    print(f'List available variables in {table} for <params>:')
     print(os.environ)
 
     logger.info(os.environ)
@@ -56,15 +59,12 @@ def get_acs_count(table):
         raise BadRequestError(f'invalid table {table}')
 
     # get some short names of parameters used to construct the query
-    webmercator_srid = 4326
     db_table = CONFIG[table].get('table', table)
     columns = CONFIG[table].get('api_columns', '*')
-    geom = CONFIG[table].get('geom', None)
-    epsg = CONFIG[table].get('epsg', None)
     params = CONFIG[table]['params']
-    simplify = CONFIG[table].get('simplify', 0.0)
     id = CONFIG[table].get('id', None)
-    order_by = "year, acs_code"
+    geoid = CONFIG[table].get('geoid', None)
+    order_by = f'variable'
 #     if (columns != "*"):
 #         order_by = columns
 
@@ -81,33 +81,24 @@ def get_acs_count(table):
             if invalid_params:
                 raise BadRequestError(f'invalid parameter {invalid_params}')
 
-            params = app.current_event.query_string_parameters
+            query_params = app.current_event.query_string_parameters
 
-            print(f'with params:')
-            print(params)
+            print(f'with query_params:')
+            print(query_params)
 
-            logger.info(params)
+            logger.info(query_params)
 
-            if ';' in str(params):
+            if ';' in str(query_params):
                 raise BadRequestError(f'invalid parameter')
-
-            # first handle a potential spatial intersection then remove this parameter and construct the rest.
-            if 'geom' in params:
-
-                criteria += [f"""
-                    st_intersects({geom}, st_transform(st_geomfromtext('{params['geom']}', {webmercator_srid}), {epsg}))
-                    """]
-
-                del params['geom']
 
             # since we want to handle one or more parameter values coerce all to list
             # construct "any" style array literal predicates like: where geoid = any('{123, 456}')
-            params.update({k: [v, ] for k, v in params.items() if type(v) != list})
-            params.update({k: "ANY('{" + ",".join(v) + "}')" for k, v in params.items()})
-            for k, v in params.items():
+            conditional_values = {k: [v, ] for k, v in query_params.items() if type(v) != list}
+            conditional_values.update({k: "ANY('{" + ",".join(v) + "}')" for k, v in conditional_values.items()})
+            for k, v in conditional_values.items():
                 criteria += [f'{k} = {v}', ]
     else:
-        print("URL query params is empty")
+        print("URL query_params is empty")
 
     if id:
         columns = columns.replace(f'{id},', f'"{id}" as x_id,')
@@ -116,34 +107,23 @@ def get_acs_count(table):
         # WARNING: only works if there are no changes to table rows!!
         columns += ", ((ctid::text::point)[0]::bigint<<32 | (ctid::text::point)[1]::bigint) as x_id"
 
-    if geom:
-        columns = columns.replace(f'{geom},', f'st_simplify(st_transform({geom}, {webmercator_srid}), {simplify}) as geom, ')
-    else:
-        columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
-
-    # option to limit the total number of records returned. dont include this key in the config to disable
-    limit = ''
-    if 'limit' in CONFIG[table]:
-        limit = f"LIMIT {CONFIG[table]['limit']}"
-
     # join the criteria so that we get the right syntax for any number of clauses
     if criteria:
         where = 'WHERE ' + ' AND '.join(criteria)
         # build the query statement
         query = f"""
-            SELECT COUNT(*)
+            SELECT variable
                 FROM (
                     SELECT {columns}
                         FROM {db_table}
                         {where}
                         ORDER BY {order_by}
-                        {limit}
                     ) t
 
             """
     else:
         query = f"""
-            SELECT COUNT(*)
+            SELECT variable
                 FROM (
                     SELECT DISTINCT {order_by}
                         FROM {db_table}
@@ -154,25 +134,28 @@ def get_acs_count(table):
     print(query)
 
     # execute the query string.
-    count = execute(query)
+    vars = execute(query)
 
     result = {
-        'type': 'FeatureCount',
-        'count': count
+        'type': 'Variables',
+        'variables': [ v for dict in vars for k, v in dict.items() ]
         }
 
     return result
 
 
 """
-acs tables
+ch values
 """
-@app.get("/<table>", compress=False)
-def get_acs(table):
+@app.get("/<tab>", compress=False)
+def get_ch_values(tab):
+
+    table = f'ch_app_wide_{tab}'
+
     """
-    construct and execute a query to <table> with where clause based on <params>
+    Get values in <table> with where clause based on variables in <params>
     """
-    print(f'testing acs endpoint /testing/{table} on system:')
+    print(f'Get values in {table} for <params>:')
     print(os.environ)
 
     logger.info(os.environ)
@@ -186,15 +169,12 @@ def get_acs(table):
         raise BadRequestError(f'invalid table {table}')
 
     # get some short names of parameters used to construct the query
-    webmercator_srid = 4326
     db_table = CONFIG[table].get('table', table)
     columns = CONFIG[table].get('api_columns', '*')
-    geom = CONFIG[table].get('geom', None)
-    epsg = CONFIG[table].get('epsg', None)
     params = CONFIG[table]['params']
-    simplify = CONFIG[table].get('simplify', 0.0)
     id = CONFIG[table].get('id', None)
-    order_by = "year, acs_code"
+    geoid = CONFIG[table].get('geoid', None)
+    order_by = f'{geoid}'
 #     if (columns != "*"):
 #         order_by = columns
 
@@ -211,33 +191,44 @@ def get_acs(table):
             if invalid_params:
                 raise BadRequestError(f'invalid parameter {invalid_params}')
 
-            params = app.current_event.query_string_parameters
+            query_params = app.current_event.query_string_parameters
 
-            print(f'with params:')
-            print(params)
+            print('with query_params:')
+            print(query_params)
 
-            logger.info(params)
+            logger.info(query_params)
 
-            if ';' in str(params):
+            # Get list of available vars for this geoid
+            if f'{geoid}' not in query_params.keys():
+                raise BadRequestError(f'missing {geoid}')
+            else:
+                for k, v in list_ch_vars(tab).items():
+                    # print(f'{k}')
+                    if k == 'variables':
+                        variables = v
+                        for var in variables:
+                            print(var)
+
+            print(f'geoid is {geoid}: {query_params[geoid]}')
+
+            # Add geoid label ('geoid_co' | 'geoid_tr') to list of variables
+            variables.insert(0, geoid)
+
+            query_fields = ", ".join(variables)
+
+            print(f'with query_fields: {query_fields}')
+
+            if ';' in str(query_params):
                 raise BadRequestError(f'invalid parameter')
-
-            # first handle a potential spatial intersection then remove this parameter and construct the rest.
-            if 'geom' in params:
-
-                criteria += [f"""
-                    st_intersects({geom}, st_transform(st_geomfromtext('{params['geom']}', {webmercator_srid}), {epsg}))
-                    """]
-
-                del params['geom']
 
             # since we want to handle one or more parameter values coerce all to list
             # construct "any" style array literal predicates like: where geoid = any('{123, 456}')
-            params.update({k: [v, ] for k, v in params.items() if type(v) != list})
-            params.update({k: "ANY('{" + ",".join(v) + "}')" for k, v in params.items()})
-            for k, v in params.items():
+            conditional_values = {k: [v, ] for k, v in query_params.items() if type(v) != list}
+            conditional_values.update({k: "ANY('{" + ",".join(v) + "}')" for k, v in conditional_values.items()})
+            for k, v in conditional_values.items():
                 criteria += [f'{k} = {v}', ]
     else:
-        print("URL query params is empty")
+        print("URL query_params is empty")
 
     if id:
         columns = columns.replace(f'{id},', f'"{id}" as x_id,')
@@ -245,65 +236,99 @@ def get_acs(table):
         # if no id then use somewhat hacky ctid to bigint method.
         # WARNING: only works if there are no changes to table rows!!
         columns += ", ((ctid::text::point)[0]::bigint<<32 | (ctid::text::point)[1]::bigint) as x_id"
-
-    if geom:
-        columns = columns.replace(f'{geom},', f'st_simplify(st_transform({geom}, {webmercator_srid}), {simplify}) as geom, ')
-    else:
-        columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
-
-    # option to limit the total number of records returned. dont include this key in the config to disable
-    limit = ''
-    if 'limit' in CONFIG[table]:
-        limit = f"LIMIT {CONFIG[table]['limit']}"
+    """
+    TODO: select {`query_fields`*} from sch_proj_climate.ch_app_wide_county where geoid_co = {geoid}
+    """
 
     # join the criteria so that we get the right syntax for any number of clauses
     if criteria:
         where = 'WHERE ' + ' AND '.join(criteria)
         # build the query statement
         query = f"""
-            SELECT
-                json_build_object(
-                    'type',       'Feature',
-                    'id',         x_id,
-                    'geometry',   ST_AsGeoJSON(geom)::jsonb,
-                    'properties', to_jsonb(t.*) - 'x_id' - 'geom'
-                )
-                FROM (
-                    SELECT {columns}
-                        FROM {db_table}
-                        {where}
-                        ORDER BY geoid_co, {order_by}
-                        {limit}
-                    ) t
-
+            SELECT {query_fields}
+                FROM {db_table}
+                {where}
+                ORDER BY {order_by}
             """
     else:
         query = f"""
-            SELECT
-                json_build_object(
-                    'type',       'Feature',
-                    'geometry',   ST_AsGeoJSON(geom)::jsonb,
-                    'properties', to_jsonb(t.*) - 'geom'
-                )
-                FROM (
-                    SELECT DISTINCT {order_by}, variable, ST_GeomFromText('POLYGON EMPTY') as geom
-                        FROM {db_table}
-                        ORDER BY {order_by}
-                    ) t
+            SELECT {query_fields}
+                FROM {db_table}
+                ORDER BY {order_by}
         """
 
     print(query)
 
     # execute the query string.
-    features = execute(query)
+    values = execute(query)
+    values = [ v for dict in values for k, v in dict.items() ]
+
+    """
+    TODO: SELECT '08067970601' as geoid_tr, cw.*, v.value
+              FROM sch_proj_climate.ch_app_crosswalk cw
+                  INNER JOIN (
+                      SELECT *
+                          FROM (VALUES
+                                ('lightning_afreq', 30.0081204091565),
+                                ('lightning_ealb', 617.222217739311),
+                                ('lightning_ealb_rank', 50911.0)
+                               ) as v ("variable",  "value")
+                  ) v
+                  ON cw.name = v.variable
+    """
+
+    query_values = []
+
+    for i in range(1, len(variables)): # skip geoid when looping through variables/values
+        variable = variables[i]
+        value = values[i]
+        value_literal = f"""
+                              ('{variable}', {value})"""
+        query_values.append(value_literal)
+
+    query = f"""
+        SELECT '{query_params[geoid]}' as {geoid}, cw.*, v.value
+            FROM sch_proj_climate.ch_app_crosswalk cw
+                INNER JOIN (
+                    SELECT *
+                        FROM (VALUES
+                              {",".join(query_values)}
+                             ) as v ("variable",  "value")
+                ) v
+                ON cw.name = v.variable
+    """
+
+    print(query)
+
+    # execute the query string.
+    values_with_attributes = execute(query)
+
+#     for dict in values_with_attributes:
+#         for k, v in dict.items():
+#             print(f'{k}: {v} ({type(v)})')
 
     result = {
-        'type': 'FeatureCollection',
-        'features': [f[0] for f in features],
+        'type': 'Values',
+        'values': values_with_attributes
         }
 
     return result
 
+
+# #@app.exception_handler
+# @app.option("/*", compress=False)
+# def _not_found(self, method: str) -> ResponseBuilder:
+#     """Called when no matching route was found and includes support for the cors preflight response"""
+#     headers: Dict[str, Union[str, List[str]]] = {}
+#     if self._cors:
+#         logger.debug("CORS is enabled, updating headers.")
+#         headers.update(self._cors.to_dict())
+#
+#         if method == "OPTIONS":
+#             logger.debug("Pre-flight request detected. Returning CORS with null response")
+#             headers["Access-Control-Allow-Methods"] = ",".join(sorted(self._cors_methods))
+#             return ResponseBuilder(Response(status_code=204, content_type=None, headers=headers, **body="{}"**
+#
 
 # You can continue to use other utilities just as before
 @tracer.capture_lambda_handler
