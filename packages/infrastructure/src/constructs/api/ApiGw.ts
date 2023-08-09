@@ -1,5 +1,6 @@
 import { Construct } from 'constructs';
 import {
+  Cors,
   IResource as ApiGatewayResource,
   RestApi,
   MockIntegration,
@@ -9,14 +10,14 @@ import {
   AwsIntegration,
   IntegrationOptions,
   MethodOptions,
-  TokenAuthorizer,
-} from 'aws-cdk-lib/aws-apigateway';
+  TokenAuthorizer
+} from "aws-cdk-lib/aws-apigateway";
+import { Aws } from 'aws-cdk-lib';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { Function as BASE_FUNCTION } from 'aws-cdk-lib/aws-lambda';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { toPascal, toKebab } from '../../naming';
 import { Mutable, HttpMethod } from '../../models/interfaces';
-import { Aws } from 'aws-cdk-lib';
 
 interface GatewayResponse {
   type: ResponseType;
@@ -52,8 +53,12 @@ export class ApiGw extends Construct {
       },
       cloudWatchRole: props.cloudWatchRole,
       binaryMediaTypes: props.binaryMediaTypes || undefined,
-      minimumCompressionSize: 10485760  // disable compression for any
-                                        // response that is smaller than 10M
+      // minimumCompressionSize: 10485760,   // disable compression for any
+      //                                     // response that is smaller than 10M
+      // defaultCorsPreflightOptions: {
+      //   allowOrigins: Cors.ALL_ORIGINS,
+      //   allowMethods: Cors.ALL_METHODS // this is also the default
+      // },
     });
 
     this.addGatewayResponses();
@@ -91,7 +96,12 @@ export class ApiGw extends Construct {
     method,
     path,
     lambda,
-    options = {},
+    options = {
+    //   defaultCorsPreflightOptions: {
+    //     allowOrigins: Cors.ALL_ORIGINS,
+    //     allowMethods: Cors.ALL_METHODS // this is also the default
+    //   }
+    },
   }: {
     method: HttpMethod;
     path: string;
@@ -108,6 +118,29 @@ export class ApiGw extends Construct {
 
     const _options = options;
     if (this.authorizer && method !== 'OPTIONS') {
+      // // For each GET, POST or PUT methods, explicitly add OPTIONS
+      resource.addMethod(
+        'OPTIONS',
+        new AwsIntegration({
+          proxy: true,
+          service: 'lambda',
+          path: `2015-03-31/functions/${lambda.functionArn}/invocations`,
+          options
+        }),
+        {
+          methodResponses: [
+            {
+              statusCode: '204',
+              responseParameters: {
+                'method.response.header.Access-Control-Allow-Headers': true,
+                'method.response.header.Access-Control-Allow-Methods': true,
+                'method.response.header.Access-Control-Allow-Credentials': true,
+                'method.response.header.Access-Control-Allow-Origin': true
+              },
+            },
+          ],
+        }
+      );
       _options.authorizer = this.authorizer;
     }
     resource.addMethod(method, integration, _options);
@@ -121,6 +154,8 @@ export class ApiGw extends Construct {
         // Allow multiple resources of the same name with different methods
       }
     }
+
+    console.log(`${method} method added to api resource: `, resource);
   }
 
   private addGatewayResponses() {
@@ -132,6 +167,9 @@ export class ApiGw extends Construct {
     ] as GatewayResponse[];
     const responses = [...defaultResponses, ...(this.props.gatewayResponses || [])];
     const origin = this.props.allowedOrigins?.length ? this.props.allowedOrigins.join(' ') : "'*'";
+
+    console.log(`${this.props.prefix}} has origin: ${origin}`)
+
     for (const { type, statusCode } of responses) {
       const responseId = toPascal(`${this.props.prefix}-GatewayResponse-${type.responseType}`);
 
@@ -139,7 +177,9 @@ export class ApiGw extends Construct {
         type,
         statusCode,
         responseHeaders: {
-          'Access-Control-Allow-Origin': origin,
+          "Access-Control-Allow-Origin": "*",
+          // "Access-Control-Allow-Credentials": true,
+          // 'Access-Control-Allow-Origin': origin,
         },
       });
     }
@@ -174,7 +214,7 @@ export class ApiGw extends Construct {
               'method.response.header.Access-Control-Allow-Headers': true,
               'method.response.header.Access-Control-Allow-Methods': true,
               'method.response.header.Access-Control-Allow-Credentials': true,
-              'method.response.header.Access-Control-Allow-Origin': true,
+              'method.response.header.Access-Control-Allow-Origin': true
             },
           },
         ],
