@@ -174,7 +174,8 @@ log.html
 output.xml
 report.html
 
-.DS_Store
+*.DS_Store
+*.bak
 AWS_SAM_CLI_64_PY3.msi
 aws-sam-cli-linux-x86_64.zip
 amplify.yml
