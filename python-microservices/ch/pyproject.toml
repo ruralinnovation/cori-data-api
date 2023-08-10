@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "ch"
+name = "bcat"
 version = "0.1.0"
 description = ""
-authors = ["Rural Innovation Strategies, Inc."]
+authors = ["Merging Futures LLC."]
 
 [tool.poetry.dependencies]
 python = "^3.8"
