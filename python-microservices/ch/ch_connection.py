@@ -3,7 +3,6 @@ import os
 import psycopg
 import types
 
-
 DB_ARGS = {
     'user': os.environ['DB_USER'],
     'password': os.environ['DB_SECRET'],
