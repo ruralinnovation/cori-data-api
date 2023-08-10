@@ -68,6 +68,7 @@ CONFIG = {
         "simplify": 0.00002,
         "precision": 6,
         "id": "geoid_co",
+        "limit": 255 # Texas has 254 counties... https://simple.wikipedia.org/wiki/List_of_counties_in_Texas
     },
     "ch_app_wide_tract_geo": {
         "table": "sch_proj_climate.ch_app_wide_tract_geo",
@@ -79,5 +80,6 @@ CONFIG = {
         "simplify": 0.00002,
         "precision": 6,
         "id": "geoid_tr",
+        "limit": 1000 # some places have a *lot* of tracts
     },
 }
