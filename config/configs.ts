@@ -61,6 +61,12 @@ const microservicesConfiguration: ServiceConfig[] = [
     corePath: '/bcat',
     directoryName: 'bcat',
   },
+  {
+    /* Used by Broadband Climate Risk Mitigation Tool */
+    logicalName: 'ConnectHumanityService',
+    corePath: '/ch',
+    directoryName: 'ch',
+  }
 ];
 /**
  * Provides strongly typed configs for deployment

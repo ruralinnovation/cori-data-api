@@ -16,6 +16,12 @@ ch configuration
 """
 
 CONFIG = {
+    'global': {
+        'params': [ 'limit', 'offset', 'page' ],
+        'epsg': 4269,
+        'simplify': 0.00002,
+        'precision': 6
+    },
     "ch_app_var_xwalk_county": {
         "table": "sch_proj_climate.ch_app_var_xwalk_county",
         "api_columns": "geoid_co, variable",
