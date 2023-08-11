@@ -77,312 +77,6 @@ def get_ch_geojson(tab, geoid, attr_table, geom_table, query_fields, simplify, w
     return result
 
 
-# @app.get("/counties_overall_geo", compress=False)
-# def get_ch_counties_overall_geo():
-#
-#     tab = 'county'
-#     table = f'ch_app_wide_county'
-#
-#     # get some short names of parameters used to construct the query
-#     webmercator_srid = 4326
-#     attr_table = CONFIG[table]['table']
-#     geom_table = CONFIG[f'{table}_geo']['table']
-#     #     columns = CONFIG[table].get('api_columns', '*')
-#     columns = CONFIG[table].get('api_columns', '*')
-#     geom = CONFIG[f'{table}_geo'].get('geom', None)
-#     epsg = CONFIG[f'{table}_geo'].get('epsg', None)
-#     # option to limit the total number of records returned. dont include this key in the CONFIG to disable
-#     limit = LIMIT
-#     if 'limit' in CONFIG[table]:
-#         limit = f"{CONFIG[table]['limit']}"
-#     offset = OFFSET
-#     page = PAGE
-#     params = CONFIG[table]['params']
-#     id = CONFIG[table].get('id', None)
-#     geoid = CONFIG[table].get('geoid', None)
-#     order_by = f'{geoid}'
-#     #     if (columns != "*"):
-#     #         order_by = columns
-#     simplify = 0.025 # CONFIG[f'{table}_geo'].get('simplify', 0.0)
-#
-#     if id:
-#         columns = columns.replace(f'{id},', f'"{id}" as x_id, {id},')
-#         id_in_result = "'id',         x_id,"
-#
-#     if geom:
-#         columns = columns.replace(f'{geom},', f'st_simplify(st_transform({geom}, {webmercator_srid}), {simplify}) as geom, ')
-#     else:
-#         columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
-#
-#     if app.current_event.query_string_parameters:
-#         print("URL query params is not empty")
-#         print(type(app.current_event.query_string_parameters.keys))
-#         print(types.BuiltinFunctionType)
-#         if (type(app.current_event.query_string_parameters.keys) == types.BuiltinFunctionType):
-#             print("type(app.current_event.query_string_parameters.keys) == types.FunctionType")
-#             invalid_params = [k for k in app.current_event.query_string_parameters.keys() if k not in params]
-#             if invalid_params:
-#                 raise BadRequestError(f'invalid parameter {invalid_params}')
-#
-#             query_params = app.current_event.query_string_parameters
-#
-#             print('with query_params:')
-#             print(query_params)
-#
-#             logger.info(query_params)
-#
-#             # Get list of available vars for this geoid
-#             if f'{geoid}' not in query_params.keys():
-#                 raise BadRequestError(f'missing {geoid}')
-#             else:
-#                 variables = [ "overall_loss_score", "overall_loss_rating", "pct_bb_25_3", "pct_bb_100_20", "pct_bb_fiber" ]
-#                 for var in variables:
-#                     print(var)
-#
-#             print(f'geoid is {geoid}: {query_params[geoid]}')
-#
-#             # Add namelsad to list of variables
-#             variables.insert(0, 'namelsad as name')
-#
-#             # Add geoid label ('geoid_co') to list of variables
-#             variables.insert(0, f'{tab}.{geoid}')
-#
-#             query_fields = ", ".join(variables)
-#
-#             print(f'with query_fields: {query_fields}')
-#
-#             if ';' in str(query_params):
-#                 raise BadRequestError(f'invalid parameter')
-#
-#             # handle a potential spatial intersection then remove this parameter and construct the rest.
-#             if 'geom' in query_params:
-#
-#                 criteria += [f"""
-#                     st_intersects({geom}, st_transform(st_geomfromtext('{query_params['geom']}', {webmercator_srid}), {epsg}))
-#                     """]
-#
-#                 del query_params['geom']
-#
-#             if 'limit' in query_params:
-#
-#                 limit = int(query_params['limit'])
-#
-#                 del query_params['limit']
-#
-#             if 'offset' in query_params:
-#
-#                 offset = int(query_params['offset'])
-#
-#                 del query_params['offset']
-#
-#             if 'page' in query_params:
-#
-#                 page = int(query_params['page'])
-#
-#                 if page > 0:
-#                     offset = page * limit
-#
-#                 del query_params['page']
-#
-#             # since we want to handle one or more parameter values coerce all to list
-#             # construct "any" style array literal predicates like: where geoid = any('{123, 456}')
-#             conditional_values = {k: [v, ] for k, v in query_params.items() if type(v) != list}
-#             for k, v in conditional_values.items():
-#                 if k == geoid:
-#                     print(v[0])
-#                     print(type(v[0]))
-#                     fips_st = v[0][0:2] # get state fips from first two chars of geoid
-#                     print(fips_st)
-#                     where = f'WHERE {geoid} ilike ' + "'" + fips_st + "%'"
-#
-#     else:
-#         print("URL query params is empty")
-#         raise BadRequestError(f'Must provide a single geoid_co')
-#
-#     # build the first query statement
-#     query = f"""
-#         SELECT {geoid}
-#             FROM {attr_table}
-#             {where}
-#             ORDER BY {order_by}
-#         """
-#
-#     print(query)
-#
-#     # execute the query string.
-#     geoids = "ANY('{" + ",".join([item for sublist in execute(query) for item in sublist]) + "}')"
-#     where = f'WHERE {tab}.{geoid} = {geoids}'
-#
-#     result = get_ch_geojson(tab, geoid, attr_table, geom_table, query_fields, simplify, webmercator_srid, where, order_by, limit, offset)
-#
-#     return Response(
-#         status_code=200,
-#         content_type='application/json',
-#         headers={
-#             'access-control-allow-origin': '*',
-#             'access-control-allow-headers': 'Authorization,Content-Type,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent',
-#             'access-control-allow-methods': 'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD',
-#             'access-control-allow-credentials': 'true'
-#             },
-#         body=json.dumps(result, indent=None)
-#         )
-#
-
-@app.get("/<tab>/overall_neighbor_geos", compress=False)
-def get_ch_overall_neighbor_geo(tab):
-
-    table = f'ch_app_wide_{tab}'
-
-    # get some short names of parameters used to construct the query
-    webmercator_srid = 4326
-    attr_table = CONFIG[table]['table']
-    geom_table = CONFIG[f'{table}_geo']['table']
-    #     columns = CONFIG[table].get('api_columns', '*')
-    columns = CONFIG[table].get('api_columns', '*')
-    geom = CONFIG[f'{table}_geo'].get('geom', None)
-    epsg = CONFIG[f'{table}_geo'].get('epsg', None)
-    # option to limit the total number of records returned. dont include this key in the CONFIG to disable
-    limit = LIMIT
-    if 'limit' in CONFIG[f'{table}_geo']:
-        limit = f"{CONFIG[f'{table}_geo']['limit']}"
-    offset = OFFSET
-    page = PAGE
-    params = CONFIG[f'{table}_geo']['params']
-    id = CONFIG[f'{table}_geo'].get('id', None)
-    geoid = CONFIG[f'{table}_geo'].get('geoid', None)
-    order_by = f'{geoid}'
-    #     if (columns != "*"):
-    #         order_by = columns
-    simplify = 0.001 # CONFIG[f'{table}_geo'].get('simplify', 0.0)
-
-    if id:
-        columns = columns.replace(f'{id},', f'"{id}" as x_id, {id},')
-        id_in_result = "'id',         x_id,"
-
-    if geom:
-        columns = columns.replace(f'{geom},', f'st_simplify(st_transform({geom}, {webmercator_srid}), {simplify}) as geom, ')
-    else:
-        columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
-
-    if app.current_event.query_string_parameters:
-        print("URL query params is not empty")
-        print(type(app.current_event.query_string_parameters.keys))
-        print(types.BuiltinFunctionType)
-        if (type(app.current_event.query_string_parameters.keys) == types.BuiltinFunctionType):
-            print("type(app.current_event.query_string_parameters.keys) == types.FunctionType")
-            invalid_params = [k for k in app.current_event.query_string_parameters.keys() if k not in params]
-            if invalid_params:
-                raise BadRequestError(f'invalid parameter {invalid_params}')
-
-            query_params = app.current_event.query_string_parameters
-
-            print('with query_params:')
-            print(query_params)
-
-            logger.info(query_params)
-
-            # Get list of available vars for this geoid
-            if f'{geoid}' not in query_params.keys():
-                raise BadRequestError(f'missing {geoid}')
-            else:
-                variables = [ "overall_loss_score", "overall_loss_rating", "pct_bb_25_3", "pct_bb_100_20", "pct_bb_fiber" ]
-                for var in variables:
-                    print(var)
-
-            print(f'geoid is {geoid}: {query_params[geoid]}')
-
-            # Add namelsad to list of variables
-            variables.insert(0, 'namelsad as name')
-
-            # Add geoid label ('geoid_co' | 'geoid_tr') to list of variables
-            variables.insert(0, f'{tab}.{geoid}')
-
-            query_fields = ", ".join(variables)
-
-            print(f'with query_fields: {query_fields}')
-
-            if ';' in str(query_params):
-                raise BadRequestError(f'invalid parameter')
-
-            # handle a potential spatial intersection then remove this parameter and construct the rest.
-            if 'geom' in query_params:
-
-                criteria += [f"""
-                    st_intersects({geom}, st_transform(st_geomfromtext('{query_params['geom']}', {webmercator_srid}), {epsg}))
-                    """]
-
-                del query_params['geom']
-
-            if 'limit' in query_params:
-
-                limit = int(query_params['limit'])
-
-                del query_params['limit']
-
-            if 'offset' in query_params:
-
-                offset = int(query_params['offset'])
-
-                del query_params['offset']
-
-            if 'page' in query_params:
-
-                page = int(query_params['page'])
-
-                if page > 0:
-                    offset = page * limit
-
-                del query_params['page']
-
-            # since we want to handle one or more parameter values coerce all to list
-            # construct "any" style array literal predicates like: where geoid = any('{123, 456}')
-            conditional_values = {k: [v, ] for k, v in query_params.items() if type(v) != list}
-            for k, v in conditional_values.items():
-                if k == geoid:
-#                     print(v[0])
-#                     print(type(v[0]))
-                    if geoid == "geoid_co":
-                        fips_st = v[0][0:2] # get state fips from first two chars of geoid
-                        print(fips_st)
-                        where = f'WHERE {geoid} ilike ' + "'" + fips_st + "%'"
-                    elif geoid == "geoid_tr":
-                        geoid_co = v[0][0:5] # get county geoid from first five chars of geoid
-                        print(geoid_co)
-                        where = f'WHERE {geoid} ilike ' + "'" + geoid_co + "%'"
-
-    else:
-        print("URL query params is empty")
-        raise BadRequestError(f'Must provide a single {geoid}')
-
-    # build the first query statement
-    query = f"""
-        SELECT {geoid}
-            FROM {attr_table}
-            {where}
-            ORDER BY {order_by}
-        """
-
-    print(query)
-
-    # execute the query string.
-    geoids = "ANY('{" + ",".join([item for sublist in execute(query) for item in sublist]) + "}')"
-    where = f'WHERE {tab}.{geoid} = {geoids}'
-
-    result = get_ch_geojson(tab, geoid, attr_table, geom_table, query_fields, simplify, webmercator_srid, where, order_by, limit, offset)
-
-    return Response(
-        status_code=200,
-        content_type='application/json',
-        headers={
-            'access-control-allow-origin': '*',
-            'access-control-allow-headers': 'Authorization,Content-Type,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent',
-            'access-control-allow-methods': 'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD',
-            'access-control-allow-credentials': 'true'
-            },
-        body=json.dumps(result, indent=None)
-        )
-
-
 """
 ch variables
 """
@@ -490,17 +184,6 @@ def list_ch_vars(tab):
         'variables': [ v for dict in vars for k, v in dict.items() ]
         }
 
-#     return Response(
-#         status_code=200,
-#         content_type='application/json',
-#         headers={
-#             'access-control-allow-origin': '*',
-#             'access-control-allow-headers': 'Authorization,Content-Type,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent',
-#             'access-control-allow-methods': 'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD',
-#             'access-control-allow-credentials': 'true'
-#             },
-#         body=json.dumps(result, indent=None)
-#         )
 
     return result
 
@@ -591,16 +274,6 @@ def get_ch_values(tab):
     else:
         print("URL query_params is empty")
 
-    if id:
-        columns = columns.replace(f'{id},', f'"{id}" as x_id,')
-    else:
-        # if no id then use somewhat hacky ctid to bigint method.
-        # WARNING: only works if there are no changes to table rows!!
-        columns += ", ((ctid::text::point)[0]::bigint<<32 | (ctid::text::point)[1]::bigint) as x_id"
-    """
-    TODO: select {`query_fields`*} from sch_proj_climate.ch_app_wide_county where geoid_co = {geoid}
-    """
-
     # join the criteria so that we get the right syntax for any number of clauses
     if criteria:
         where = 'WHERE ' + ' AND '.join(criteria)
@@ -623,20 +296,6 @@ def get_ch_values(tab):
     # execute the query string.
     values = execute_with_cols(query)
     values = [ v for dict in values for k, v in dict.items() ]
-
-    """
-    TODO: SELECT '08067970601' as geoid_tr, cw.*, v.value
-              FROM sch_proj_climate.ch_app_crosswalk cw
-                  INNER JOIN (
-                      SELECT *
-                          FROM (VALUES
-                                ('lightning_afreq', 30.0081204091565),
-                                ('lightning_ealb', 617.222217739311),
-                                ('lightning_ealb_rank', 50911.0)
-                               ) as v ("variable",  "value")
-                  ) v
-                  ON cw.name = v.variable
-    """
 
     query_values = []
 
@@ -685,6 +344,10 @@ def get_ch_values(tab):
         body=json.dumps(result, indent=None)
         )
 
+
+"""
+ch geo (FeatureCollection)
+"""
 @app.get("/<tab>/geo", compress=False)
 def get_ch_geo(tab):
 
@@ -815,6 +478,432 @@ def get_ch_geo(tab):
         where = 'WHERE ' + ' AND '.join(criteria)
 
     result = get_ch_geojson(tab, geoid, attr_table, geom_table, query_fields, simplify, webmercator_srid, where, order_by, limit, offset)
+
+    return Response(
+        status_code=200,
+        content_type='application/json',
+        headers={
+            'access-control-allow-origin': '*',
+            'access-control-allow-headers': 'Authorization,Content-Type,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent',
+            'access-control-allow-methods': 'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD',
+            'access-control-allow-credentials': 'true'
+            },
+        body=json.dumps(result, indent=None)
+        )
+
+
+"""
+ch neighboring geos (same state/county)
+"""
+@app.get("/<tab>/overall_neighbor_geos", compress=False)
+def get_ch_overall_neighbor_geo(tab):
+
+    table = f'ch_app_wide_{tab}'
+
+    # get some short names of parameters used to construct the query
+    webmercator_srid = 4326
+    attr_table = CONFIG[table]['table']
+    geom_table = CONFIG[f'{table}_geo']['table']
+    #     columns = CONFIG[table].get('api_columns', '*')
+    columns = CONFIG[table].get('api_columns', '*')
+    geom = CONFIG[f'{table}_geo'].get('geom', None)
+    epsg = CONFIG[f'{table}_geo'].get('epsg', None)
+    # option to limit the total number of records returned. dont include this key in the CONFIG to disable
+    limit = LIMIT
+    if 'limit' in CONFIG[f'{table}_geo']:
+        limit = f"{CONFIG[f'{table}_geo']['limit']}"
+    offset = OFFSET
+    page = PAGE
+    params = CONFIG[f'{table}_geo']['params']
+    id = CONFIG[f'{table}_geo'].get('id', None)
+    geoid = CONFIG[f'{table}_geo'].get('geoid', None)
+    order_by = f'{geoid}'
+    #     if (columns != "*"):
+    #         order_by = columns
+    simplify = CONFIG[f'{table}_geo'].get('simplify', 0.0001)
+
+    if geom:
+        columns = columns.replace(f'{geom},', f'st_simplify(st_transform({geom}, {webmercator_srid}), {simplify}) as geom, ')
+    else:
+        columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
+
+    if app.current_event.query_string_parameters:
+        print("URL query params is not empty")
+        print(type(app.current_event.query_string_parameters.keys))
+        print(types.BuiltinFunctionType)
+        if (type(app.current_event.query_string_parameters.keys) == types.BuiltinFunctionType):
+            print("type(app.current_event.query_string_parameters.keys) == types.FunctionType")
+            invalid_params = [k for k in app.current_event.query_string_parameters.keys() if k not in params]
+            if invalid_params:
+                raise BadRequestError(f'invalid parameter {invalid_params}')
+
+            query_params = app.current_event.query_string_parameters
+
+            print('with query_params:')
+            print(query_params)
+
+            logger.info(query_params)
+
+            # Get list of available vars for this geoid
+            if f'{geoid}' not in query_params.keys():
+                raise BadRequestError(f'missing {geoid}')
+            else:
+                variables = [ "overall_loss_score", "overall_loss_rating", "pct_bb_25_3", "pct_bb_100_20", "pct_bb_fiber" ]
+                for var in variables:
+                    print(var)
+
+            print(f'geoid is {geoid}: {query_params[geoid]}')
+
+            # Add namelsad to list of variables
+            variables.insert(0, 'namelsad as name')
+
+            # Add geoid label ('geoid_co' | 'geoid_tr') to list of variables
+            variables.insert(0, f'{tab}.{geoid}')
+
+            query_fields = ", ".join(variables)
+
+            print(f'with query_fields: {query_fields}')
+
+            if ';' in str(query_params):
+                raise BadRequestError(f'invalid parameter')
+
+            # handle a potential spatial intersection then remove this parameter and construct the rest.
+            if 'geom' in query_params:
+
+                criteria += [f"""
+                    st_intersects({geom}, st_transform(st_geomfromtext('{query_params['geom']}', {webmercator_srid}), {epsg}))
+                    """]
+
+                del query_params['geom']
+
+            if 'limit' in query_params:
+
+                limit = int(query_params['limit'])
+
+                del query_params['limit']
+
+            if 'offset' in query_params:
+
+                offset = int(query_params['offset'])
+
+                del query_params['offset']
+
+            if 'page' in query_params:
+
+                page = int(query_params['page'])
+
+                if page > 0:
+                    offset = page * limit
+
+                del query_params['page']
+
+            # since we want to handle one or more parameter values coerce all to list
+            # construct "any" style array literal predicates like: where geoid = any('{123, 456}')
+            conditional_values = {k: [v, ] for k, v in query_params.items() if type(v) != list}
+            for k, v in conditional_values.items():
+                if k == geoid:
+#                     print(v[0])
+#                     print(type(v[0]))
+                    if geoid == "geoid_co":
+                        fips_st = v[0][0:2] # get state fips from first two chars of geoid
+                        print(fips_st)
+                        where = f'WHERE {geoid} ilike ' + "'" + fips_st + "%'"
+                    elif geoid == "geoid_tr":
+                        geoid_co = v[0][0:5] # get county geoid from first five chars of geoid
+                        print(geoid_co)
+                        where = f'WHERE {geoid} ilike ' + "'" + geoid_co + "%'"
+
+    else:
+        print("URL query params is empty")
+        raise BadRequestError(f'Must provide a single {geoid}')
+
+    # build the first query statement
+    query = f"""
+        SELECT {geoid}
+            FROM {attr_table}
+            {where}
+            ORDER BY {order_by}
+        """
+
+    print(query)
+
+    # execute the query string.
+    geoids = "ANY('{" + ",".join([item for sublist in execute(query) for item in sublist]) + "}')"
+    where = f'WHERE {tab}.{geoid} = {geoids}'
+
+    result = get_ch_geojson(tab, geoid, attr_table, geom_table, query_fields, simplify, webmercator_srid, where, order_by, limit, offset)
+
+    return Response(
+        status_code=200,
+        content_type='application/json',
+        headers={
+            'access-control-allow-origin': '*',
+            'access-control-allow-headers': 'Authorization,Content-Type,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent',
+            'access-control-allow-methods': 'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD',
+            'access-control-allow-credentials': 'true'
+            },
+        body=json.dumps(result, indent=None)
+        )
+
+
+"""
+ch geo bbox at location
+"""
+@app.get("/<tab>/at_location", compress=False)
+def get_bb_map(tab):
+
+    table = f'ch_app_wide_{tab}_geo'
+
+    # get some short names of parameters used to construct the query
+    webmercator_srid = 4326
+    db_table = CONFIG[table]['table']
+    columns = CONFIG[table].get('api_columns', '*')
+    geom = CONFIG[table].get('geom', None)
+    epsg = CONFIG[table].get('epsg', None)
+    # option to limit the total number of records returned. dont include this key in the CONFIG to disable
+    limit = LIMIT
+    if 'limit' in CONFIG[table]:
+        limit = f"{CONFIG[table]['limit']}"
+    offset = OFFSET
+    page = PAGE
+    params = CONFIG[table]['params']
+    id = CONFIG[table].get('id', None)
+    geoid = CONFIG[table].get('geoid', None)
+    order_by = f'{geoid}'
+    #     if (columns != "*"):
+    #         order_by = columns
+    simplify = CONFIG[table].get('simplify', 0.0001)
+
+    if geom:
+        columns = columns.replace(f'{geom},', f'st_simplify(st_transform({geom}, {webmercator_srid}), {simplify}) as geom, ')
+    else:
+        columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
+
+    if app.current_event.query_string_parameters:
+        print("URL query params is not empty")
+        print(type(app.current_event.query_string_parameters.keys))
+        print(types.BuiltinFunctionType)
+        if (type(app.current_event.query_string_parameters.keys) == types.BuiltinFunctionType):
+            print("type(app.current_event.query_string_parameters.keys) == types.FunctionType")
+            invalid_params = [k for k in app.current_event.query_string_parameters.keys() if k not in params]
+            if invalid_params:
+                raise BadRequestError(f'invalid parameter {invalid_params}')
+
+            query_params = app.current_event.query_string_parameters
+
+            print('with query_params:')
+            print(query_params)
+
+            logger.info(query_params)
+
+            if ';' in str(query_params):
+                raise BadRequestError(f'invalid parameter')
+
+            # since we want to handle one or more parameter values coerce all to list
+            # construct "any" style array literal predicates like: where geoid = any('{123, 456}')
+            conditional_values = {k: [v, ] for k, v in query_params.items() if type(v) != list}
+            for k, v in conditional_values.items():
+                if k == "lon":
+#                     print(v[0])
+#                     print(type(v[0]))
+                    lon = v[0]
+                if k == "lat":
+#                     print(v[0])
+#                     print(type(v[0]))
+                    lat = v[0]
+
+    else:
+        print("URL query params is empty")
+        raise BadRequestError(f'Must provide a single {geoid}')
+
+    # build the query statement
+    query = f"""
+        SELECT
+            json_build_object(
+                'type',       'Feature',
+                'properties', to_jsonb(t.*) - 'geom',
+                'geometry',   ST_AsGeoJSON(geom)::jsonb
+            )
+            FROM (
+                SELECT geoid_tr,
+                    namelsad,
+                    st_astext(st_simplify(st_transform(st_envelope(geom), 4326), 0.0)) as bbox,
+                    st_simplify(st_transform(st_envelope(geom), 4326), 0.0) as geom
+                    FROM
+                      {db_table}
+                    WHERE ST_Contains(st_transform(geom, 4326), st_transform(st_geomfromtext('POINT({lon} {lat})', 4326), 4326))
+                    LIMIT 1
+                ) t
+        """
+
+    print(query)
+
+    features = execute(query)
+
+    result = {
+        "type": "FeatureCollection",
+        "features": [f[0] for f in features]
+        }
+
+    return Response(
+        status_code=200,
+        content_type='application/json',
+        headers={
+            'access-control-allow-origin': '*',
+            'access-control-allow-headers': 'Authorization,Content-Type,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent',
+            'access-control-allow-methods': 'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD',
+            'access-control-allow-credentials': 'true'
+            },
+        body=json.dumps(result, indent=None)
+        )
+
+
+"""
+bb map (block -> FeatureCollection)
+"""
+@app.get("/<tab>/bb_map", compress=False)
+def get_bb_map(tab):
+
+    table = f'bb_map_{tab}'
+
+    # get some short names of parameters used to construct the query
+    webmercator_srid = 4326
+    db_table = CONFIG[table]['table']
+    columns = CONFIG[table].get('api_columns', '*')
+    geom = CONFIG[table].get('geom', None)
+    epsg = CONFIG[table].get('epsg', None)
+    # option to limit the total number of records returned. dont include this key in the CONFIG to disable
+    limit = LIMIT
+    if 'limit' in CONFIG[table]:
+        limit = f"{CONFIG[table]['limit']}"
+    offset = OFFSET
+    page = PAGE
+    params = CONFIG[table]['params']
+    id = CONFIG[table].get('id', None)
+    geoid = CONFIG[table].get('geoid', None)
+    order_by = f'{geoid}'
+    #     if (columns != "*"):
+    #         order_by = columns
+    simplify = CONFIG[table].get('simplify', 0.0001)
+
+    # criteria is a list of where clauses for the query.
+    criteria = []
+    where = ''
+
+    if geom:
+        columns = columns.replace(f'{geom},', f'st_simplify(st_transform({geom}, {webmercator_srid}), {simplify}) as geom, ')
+    else:
+        columns += ", ST_GeomFromText('POLYGON EMPTY') as geom"
+
+    if app.current_event.query_string_parameters:
+        print("URL query params is not empty")
+        print(type(app.current_event.query_string_parameters.keys))
+        print(types.BuiltinFunctionType)
+        if (type(app.current_event.query_string_parameters.keys) == types.BuiltinFunctionType):
+            print("type(app.current_event.query_string_parameters.keys) == types.FunctionType")
+            invalid_params = [k for k in app.current_event.query_string_parameters.keys() if k not in params]
+            if invalid_params:
+                raise BadRequestError(f'invalid parameter {invalid_params}')
+
+            query_params = app.current_event.query_string_parameters
+
+            print('with query_params:')
+            print(query_params)
+
+            logger.info(query_params)
+
+            # Get list of available vars for this geoid
+            if f'{geoid}' not in query_params.keys():
+                raise BadRequestError(f'missing {geoid}')
+
+            print(f'geoid is {geoid}: {query_params[geoid]}')
+
+            if ';' in str(query_params):
+                raise BadRequestError(f'invalid parameter')
+
+            # handle a potential spatial intersection then remove this parameter and construct the rest.
+            if 'geom' in query_params:
+
+                criteria += [f"""
+                    st_intersects({geom}, st_transform(st_geomfromtext('{query_params['geom']}', {webmercator_srid}), {epsg}))
+                    """]
+
+                del query_params['geom']
+
+            if 'limit' in query_params:
+
+                limit = int(query_params['limit'])
+
+                del query_params['limit']
+
+            if 'offset' in query_params:
+
+                offset = int(query_params['offset'])
+
+                del query_params['offset']
+
+            if 'page' in query_params:
+
+                page = int(query_params['page'])
+
+                if page > 0:
+                    offset = page * limit
+
+                del query_params['page']
+
+            # since we want to handle one or more parameter values coerce all to list
+            # construct "any" style array literal predicates like: where geoid = any('{123, 456}')
+            conditional_values = {k: [v, ] for k, v in query_params.items() if type(v) != list}
+            conditional_values.update({k: "ANY('{" + ",".join(v) + "}')" for k, v in conditional_values.items()})
+            for k, v in conditional_values.items():
+                criteria += [f'{k} = {v}', ]
+#                 if k == geoid:
+# #                     print(v[0])
+# #                     print(type(v[0]))
+#                     if geoid == "geoid_co":
+#                         fips_st = v[0][0:2] # get state fips from first two chars of geoid
+#                         print(fips_st)
+#                         where = f'WHERE {geoid} ilike ' + "'" + fips_st + "%'"
+#                     elif geoid == "geoid_tr":
+#                         geoid_co = v[0][0:5] # get county geoid from first five chars of geoid
+#                         print(geoid_co)
+#                         where = f'WHERE {geoid} ilike ' + "'" + geoid_co + "%'"
+
+    else:
+        print("URL query params is empty")
+        raise BadRequestError(f'Must provide a single {geoid}')
+
+    # join the criteria so that we get the right syntax for any number of clauses
+    if criteria:
+        where = 'WHERE ' + ' AND '.join(criteria)
+
+    # build the query statement
+    query = f"""
+        SELECT
+            json_build_object(
+                'type',       'Feature',
+                'geometry',   ST_AsGeoJSON(geom)::jsonb,
+                'properties', to_jsonb(t.*) - 'geom'
+            )
+            FROM (
+                SELECT {columns}
+                    FROM {db_table}
+                    {where}
+                    ORDER BY {order_by}
+                    LIMIT {limit}
+                    OFFSET {offset}
+                ) t
+
+        """
+
+    print(query)
+
+    blocks = execute(query)
+
+    result = {
+        "type": "FeatureCollection",
+        "features": [b[0] for b in blocks]
+        }
 
     return Response(
         status_code=200,
