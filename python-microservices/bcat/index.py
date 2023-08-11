@@ -495,8 +495,8 @@ def get_bcat(table):
             json_build_object(
                 {id_in_result}
                 'type',       'Feature',
-                'geometry',   ST_AsGeoJSON(geom)::jsonb,
-                'properties', to_jsonb(t.*) - 'x_id' - 'geom'
+                'properties', to_jsonb(t.*) - 'x_id' - 'geom',
+                'geometry',   ST_AsGeoJSON(geom)::jsonb
             )
             FROM (
                 SELECT {columns}
