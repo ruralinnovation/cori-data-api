@@ -36,120 +36,121 @@ const auction_904_defaults = {
     info: any
   ) => {
 
-    const geoids = (typeof geoid_co !== 'undefined' && geoid_co !== null && geoid_co.length > 0) ?
-      geoid_co.map(c => c.toString()).join(",") :
-      "all";
+      const table = "auction_904_defaults";
 
-    const page_size = (typeof limit !== 'undefined' && limit === limit) ?
-      limit :
-      0;
+      const geoids = (typeof geoid_co !== 'undefined' && geoid_co !== null && geoid_co.length > 0) ?
+        geoid_co.map(c => c.toString()).join(",") :
+        "all";
 
-    const count_offset = (typeof offset !== 'undefined' && offset === offset) ?
-      offset :
-      0;
+      const page_size = (typeof limit !== 'undefined' && limit === limit) ?
+        limit :
+        0;
 
-    const page_number = (typeof page !== 'undefined' && page === page) ?
-      page :
-      0;
+      const count_offset = (typeof offset !== 'undefined' && offset === offset) ?
+        offset :
+        0;
 
-    if (!!skipCache && typeof redisClient.disconnect === 'function') {
-      // Disconnect from redis when ever skipCache == true
-      console.log("Disconnect from redis when ever skipCache == true")
-      redisClient.disconnect();
-    }
+      const page_number = (typeof page !== 'undefined' && page === page) ?
+        page :
+        0;
 
-    const rest_uri = `${pythonApi.baseURL}bcat/auction_904_defaults${
-      (geoids === "all") ?
-        `?limit=${page_size}&offset=${count_offset}&page=${page_number}` : 
-        `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`
-    }`;
+      if (!!skipCache && typeof redisClient.disconnect === 'function') {
+          // Disconnect from redis when ever skipCache == true
+          console.log("Disconnect from redis when ever skipCache == true")
+          // redisClient.disconnect();
+      }
 
-    // return await geoid_co.reduce(
-    //   async (fc, geoid_co) => {
-    return await (
-      (async () => {
+      const rest_uri = `${pythonApi.baseURL}bcat/${table}${
+        (geoids === "all") ?
+          `?limit=${page_size}&offset=${count_offset}&page=${page_number}` :
+          `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`
+      }`;
 
-        console.log("Query pythonApi: ", rest_uri);
+      // return await geoid_co.reduce(
+      //   async (fc, geoid_co) => {
+      return await (
+        (async () => {
 
-        //     const featureCollection = await fc;
-        const res: any = (geoids === "all") ? await (async () => {
-            const fc = (skipCache)
-              ? await pythonApi.getItem(`bcat/auction_904_defaults?limit=${page_size}&offset=${count_offset}&page=${page_number}`)
-              : await redisClient.checkCache(`auction_904_defaults-`
-                + `${page_size}-${count_offset}-${page_number}`, async () => {
+            console.log("Query pythonApi: ", rest_uri);
 
+            //     const featureCollection = await fc;
+            const res: any = (geoids === "all") ? await (async () => {
+                  const fc = // (skipCache) ?
+                    await pythonApi.getItem(`bcat/${table}?limit=${page_size}&offset=${count_offset}&page=${page_number}`)
+                  //   : await redisClient.checkCache(`${table}-`
+                  //     + `${page_size}-${count_offset}-${page_number}`, async () => {
+                  //
+                  //     // TODO: Remove after testing call to local Python REST API
+                  //     fetch(rest_uri)
+                  //       .catch((err) => console.log("Test Python REST error: ", err))
+                  //       .then((res) => {
+                  //         console.log("Test Python REST response: ", res);
+                  //         const tc = (<any>(<Response>res));
+                  //         console.log("FeatureCollection: ",
+                  //           (tc.hasOwnProperty("features")) ?
+                  //             (<Array<any>>tc.features)
+                  //               .map(f => ({
+                  //                 ...f,
+                  //                 "id": f.properties.geoid_co
+                  //               })) :
+                  //             tc.features
+                  //         );
+                  //       });
+                  //
+                  //     return await pythonApi.getItem(`bcat/${table}?limit=${page_size}&offset=${count_offset}&page=${page_number}`);
+                  //   });
 
-                // TODO: Remove after testing call to local Python REST API
-                fetch(rest_uri)
-                  .catch((err) => console.log("Test Python REST error: ", err))
-                  .then((res) => {
-                    console.log("Test Python REST response: ", res);
-                    const tc = (<any>(<Response>res));
-                    console.log("FeatureCollection: ",
-                      (tc.hasOwnProperty("features")) ?
-                        (<Array<any>>tc.features)
+                  return ({
+                      type: 'FeatureCollection',
+                      features: (fc.hasOwnProperty("features")) ?
+                        (<Array<any>>fc.features)
                           .map(f => ({
-                            ...f,
-                            "id": f.properties.geoid_co
+                              ...f,
+                              "id": f.properties.geoid_co
                           })) :
-                        tc.features
-                    );
+                        fc.features
                   });
+              })():
+              // (skipCache) ?
+              await pythonApi.getItem(`bcat/${table}`
+                + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`)
+            //   : await redisClient.checkCache(`${table}-`
+            //     + `${geoids}-${page_size}-${count_offset}-${page_number}`, async () => {
+            //
+            //     // TODO: Remove after testing call to local Python REST API
+            //     fetch(rest_uri)
+            //       .catch((err) => console.log("Test Python REST error: ", err))
+            //       .then((res) => console.log("Test Python REST response: ", res));
+            //
+            //     return await pythonApi.getItem(`bcat/${table}`
+            //       + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
+            //   });
 
-                return await pythonApi.getItem(`bcat/auction_904_defaults?limit=${page_size}&offset=${count_offset}&page=${page_number}`);
-              });
+            // console.log("res: ", await res);
 
-            return ({
-              type: 'FeatureCollection',
-              features: (fc.hasOwnProperty("features")) ?
-                (<Array<any>>fc.features)
-                  .map(f => ({
-                    ...f,
-                    "id": f.properties.geoid_co
-                  })) :
-                fc.features
-            });
-          })():
-          (skipCache)
-            ? await pythonApi.getItem(`bcat/auction_904_defaults`
-              + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`)
-            : await redisClient.checkCache(`auction_904_defaults-`
-              + `${geoids}-${page_size}-${count_offset}-${page_number}`, async () => {
-
-              // TODO: Remove after testing call to local Python REST API
-              fetch(rest_uri)
-                .catch((err) => console.log("Test Python REST error: ", err))
-                .then((res) => console.log("Test Python REST response: ", res));
-
-              return await pythonApi.getItem(`bcat/auction_904_defaults`
-                + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
-            });
-
-        // console.log("res: ", await res);
-
-        return ((res) ?
-          await Promise.resolve(
-            {
-    //             ...featureCollection,
-                "type": 'FeatureCollection',
-                "features": res.features
-            }
-          ) :
-    //       featureCollection
-          await Promise.resolve(
-            {
-              "type": 'FeatureCollection',
-              "features": []
-            }
-          )
-        );
-      })()
-      //   },
-      //   Promise.resolve({
-      //     type: 'FeatureCollection',
-      //     features: [],
-      //   })
-    );
+            return ((res) ?
+                await Promise.resolve(
+                  {
+                      //             ...featureCollection,
+                      "type": 'FeatureCollection',
+                      "features": res.features
+                  }
+                ) :
+                //       featureCollection
+                await Promise.resolve(
+                  {
+                      "type": 'FeatureCollection',
+                      "features": []
+                  }
+                )
+            );
+        })()
+        //   },
+        //   Promise.resolve({
+        //     type: 'FeatureCollection',
+        //     features: [],
+        //   })
+      );
   }
 };
 
