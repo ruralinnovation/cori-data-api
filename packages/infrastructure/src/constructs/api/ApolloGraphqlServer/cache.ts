@@ -43,31 +43,32 @@ export class Cache {
     // this.getRawCache();
   }
   getRawCache() {
-    if (this.rawCache && this.rawCache.status === "ready") {
-      console.log("Redis: use existing connection (" + this.rawCache.status + ")");
-      return this.rawCache;
+    console.log("Do not initialize Redis cache");
 
-    } else {
-      this.rawCache = new Redis({
-        host: this.cacheOptions.redisOptions?.host,
-        port: this.cacheOptions.redisOptions?.port,
-        username: this.cacheOptions.redisOptions?.username,
-        password: this.cacheOptions.redisOptions?.password,
-      });
-
-      console.log("Redis: new connection (" + this.rawCache.status + ")");
-      return this.rawCache;
-    }
+    // if (this.rawCache && this.rawCache.status === "ready") {
+    //   console.log("Redis: use existing connection (" + this.rawCache.status + ")");
+    //
+    // } else {
+    //   this.rawCache = new Redis({
+    //     host: this.cacheOptions.redisOptions?.host,
+    //     port: this.cacheOptions.redisOptions?.port,
+    //     username: this.cacheOptions.redisOptions?.username,
+    //     password: this.cacheOptions.redisOptions?.password,
+    //   });
+    //
+    //   console.log("Redis: new connection (" + this.rawCache.status + ")");
+    // }
+    return this.rawCache;
   }
   getCache() {
-    if (this.cache) {
-      return this.cache;
-    } else {
-      this.cache = new BaseRedisCache({
-        client: this.getRawCache() as RedisClient,
-      });
-      return this.cache;
-    }
+    // if (this.cache) {
+    //   return this.cache;
+    // } else {
+    //   this.cache = new BaseRedisCache({
+    //     client: this.getRawCache() as RedisClient,
+    //   });
+    // }
+    return this.cache;
   }
   /**
    * @description Get the cache key for a table and county
