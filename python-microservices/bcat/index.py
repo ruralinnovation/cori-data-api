@@ -290,6 +290,7 @@ def get_bcat_props(table):
             query = f"""
                 SELECT
                     json_build_object(
+                        'id',         t.{id},
                         'type',       'Feature',
                         'properties', to_jsonb(t.*)
                     )
@@ -321,6 +322,7 @@ def get_bcat_props(table):
         query = f"""
             SELECT
                 json_build_object(
+                    'id',         t.{id},
                     'type',       'Feature',
                     'properties', to_jsonb(t.*)
                 )
