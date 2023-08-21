@@ -44,7 +44,7 @@ export class Networking extends Construct {
     console.log("Attempted to create private subnet: ", privateSubnet);
 
     this.lambdaSecurityGroup = new SecurityGroup(this, 'CORIDataAPILambdaSecurityGroup', {
-      securityGroupName: `cda-${prefix}-lambda-rds-access`,
+      securityGroupName: `${prefix}-vpc-microservices-sg`,
       vpc: this.vpc,
       allowAllOutbound: false,
       description: 'Security group for RDS access',
@@ -56,11 +56,7 @@ export class Networking extends Construct {
       databaseConfig.databaseSecurityGroupId
     );
 
-    this.lambdaSecurityGroup.addEgressRule(this.lambdaSecurityGroup, Port.allTraffic(), 'Allow Egress to Lambdas in same security group');
-    this.lambdaSecurityGroup.addIngressRule(this.lambdaSecurityGroup, Port.allTraffic(), 'Allow Ingress from Lambdas in same security group');
-    this.lambdaSecurityGroup.addEgressRule(this.rdsSecurityGroup, Port.tcp(443), 'Allow Egress to HTTPS');
     this.lambdaSecurityGroup.addEgressRule(this.rdsSecurityGroup, Port.tcp(5432), 'Allow Egress to PostgreSQL');
     this.rdsSecurityGroup.addIngressRule(this.lambdaSecurityGroup, Port.tcp(5432), 'Allow Ingress from Lambda');
-    this.lambdaSecurityGroup.addEgressRule(this.rdsSecurityGroup, Port.tcp(6379), 'Allow Egress to Redis');
   }
 }
