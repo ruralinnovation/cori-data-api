@@ -42,7 +42,10 @@ const county_summary_geojson = {
 
     return skipCache
       ? await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${geoid_co}`)
-      : await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${geoid_co}`);
+      : await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${geoid_co}`)
+      // : await redisClient.checkCache(`county_summary-${geoid_co}`, async () => {
+      //   return await pythonApi.getItem(`bcat/county_summary/geojson?geoid_co=${geoid_co}`);
+      // });
   },
 };
 

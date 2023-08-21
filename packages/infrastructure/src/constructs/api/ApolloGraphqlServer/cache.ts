@@ -43,21 +43,21 @@ export class Cache {
     // this.getRawCache();
   }
   getRawCache() {
-    console.log("Do not initialize Redis cache");
 
-    // if (this.rawCache && this.rawCache.status === "ready") {
-    //   console.log("Redis: use existing connection (" + this.rawCache.status + ")");
-    //
-    // } else {
-    //   this.rawCache = new Redis({
-    //     host: this.cacheOptions.redisOptions?.host,
-    //     port: this.cacheOptions.redisOptions?.port,
-    //     username: this.cacheOptions.redisOptions?.username,
-    //     password: this.cacheOptions.redisOptions?.password,
-    //   });
-    //
-    //   console.log("Redis: new connection (" + this.rawCache.status + ")");
-    // }
+    if (this.rawCache && this.rawCache.status === "ready") {
+      console.log("Redis: use existing connection (" + this.rawCache.status + ")");
+
+    } else {
+      this.rawCache = new Redis({
+        host: this.cacheOptions.redisOptions?.host,
+        port: this.cacheOptions.redisOptions?.port,
+        username: this.cacheOptions.redisOptions?.username,
+        password: this.cacheOptions.redisOptions?.password,
+      });
+
+      console.log("Redis: new connection (" + this.rawCache.status + ")");
+    }
+
     return this.rawCache;
   }
   getCache() {
