@@ -43,9 +43,9 @@ export class Cache {
     // this.getRawCache();
   }
   getRawCache() {
+
     if (this.rawCache && this.rawCache.status === "ready") {
       console.log("Redis: use existing connection (" + this.rawCache.status + ")");
-      return this.rawCache;
 
     } else {
       this.rawCache = new Redis({
@@ -56,18 +56,19 @@ export class Cache {
       });
 
       console.log("Redis: new connection (" + this.rawCache.status + ")");
-      return this.rawCache;
     }
+
+    return this.rawCache;
   }
   getCache() {
-    if (this.cache) {
-      return this.cache;
-    } else {
-      this.cache = new BaseRedisCache({
-        client: this.getRawCache() as RedisClient,
-      });
-      return this.cache;
-    }
+    // if (this.cache) {
+    //   return this.cache;
+    // } else {
+    //   this.cache = new BaseRedisCache({
+    //     client: this.getRawCache() as RedisClient,
+    //   });
+    // }
+    return this.cache;
   }
   /**
    * @description Get the cache key for a table and county
