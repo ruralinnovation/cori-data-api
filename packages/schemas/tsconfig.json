@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "lib": [
+      "dom"
+    ]
   },
   "exclude": ["./dist/**/*", "cdk.out", "dist", "node_modules"]
 }

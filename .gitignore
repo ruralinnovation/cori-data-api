@@ -2,6 +2,7 @@
 *.run
 node_modules
 **/cdk.out/*
+**/*.graphqlconfig
 **/packages/infrastructure/dist/**
 **node_modules**
 ./swagger/dist/**
@@ -172,3 +173,13 @@ cython_debug/
 log.html
 output.xml
 report.html
+
+*.DS_Store
+*.bak
+AWS_SAM_CLI_64_PY3.msi
+aws-sam-cli-linux-x86_64.zip
+amplify.yml
+aws-config.js
+fullstack-graphql-book
+sam-beta-installation
+spec

@@ -1,19 +1,19 @@
 import { Stack, StackProps, CfnOutput, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Hosting } from '../constructs/Hosting';
-import { Cognito, ExistingCognitoConfig } from '../constructs/Cognito';
+import { Hosting } from '../src/constructs/Hosting';
+import { Cognito, ExistingCognitoConfig } from '../src/constructs/Cognito';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
-import { ApolloGraphqlServer } from '../constructs/api/ApolloGraphqlServer/ApolloGraphqlServer';
+import { ApolloGraphqlServer } from '../src/constructs/api/ApolloGraphqlServer/ApolloGraphqlServer';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { Networking } from '../constructs/Networking';
-import { PythonDataServer } from '../constructs/api/PythonDataServer';
+import { Networking } from '../src/constructs/Networking';
+import { PythonDataServer } from '../src/constructs/api/PythonDataServer';
 
 export interface DatabaseConfig {
   vpcId: string;
   databaseSecurityGroupId: string;
   host: string;
-  dbname?: string;
-  dbuser?: string;
+  dbname: string;
+  dbuser: string;
   parameterName: string;
 }
 export interface CacheConfig {
@@ -50,6 +50,12 @@ interface AppSyncConfig {
   additionalUserPools: AppSyncUserPoolConfig[];
 }
 
+interface ApolloStudioConfig {
+  apolloKey: string;
+  apolloGraphRef: string;
+  apolloSchemaReporting;
+}
+
 export interface ApiStackProps extends StackProps {
   env: {
     account: string;
@@ -75,7 +81,7 @@ export interface ApiStackProps extends StackProps {
   databaseConfig: DatabaseConfig;
 
   /**
-   * TODO
+   *
    */
   cacheEnabled: boolean;
   cacheConfig: CacheConfig;
@@ -90,12 +96,20 @@ export interface ApiStackProps extends StackProps {
    */
   existingCognito?: ExistingCognitoConfig;
 
+  /**
+   * TODO
+   */
   microservicesConfig: ServiceConfig[];
-}
 
+  /**
+   *
+   */
+  apolloStudioConfig?: ApolloStudioConfig;
+}
 export class ApiStack extends Stack {
   /**
    * Used to connect values to integration test
+   *
    */
   pythonApiUrlOutput: CfnOutput;
   apolloApiUrlOutput: CfnOutput;
@@ -120,6 +134,7 @@ export class ApiStack extends Stack {
       cacheEnabled,
       retain,
       microservicesConfig,
+      apolloStudioConfig,
     } = this.props;
 
     const prefix = `${client}-data-api-${stage}`;
@@ -140,31 +155,31 @@ export class ApiStack extends Stack {
     });
 
     /**
-     * Python API Handler
+     * Python Data RESTApi
      */
-    const restApi = new PythonDataServer(this, 'PythonDataServer', {
+
+    const pythonServer = new PythonDataServer(this, 'PythonDataServer', {
       prefix,
       stage,
       userPool: cognito.userPool,
-      securityGroups: [networking.lambdaSecurityGroup],
       vpc: networking.vpc,
+      securityGroups: [networking.lambdaSecurityGroup],
       microservicesConfig,
-      /* TODO: add cache env config here (see Apollo setup) */
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: stage,
         DB_SECRET: dbPassword,
-        DB_USER: databaseConfig.dbuser || "postgres",
+        DB_USER: databaseConfig.dbuser,
         REGION: props.env.region,
         DB_HOST: databaseConfig.host,
-        DB_NAME: databaseConfig.dbname || "postgres",
+        DB_NAME: databaseConfig.dbname,
       },
     });
 
     /**
      * Apollo V3 GraphQL Api Handler
      */
-    const apollo = new ApolloGraphqlServer(this, 'ApolloServer', {
+    const apolloServer = new ApolloGraphqlServer(this, 'ApolloServer', {
       prefix,
       stage,
       userPool: cognito.userPool,
@@ -174,7 +189,7 @@ export class ApiStack extends Stack {
       vpcSubnets: networking.vpcSubnets,
       environment: {
         LOGGING_LEVEL: 'debug',
-        PYTHON_API_URL: restApi.apiGw.apiEndpoint,
+        PYTHON_API_URL: pythonServer.apiGw.apiEndpoint,
         PYTHON_API_STAGE: stage,
         // CF_URL: this.hosting.url,   // Circular dep
         CACHE_ENABLED: cacheEnabled ? 'true' : 'false',
@@ -182,7 +197,10 @@ export class ApiStack extends Stack {
         CACHE_PORT: '' + cacheConfig.port,
         CACHE_USERNAME: cacheConfig.username,
         CACHE_PASSWORD: cachePassword,
-        CACHE_GLOBAL_TTL: '86400',
+        CACHE_GLOBAL_TTL: cacheConfig.globalTTL || '86400',
+        APOLLO_KEY: apolloStudioConfig?.apolloKey || '',
+        APOLLO_GRAPH_REF: apolloStudioConfig?.apolloGraphRef || '',
+        APOLLO_SCHEMA_REPORTING: apolloStudioConfig?.apolloSchemaReporting || 'FALSE',
       },
     });
 
@@ -191,13 +209,13 @@ export class ApiStack extends Stack {
       apiOriginConfigs: [
         {
           default: true,
-          domain: restApi.apiGw.apiDomain,
+          domain: pythonServer.apiGw.apiDomain,
           originPath: `/${stage}`,
           behaviorPathPattern: '/bcat/*',
         },
         {
           default: false,
-          domain: apollo.apiGw.apiDomain,
+          domain: apolloServer.apiGw.apiDomain,
           originPath: `/${stage}`,
           behaviorPathPattern: '/graphql*',
         },
@@ -218,8 +236,8 @@ export class ApiStack extends Stack {
     this.postmanClientIdOutput = new CfnOutput(this, 'PostmanClientId', {
       value: cognito.postmanClient.userPoolClientId,
     });
-    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: restApi.apiGw.apiEndpoint });
-    this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: apollo.apiGw.apiEndpoint });
+    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: pythonServer.apiGw.apiEndpoint });
+    this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: apolloServer.apiGw.apiEndpoint });
     this.cloudFrontUrl = new CfnOutput(this, 'CloudFrontUrl', { value: hosting.url });
   }
 }
