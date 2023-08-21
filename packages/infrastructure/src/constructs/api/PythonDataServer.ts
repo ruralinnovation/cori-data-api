@@ -21,7 +21,7 @@ interface PythonDataServerProps {
   environment: {
     LOGGING_LEVEL: string;
     STAGE: string;
-    SECRET: string;
+    DB_SECRET: string;
     DB_USER: string;
     REGION: string;
     DB_HOST: string;
@@ -110,10 +110,18 @@ export class PythonDataServer extends Construct {
         entry: join(microservicesDirectory, config.directoryName),
       });
 
+      // this.apiGw.addLambda({
+      //   method: 'OPTIONS',
+      //   path: `${config.corePath}/{proxy+}`,
+      //   lambda: service.function,
+      //   options: {}
+      // });
+
       this.apiGw.addLambda({
         method: 'GET',
         path: `${config.corePath}/{proxy+}`,
         lambda: service.function,
+        options: {}
       });
     });
   }

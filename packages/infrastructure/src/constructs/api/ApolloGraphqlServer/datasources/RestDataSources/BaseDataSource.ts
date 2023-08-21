@@ -11,6 +11,18 @@ export class BaseDataSource extends RESTDataSource {
   }
   async getItem(path?: string) {
     const res = await this.get(path ? path : '', undefined);
+
+    console.log("Response from dataSource: ",  (() => {
+      const properties = [];
+      for (let p in res) {
+        if (res.hasOwnProperty(p)) {
+          // @ts-ignore
+          properties.push(p + ": " + JSON.stringify(res[p], null, 2) + "\n");
+        }
+      }
+      return properties;
+    })());
+
     return res;
   }
 }

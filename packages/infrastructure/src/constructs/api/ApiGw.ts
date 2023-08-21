@@ -9,8 +9,8 @@ import {
   AwsIntegration,
   IntegrationOptions,
   MethodOptions,
-  TokenAuthorizer,
-} from 'aws-cdk-lib/aws-apigateway';
+  TokenAuthorizer, Model, AuthorizationType
+} from "aws-cdk-lib/aws-apigateway";
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { Function as BASE_FUNCTION } from 'aws-cdk-lib/aws-lambda';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
@@ -98,29 +98,79 @@ export class ApiGw extends Construct {
     lambda: BASE_FUNCTION;
     options?: Mutable<IntegrationOptions & MethodOptions>;
   }) {
+
+    console.log(`Adding APIGateway integration on ${this.props.prefix} for method: ${method}...`)
+
+    const _options = options;
+
     const resource = this.api.root.resourceForPath(path.startsWith('/') ? path : `/${path}`);
+
+    if (method !== 'OPTIONS' && this.authorizer) {
+      _options.authorizer = this.authorizer;
+
+    } else if (_options.hasOwnProperty("authorizer")){
+      delete _options.authorizer;
+
+      // FALLBACK FOR OPTIONS METHOD
+      // const ALLOWED_HEADERS = ['Content-Type', 'X-Amz-Date', 'X-Amz-Security-Token', 'Authorization', 'X-Api-Key', 'X-Requested-With', 'Accept', 'Access-Control-Allow-Methods', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Headers'];
+      //
+      // const standardCorsMockIntegration = new MockIntegration({
+      //   integrationResponses: [{
+      //     statusCode: '204',
+      //     responseParameters: {
+      //       'method.response.header.Access-Control-Allow-Headers': `'${ALLOWED_HEADERS.join(",")}'`,
+      //       'method.response.header.Access-Control-Allow-Origin': "'*'",
+      //       'method.response.header.Access-Control-Allow-Credentials': "'false'",
+      //       'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,GET,PUT,POST,DELETE'",
+      //     },
+      //   }],
+      //   passthroughBehavior: PassthroughBehavior.NEVER,
+      //   requestTemplates: {
+      //     "application/json": "{\"statusCode\": 204}"
+      //   }
+      // });
+      //
+      // const optionsMethodResponse = {
+      //   statusCode: '204',
+      //   responseModels: {
+      //     'application/json': Model.EMPTY_MODEL
+      //   },
+      //   responseParameters: {
+      //     'method.response.header.Access-Control-Allow-Headers': true,
+      //     'method.response.header.Access-Control-Allow-Methods': true,
+      //     'method.response.header.Access-Control-Allow-Credentials': true,
+      //     'method.response.header.Access-Control-Allow-Origin': true,
+      //   }
+      // };
+      //
+      // resource.addMethod(method, standardCorsMockIntegration, {
+      //   authorizationType: AuthorizationType.NONE,
+      //   methodResponses: [
+      //     optionsMethodResponse
+      //   ]
+      // });
+    }
+
+    console.log("... with options: ", _options);
+
     const integration = new AwsIntegration({
       proxy: true,
       service: 'lambda',
       path: `2015-03-31/functions/${lambda.functionArn}/invocations`,
-      options,
+      options: _options,
     });
 
-    const _options = options;
-    if (this.authorizer && method !== 'OPTIONS') {
-      _options.authorizer = this.authorizer;
-    }
     resource.addMethod(method, integration, _options);
 
-    lambda.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com')); //Need to grant apigateway permission to invoke lambda when there are multiple stages
-
-    if (this.props.stage !== 'local') {
-      try {
-        this.addCorsMockIntegration(resource); // throws if added multiple times
-      } catch {
-        // Allow multiple resources of the same name with different methods
-      }
+    // if (this.props.stage !== 'local') {
+    try {
+      this.addCorsMockIntegration(resource); // throws if added multiple times
+    } catch {
+      // Allow multiple resources of the same name with different methods
     }
+    // }
+
+    lambda.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com')); //Need to grant apigateway permission to invoke lambda when there are multiple stages
   }
 
   private addGatewayResponses() {
@@ -163,7 +213,7 @@ export class ApiGw extends Construct {
         ],
         passthroughBehavior: PassthroughBehavior.NEVER,
         requestTemplates: {
-          'application/json': '{"statusCode": 200}',
+          'application/json': '{"statusCode": 204}',
         },
       }),
       {

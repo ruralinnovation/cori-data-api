@@ -20,6 +20,21 @@ def bad_request_error(msg):
 
 
 """
+acs testing endpoints
+"""
+@app.get("/testing")
+def get():
+    print("testing acs endpoint /testing")
+
+    logger.info("testing acs endpoint /testing on system:")
+    logger.info(os.environ)
+
+    return {
+        "message": "success"
+    }
+
+
+"""
 acs variable count
 """
 @app.get("/<table>/count", compress=False)
@@ -289,21 +304,6 @@ def get_acs(table):
 
     return result
 
-
-"""
-acs testing endpoints
-"""
-# @app.get("/testing")
-# def get():
-#     print("testing acs endpoint /testing")
-#
-#     logger.info("testing acs endpoint /testing on system:")
-#     logger.info(os.environ)
-#
-#     return {
-#         "message": "success"
-#     }
-#
 
 # You can continue to use other utilities just as before
 @tracer.capture_lambda_handler

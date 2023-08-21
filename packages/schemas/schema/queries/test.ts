@@ -21,11 +21,11 @@ export default {
       { dataSources: { pythonApi }, redisClient }: any,
       info: any
     ) => {
-      return skipCache
-        ? await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`)
-        : await redisClient.checkCache(`county_adjacency_crosswalk-${county}`, async () => {
-            return await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`);
-          });
+      return // skipCache ?
+        await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`)
+      //   : await redisClient.checkCache(`county_adjacency_crosswalk-${county}`, async () => {
+      //       return await pythonApi.getItem(`bcat/county_adjacency_crosswalk/geojson?geoid_co=${county}`);
+      //     });
     },
   },
 };
