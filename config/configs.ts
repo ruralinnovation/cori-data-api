@@ -195,7 +195,15 @@ export const Config: IConfigs = {
       dbname: 'data',
       dbuser: 'read_only_user',
     },
-    stage: 'local'
+    stage: 'local',
+    testing: {
+      region: coriDefaults.testing?.region || "",
+      apiUrl: "http://localhost:2000",
+      userPoolId: coriDefaults.testing?.userPoolId || "",
+      cognitoClientId: coriDefaults.testing?.cognitoClientId || "",
+      username: coriDefaults.testing?.username || "",
+      password: coriDefaults.testing?.password || ""
+    }
   },
   'pre': {
     // 'pre-deploy' (before dev/development)

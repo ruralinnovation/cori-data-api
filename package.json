@@ -54,7 +54,8 @@
     "prep": "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/l2v0f2h3 && docker pull public.ecr.aws/sam/build-python3.8",
     "start:api": "npm run start -w infrastructure",
     "start:frontend": "npm run start -w frontend",
-    "test": "npm run test:integration -w infrastructure",
+    "python-microservices": "cd python-microservices && cd acs && ./tests.sh http://localhost:2000 && cd ..",
+    "test": "npm run python-microservices && npm run test:integration -w infrastructure",
     "test:schema": "npm run play -w schemas",
     "ts": "npm run node -- -r ts-node/register"
   },
