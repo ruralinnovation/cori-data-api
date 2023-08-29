@@ -61,7 +61,7 @@
   "workspaces": [
     "packages/cori.data.api",
     "packages/frontend",
-    "packages/infrastructure_cdk_update",
+    "packages/infrastructure",
     "packages/schemas"
   ]
 }
