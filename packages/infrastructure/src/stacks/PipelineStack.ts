@@ -135,7 +135,7 @@ export class PipelineStack extends Stack {
           'npm --version',
           'npm i',
           'npm run build',
-          'npm run synth:pipeline -w infrastructure',
+          'npm run synth:pipeline -w @cori-risi/infrastructure',
         ],
         primaryOutputDirectory: 'packages/infrastructure/cdk.out',
       }),

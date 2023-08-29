@@ -1,5 +1,5 @@
 {
-  "name": "schemas",
+  "name": "@cori-risi/graphql-schemas",
   "version": "0.0.1",
   "description": "Data schemas for APIs",
   "files": [
@@ -28,5 +28,8 @@
     "dev:merge-schemas": "npm run ts ./merge-schemas.ts",
     "hive-publish": "npx hive schema:publish dist/schema.graphql --service api --force",
     "ts": "npm install cross-env nodemon ts-node && cross-env nodemon '--watch' schema "
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.7"
   }
 }

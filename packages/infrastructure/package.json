@@ -1,5 +1,5 @@
 {
-  "name": "infrastructure",
+  "name": "@cori-risi/infrastructure",
   "version": "0.0.2",
   "description": "Infrastructure code for CORI Data API",
   "bin": {
