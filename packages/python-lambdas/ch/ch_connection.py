@@ -39,6 +39,20 @@ def execute(query):
     with conn.cursor() as cur:
         try:
             cur.execute(query)
+            return cur.fetchall()
+        except Exception as error:
+            print(error)
+            cur.execute("ROLLBACK")
+            conn.commit()
+
+def execute_with_cols(query):
+    global conn
+    if not conn:
+        conn = psycopg.connect(**DB_ARGS)
+
+    with conn.cursor() as cur:
+        try:
+            cur.execute(query)
             # return cur.fetchall()
             return [ replace_decimals(dict(line)) for line in [zip([ column[0] for column in cur.description], row) for row in cur.fetchall()] ]
         except Exception as error:

@@ -40,7 +40,7 @@ export const microservicesTests = async (): Promise<void> => {
   env.API_TOKEN = accessToken;
   try {
     const { stdout, stderr } = await exec(
-      `bash python-lambdas/bcat/tests.sh ${config.apiUrl} ${accessToken} python-lambdas/bcat`,
+      `bash python-lambdas/bcat/tests.sh ${config.apiUrl} ${accessToken} packages/python-lambdas/bcat`,
       {
         env: env,
       }
