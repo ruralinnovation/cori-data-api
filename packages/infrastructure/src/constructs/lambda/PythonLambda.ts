@@ -21,6 +21,8 @@ export class PythonLambda extends Construct {
   constructor(scope: Construct, id: string, props: PythonLambdaProps) {
     super(scope, id);
 
+    console.log("Path to python function: ", props.entry);
+
     this.function = new PythonFunction(this, 'Function', {
       ...props,
       runtime: Runtime.PYTHON_3_8

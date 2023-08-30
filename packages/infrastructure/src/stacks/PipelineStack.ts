@@ -185,7 +185,7 @@ export class PipelineStack extends Stack {
           // 'pip install robotframework',
           // 'pip install robotframework-requests',
           // 'export PATH="$HOME/.local/bin:$PATH"',
-          // '. ./python-microservices/bcat/tests.sh',
+          // '. ./packages/python-lambdas/bcat/tests.sh',
         ],
       })
     );
