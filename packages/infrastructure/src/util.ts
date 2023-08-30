@@ -4,7 +4,7 @@ import * as pkgJson from '../package.json';
 export const version = pkgJson.version;
 export const projectRoot = __dirname;
 
-export const microservicesDirectory = join(projectRoot, '../../python-lambdas');
+export const microservicesDirectory = join(projectRoot, '../../../packages/python-lambdas');
 
 /**
  * Type-safe way to access object keys
