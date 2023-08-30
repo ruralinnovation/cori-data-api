@@ -1,4 +1,13 @@
-import { ISecurityGroup, IVpc, Port, PrivateSubnet, SecurityGroup, SubnetSelection, Vpc } from 'aws-cdk-lib/aws-ec2';
+import {
+  ISecurityGroup,
+  IVpc,
+  Peer,
+  Port,
+  PrivateSubnet,
+  SecurityGroup,
+  SubnetSelection,
+  Vpc
+} from "aws-cdk-lib/aws-ec2";
 import { Construct } from 'constructs';
 import { DatabaseConfig } from '../stacks/ApiStack';
 
@@ -58,7 +67,8 @@ export class Networking extends Construct {
 
     this.lambdaSecurityGroup.addEgressRule(this.lambdaSecurityGroup, Port.allTraffic(), 'Allow Egress to Lambdas in same security group');
     this.lambdaSecurityGroup.addIngressRule(this.lambdaSecurityGroup, Port.allTraffic(), 'Allow Ingress from Lambdas in same security group');
-    this.lambdaSecurityGroup.addEgressRule(this.rdsSecurityGroup, Port.tcp(443), 'Allow Egress to HTTPS');
+    // this.lambdaSecurityGroup.addEgressRule(this.rdsSecurityGroup, Port.tcp(443), 'Allow Egress to HTTPS in same security group'); //<- DOES NOT WORK!
+    this.lambdaSecurityGroup.addEgressRule(Peer.anyIpv4(), Port.tcp(443), 'Allow Egress to HTTPS');
     this.lambdaSecurityGroup.addEgressRule(this.rdsSecurityGroup, Port.tcp(5432), 'Allow Egress to PostgreSQL');
     this.rdsSecurityGroup.addIngressRule(this.lambdaSecurityGroup, Port.tcp(5432), 'Allow Ingress from Lambda');
     this.lambdaSecurityGroup.addEgressRule(this.rdsSecurityGroup, Port.tcp(6379), 'Allow Egress to Redis');
