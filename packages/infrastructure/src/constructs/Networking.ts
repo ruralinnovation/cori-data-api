@@ -31,7 +31,7 @@ export class Networking extends Construct {
 
     const privateSubnet = new PrivateSubnet(this, 'CoriDataAPIPrivateSubnet', {
       availabilityZone: 'us-east-1c',
-      cidrBlock: '172.30.11.0/24', // TODO: INCREMENT THIS CIDR WHEN MERGING TO PROD
+      cidrBlock: '172.30.12.0/24',
       vpcId: databaseConfig.vpcId,
 
       // the properties below are optional
