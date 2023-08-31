@@ -315,7 +315,8 @@ def get_bcat_props(table):
                             FROM {db_table}
                             {where}
                             ORDER BY {order_by}
-                            LIMIT 10000
+                            LIMIT {limit}
+                            OFFSET {offset}
                         ) t
                 """
     elif limit == 0:

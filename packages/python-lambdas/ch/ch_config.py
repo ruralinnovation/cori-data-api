@@ -65,9 +65,9 @@ CONFIG = {
         "geoid": "geoid_co",
         "geom": "geom",
         "epsg": 4269,
+        "id": "geoid_co",
         "simplify": 0.001,
         "precision": 6,
-        "id": "geoid_co",
         "limit": 255 # Texas has 254 counties... https://simple.wikipedia.org/wiki/List_of_counties_in_Texas
     },
     "ch_app_wide_tract_geo": {
@@ -77,9 +77,9 @@ CONFIG = {
         "geoid": "geoid_tr",
         "geom": "geom",
         "epsg": 4269,
+        "id": "geoid_tr",
         "simplify": 0.001,
         "precision": 6,
-        "id": "geoid_tr",
         "limit": 1000 # some counties have a *lot* of tracts
     },
     "bb_map_bl": {
@@ -89,9 +89,9 @@ CONFIG = {
         "geoid": "geoid_tr",
         "geom": "geom",
         "epsg": 4269,
+        "id": "geoid_bl",
         "simplify": 0.0,
         "precision": 6,
-        "id": "geoid_bl",
         "limit": 1000 # some tracts have a *lot* of blocks
     },
 }

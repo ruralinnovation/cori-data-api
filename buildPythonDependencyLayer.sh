@@ -1,5 +1,5 @@
 
-cd python-microservices/lambda-dependency-layer
+cd packages/python-lambdas/lambda-dependency-layer
 
 poetry export -f requirements.txt --without-hashes -o requirements.txt
 

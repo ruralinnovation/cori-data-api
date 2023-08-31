@@ -38,38 +38,40 @@ export class Cache {
   cacheOptions: CacheOptions;
   rawCache: Redis;
   cache: BaseRedisCache;
+
   constructor(cacheOptions?: CacheOptions) {
     this.cacheOptions = cacheOptions || defaultCacheOptions;
     // this.getRawCache();
   }
-  getRawCache() {
-    console.log("Do not initialize Redis cache");
 
-    // if (this.rawCache && this.rawCache.status === "ready") {
-    //   console.log("Redis: use existing connection (" + this.rawCache.status + ")");
-    //
-    // } else {
-    //   this.rawCache = new Redis({
-    //     host: this.cacheOptions.redisOptions?.host,
-    //     port: this.cacheOptions.redisOptions?.port,
-    //     username: this.cacheOptions.redisOptions?.username,
-    //     password: this.cacheOptions.redisOptions?.password,
-    //   });
-    //
-    //   console.log("Redis: new connection (" + this.rawCache.status + ")");
-    // }
+  getRawCache() {
+    if (this.rawCache && this.rawCache.status === "ready") {
+      console.log("Redis: use existing connection (" + this.rawCache.status + ")");
+
+    } else {
+      this.rawCache = new Redis({
+        host: this.cacheOptions.redisOptions?.host,
+        port: this.cacheOptions.redisOptions?.port,
+        username: this.cacheOptions.redisOptions?.username,
+        password: this.cacheOptions.redisOptions?.password,
+      });
+
+      console.log("Redis: new connection (" + this.rawCache.status + ")");
+    }
     return this.rawCache;
   }
+
   getCache() {
-    // if (this.cache) {
-    //   return this.cache;
-    // } else {
-    //   this.cache = new BaseRedisCache({
-    //     client: this.getRawCache() as RedisClient,
-    //   });
-    // }
-    return this.cache;
+    if (this.cache) {
+      return this.cache;
+    } else {
+      this.cache = new BaseRedisCache({
+        client: this.getRawCache() as RedisClient,
+      });
+      return this.cache;
+    }
   }
+
   /**
    * @description Get the cache key for a table and county
    *
@@ -80,6 +82,7 @@ export class Cache {
   getCacheKey(table: string, county: string | number) {
     return `${table}-${county}`;
   }
+
   /**
    * @description Get the cache value
    *
@@ -102,6 +105,7 @@ export class Cache {
       this.rawCache.disconnect();
     }
   }
+
   // eslint-disable-next-line @typescript-eslint/ban-types
   checkCache_orig(key: string, cb: Function, maxAge: number = globalTTL): Promise<unknown> {
     // eslint-disable-next-line no-async-promise-executor, @typescript-eslint/no-misused-promises
@@ -126,6 +130,7 @@ export class Cache {
       }
     });
   }
+
   // eslint-disable-next-line @typescript-eslint/ban-types
   checkCache(key: string, cb: Function, maxAge: number = globalTTL): Promise<unknown> {
     return new Promise((resolve, reject) => {
