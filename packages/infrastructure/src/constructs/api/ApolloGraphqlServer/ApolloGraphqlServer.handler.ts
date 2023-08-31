@@ -2,7 +2,7 @@ import { PythonRestApi } from './datasources';
 import { Cache } from './cache';
 import { ApolloServer } from 'apollo-server-lambda';
 import compression from 'compression';
-import { schema } from 'schemas/dist';
+import { schema } from '@cori-risi/graphql-schemas/dist';
 import * as plugins from './plugins';
 
 // Using "import * as express from 'express';" results in "express is not a function" once deployed
