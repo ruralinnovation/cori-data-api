@@ -142,18 +142,18 @@ export class ApiStack extends Stack {
     /**
      * Python API Handler
      */
-    const bcat = new PythonDataServer(this, 'PythonDataServer', {
+    const restApi = new PythonDataServer(this, 'PythonDataServer', {
       prefix,
       stage,
       userPool: cognito.userPool,
-      vpc: networking.vpc,
       securityGroups: [networking.lambdaSecurityGroup],
+      vpc: networking.vpc,
       microservicesConfig,
       /* TODO: add cache env config here (see Apollo setup) */
       environment: {
         LOGGING_LEVEL: this.props.loggingLevel,
         STAGE: stage,
-        SECRET: dbPassword,
+        DB_SECRET: dbPassword,
         DB_USER: databaseConfig.dbuser || "postgres",
         REGION: props.env.region,
         DB_HOST: databaseConfig.host,
@@ -169,9 +169,12 @@ export class ApiStack extends Stack {
       stage,
       userPool: cognito.userPool,
       logRetention: RetentionDays.FOUR_MONTHS,
+      securityGroups: [networking.lambdaSecurityGroup],
+      vpc: networking.vpc,
+      vpcSubnets: networking.vpcSubnets,
       environment: {
         LOGGING_LEVEL: 'debug',
-        PYTHON_API_URL: bcat.apiGw.apiEndpoint,
+        PYTHON_API_URL: restApi.apiGw.apiEndpoint,
         PYTHON_API_STAGE: stage,
         // CF_URL: this.hosting.url,   // Circular dep
         CACHE_ENABLED: cacheEnabled ? 'true' : 'false',
@@ -188,7 +191,7 @@ export class ApiStack extends Stack {
       apiOriginConfigs: [
         {
           default: true,
-          domain: bcat.apiGw.apiDomain,
+          domain: restApi.apiGw.apiDomain,
           originPath: `/${stage}`,
           behaviorPathPattern: '/bcat/*',
         },
@@ -215,7 +218,7 @@ export class ApiStack extends Stack {
     this.postmanClientIdOutput = new CfnOutput(this, 'PostmanClientId', {
       value: cognito.postmanClient.userPoolClientId,
     });
-    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: bcat.apiGw.apiEndpoint });
+    this.pythonApiUrlOutput = new CfnOutput(this, 'PythonApiUrl', { value: restApi.apiGw.apiEndpoint });
     this.apolloApiUrlOutput = new CfnOutput(this, 'ApolloApiUrl', { value: apollo.apiGw.apiEndpoint });
     this.cloudFrontUrl = new CfnOutput(this, 'CloudFrontUrl', { value: hosting.url });
   }

@@ -13,6 +13,23 @@
 
 - A Node Version Manager [Installing NVM](https://github.com/nvm-sh/nvm) or [Installing n](https://github.com/tj/n)
 
+### Getting started
+
+Run npm install:
+
+    $ npm install
+
+Set local environment (shell) varibles:
+
+    $ export INTEGRATION_TESTING_USERNAME=<aws-cognito-username>
+    $ export INTEGRATION_TESTING_PASSWORD=<aws-cognito-pasword>
+
+At this point, you should be able to build the api and run the test suite:
+
+    $ npm run build
+    $ npm run test
+
+
 ### Directory Structure
 
 #### Overview
@@ -26,7 +43,7 @@
 
 infrastructure
 
-schemas
+graphql-schemas
 
 python-microservices
 

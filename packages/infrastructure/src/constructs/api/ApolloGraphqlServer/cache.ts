@@ -38,13 +38,16 @@ export class Cache {
   cacheOptions: CacheOptions;
   rawCache: Redis;
   cache: BaseRedisCache;
+
   constructor(cacheOptions?: CacheOptions) {
     this.cacheOptions = cacheOptions || defaultCacheOptions;
-    this.getRawCache();
+    // this.getRawCache();
   }
+
   getRawCache() {
-    if (this.rawCache) {
-      return this.rawCache;
+    if (this.rawCache && this.rawCache.status === "ready") {
+      console.log("Redis: use existing connection (" + this.rawCache.status + ")");
+
     } else {
       this.rawCache = new Redis({
         host: this.cacheOptions.redisOptions?.host,
@@ -52,9 +55,12 @@ export class Cache {
         username: this.cacheOptions.redisOptions?.username,
         password: this.cacheOptions.redisOptions?.password,
       });
-      return this.rawCache;
+
+      console.log("Redis: new connection (" + this.rawCache.status + ")");
     }
+    return this.rawCache;
   }
+
   getCache() {
     if (this.cache) {
       return this.cache;
@@ -65,6 +71,7 @@ export class Cache {
       return this.cache;
     }
   }
+
   /**
    * @description Get the cache key for a table and county
    *
@@ -75,6 +82,7 @@ export class Cache {
   getCacheKey(table: string, county: string | number) {
     return `${table}-${county}`;
   }
+
   /**
    * @description Get the cache value
    *
@@ -83,51 +91,57 @@ export class Cache {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async getCacheValue(key: string): Promise<any> {
-    if (this.cacheOptions.enabled && this.rawCache) {
-      try {
-        const res = await this.rawCache.get(key);
-        if (res) {
-          return JSON.parse(res);
-        }
-        return null;
-      } catch (err) {
-        console.log(err);
-        throw err;
+    if (this.cacheOptions.enabled && !!this.getRawCache()) try {
+      const res = await this.getRawCache().get(key);
+      if (res) {
+        return JSON.parse(res);
       }
+      return null;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    } finally {
+      console.log("Redis: disconnect");
+      this.rawCache.disconnect();
     }
   }
+
   // eslint-disable-next-line @typescript-eslint/ban-types
   checkCache_orig(key: string, cb: Function, maxAge: number = globalTTL): Promise<unknown> {
     // eslint-disable-next-line no-async-promise-executor, @typescript-eslint/no-misused-promises
     return new Promise(async (resolve, reject) => {
-      try {
+      if (!!this.getRawCache()) try {
         const cacheRes = await this.getCacheValue(key);
         if (!cacheRes) {
           let dbValue = await cb();
           if (!dbValue) {
             dbValue = null;
           }
-          this.rawCache.setex(key, maxAge, JSON.stringify(dbValue));
+          this.getRawCache().setex(key, maxAge, JSON.stringify(dbValue));
           resolve(dbValue);
         } else {
           resolve(cacheRes);
         }
       } catch (err) {
         reject(err);
+      } finally {
+        console.log("Redis: disconnect");
+        this.rawCache.disconnect();
       }
     });
   }
+
   // eslint-disable-next-line @typescript-eslint/ban-types
   checkCache(key: string, cb: Function, maxAge: number = globalTTL): Promise<unknown> {
     return new Promise((resolve, reject) => {
-      try {
+      if (!!this.getRawCache()) try {
         this.getCacheValue(key).then(cacheRes => {
           if (!cacheRes) {
             cb().then(dbValue => {
               if (!dbValue) {
                 dbValue = null;
               }
-              this.rawCache.setex(key, maxAge, JSON.stringify(dbValue));
+              this.getRawCache().setex(key, maxAge, JSON.stringify(dbValue));
               resolve(dbValue);
             });
           } else {

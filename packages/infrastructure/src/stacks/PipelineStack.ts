@@ -135,11 +135,13 @@ export class PipelineStack extends Stack {
           'npm --version',
           'npm i',
           'npm run build',
-          'npm run synth:pipeline -w infrastructure',
+          'cd packages/infrastructure && npm run synth:pipeline',
         ],
         primaryOutputDirectory: 'packages/infrastructure/cdk.out',
       }),
     });
+
+    console.log("Add API Stage with microservices: ", props.ApiConfig.microservicesConfig);
 
     this.addApiStage(props.ApiConfig);
   }
@@ -185,7 +187,7 @@ export class PipelineStack extends Stack {
           // 'pip install robotframework',
           // 'pip install robotframework-requests',
           // 'export PATH="$HOME/.local/bin:$PATH"',
-          // '. ./python-microservices/bcat/tests.sh',
+          // '. ./packages/python-lambdas/bcat/tests.sh',
         ],
       })
     );

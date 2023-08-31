@@ -1,10 +1,16 @@
 *.idea
 *.run
-node_modules
-**/cdk.out/*
-**/packages/infrastructure/dist/**
-**node_modules**
-./swagger/dist/**
+**/*.backup
+**/*.bak
+**/.idea
+**/node_modules
+**/spec
+**/swagger/dist
+
+.Rhistory
+.Rprofile
+.Rproj.user
+*.Rproj
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -172,3 +178,14 @@ cython_debug/
 log.html
 output.xml
 report.html
+
+*.DS_Store
+*.bak
+*.graphqlconfig
+AWS_SAM_CLI_64_PY3.msi
+aws-sam-cli-linux-x86_64.zip
+amplify.yml
+aws-config.js
+fullstack-graphql-book
+sam-beta-installation
+spec
