@@ -131,9 +131,9 @@ export class PipelineStack extends Stack {
           trigger: source.trigger,
         }),
         commands: [
-          'npm install -g npm@latest',
+          'npm install -g npm@9.6.6',
           'npm --version',
-          'npm i',
+          'npm install',
           'npm run build',
           'cd packages/infrastructure && npm run synth:pipeline',
         ],
