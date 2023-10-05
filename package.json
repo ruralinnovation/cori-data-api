@@ -51,7 +51,7 @@
     "lint:debug": "PARSER_NO_WATCH=true NODE_OPTIONS=--max-old-space-size=4096 DEBUG=* npx eslint ./packages/infrastructure",
     "lint:fix": "eslint --fix ./packages ./config",
     "format": "prettier --write ./packages ./config",
-    "prep": "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/l2v0f2h3 && docker pull public.ecr.aws/sam/build-python3.8",
+    "prep": "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/l2v0f2h3 && docker pull public.ecr.aws/sam/build-python3.11",
     "start:api": "npm run start -w @cori-risi/infrastructure",
     "start:frontend": "npm run start -w @cori-risi/frontend",
     "test": "npm run test:integration -w @cori-risi/infrastructure",
