@@ -8,7 +8,7 @@ authors = ["Rural Innovation Strategies, Inc."]
 python = "^3.11"
 psycopg = "^3.1.12"
 psycopg-binary = "^3.1.12"
-aws-lambda-powertools = "1.26.0"
+aws-lambda-powertools = "2.25.1"
 
 [tool.poetry.dev-dependencies]
 
