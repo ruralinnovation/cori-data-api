@@ -25,7 +25,7 @@ export class PythonLambda extends Construct {
 
     this.function = new PythonFunction(this, 'Function', {
       ...props,
-      runtime: Runtime.PYTHON_3_8
+      runtime: Runtime.PYTHON_3_11
     });
 
     new LogGroup(this, 'LogGroup', {
