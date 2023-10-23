@@ -34,10 +34,10 @@ jobs:
           pip install -r requirements.txt
       - name: Run Integration Tests
         run: |
-          GIT_BRANCH=dev
+          export GIT_BRANCH=dev
           cd packages/python-lambdas
           echo $GITHUB_BRANCH
-          #npm run test
+          npm run test
           
 
       # - name: execute py script # run main.py
