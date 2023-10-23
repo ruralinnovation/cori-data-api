@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+      - name: Install Node Packages
+        run: |
+          npm ci
 
       - name: setup python
         uses: actions/setup-python@v4
