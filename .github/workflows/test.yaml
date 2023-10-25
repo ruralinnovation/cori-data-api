@@ -1,12 +1,52 @@
-name: learn-github-actions
-on: [push]
+name: Python Testing
+
+on:
+  push:
+    branches: ['development', 'main']
+    # paths:
+    #   - postgresql/*
+  pull_request:
+    branches: ['development', 'main']
+
+
 jobs:
-  check-bats-version:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content to github runner
+      - name: Setup nodejs
+        uses: actions/setup-node@v3
         with:
-          node-version: '14'
-      - run: npm install -g bats
-      - run: bats -v
+          node-version: 18
+          cache: 'npm'
+      - name: Install Node Packages
+        run: |
+          npm ci
+
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11' # install the python version needed
+
+      - name: install python packages
+        run: |
+          cd packages/python-lambdas
+          pwd
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Integration Tests
+        run: |
+          echo "John fix this :) "
+          # export GIT_BRANCH=dev
+          # cd packages/python-lambdas
+          # echo $GITHUB_BRANCH
+          # npm run test
+          
+
+      # - name: execute py script # run main.py
+      #   # env:
+      #   #   SOME_SECRET: ${{ secrets.SOME_SECRET }}
+      #   run: |
+      #     cd
+      #     # python main.py
