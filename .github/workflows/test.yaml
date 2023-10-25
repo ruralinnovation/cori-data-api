@@ -1,8 +1,11 @@
 name: Python Testing
 
+env:
+  GIT_BRANCH=dev
+
 on:
   push:
-    branches: ['development', 'main']
+    branches: ['development', 'main', 'test/*']
     # paths:
     #   - postgresql/*
   pull_request:
@@ -37,10 +40,8 @@ jobs:
           pip install -r requirements.txt
       - name: Run Integration Tests
         run: |
-          echo "John fix this :) "
-          # export GIT_BRANCH=dev
+          echo $GIT_BRANCH
           # cd packages/python-lambdas
-          # echo $GITHUB_BRANCH
           # npm run test
           
 
