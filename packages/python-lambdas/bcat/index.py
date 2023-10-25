@@ -290,6 +290,7 @@ def get_bcat_props(table):
             query = f"""
                 SELECT
                     json_build_object(
+                        'id',         t.{id},
                         'type',       'Feature',
                         'properties', to_jsonb(t.*)
                     )
@@ -314,13 +315,15 @@ def get_bcat_props(table):
                             FROM {db_table}
                             {where}
                             ORDER BY {order_by}
-                            LIMIT 10000
+                            LIMIT {limit}
+                            OFFSET {offset}
                         ) t
                 """
     elif limit == 0:
         query = f"""
             SELECT
                 json_build_object(
+                    'id',         t.{id},
                     'type',       'Feature',
                     'properties', to_jsonb(t.*)
                 )
@@ -495,8 +498,8 @@ def get_bcat(table):
             json_build_object(
                 {id_in_result}
                 'type',       'Feature',
-                'geometry',   ST_AsGeoJSON(geom)::jsonb,
-                'properties', to_jsonb(t.*) - 'x_id' - 'geom'
+                'properties', to_jsonb(t.*) - 'x_id' - 'geom',
+                'geometry',   ST_AsGeoJSON(geom)::jsonb
             )
             FROM (
                 SELECT {columns}

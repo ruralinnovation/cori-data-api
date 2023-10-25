@@ -131,15 +131,17 @@ export class PipelineStack extends Stack {
           trigger: source.trigger,
         }),
         commands: [
-          'npm install -g npm@latest',
           'npm --version',
-          'npm i',
+          'npm install -g npm@9.6.6',
+          'npm install',
           'npm run build',
-          'npm run synth:pipeline -w infrastructure',
+          'cd packages/infrastructure && npm run synth:pipeline',
         ],
         primaryOutputDirectory: 'packages/infrastructure/cdk.out',
       }),
     });
+
+    console.log("Add API Stage with microservices: ", props.ApiConfig.microservicesConfig);
 
     this.addApiStage(props.ApiConfig);
   }
@@ -172,10 +174,12 @@ export class PipelineStack extends Stack {
           'echo $COGNITO_CLIENT_ID',
           'echo $COGNITO_DOMAIN',
           'ls',
-          'npm install -g npm@latest',
-          'npm i',
+          'npm --version',
+          'npm install -g npm@9.6.6',
+          'npm install',
           // Execute Jest Integration Tests
           'npm run test:integration --w packages/infrastructure',
+          // TODO: Test python lambda functions for rest endpoints?
           /**
            * The below will run Python Robot Framework Integration tests
            * We will need to hook up an authentication mechanism to pass in a token to these tests
@@ -185,7 +189,7 @@ export class PipelineStack extends Stack {
           // 'pip install robotframework',
           // 'pip install robotframework-requests',
           // 'export PATH="$HOME/.local/bin:$PATH"',
-          // '. ./python-microservices/bcat/tests.sh',
+          // '. ./packages/python-lambdas/bcat/tests.sh',
         ],
       })
     );
