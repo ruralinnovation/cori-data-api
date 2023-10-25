@@ -43,7 +43,7 @@ At this point, you should be able to build the api and run the test suite:
 
 infrastructure
 
-schemas
+graphql-schemas
 
 python-microservices
 

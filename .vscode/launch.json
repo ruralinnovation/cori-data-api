@@ -21,7 +21,7 @@
       "name": "deploy:index.handler (python3.8)",
       "invokeTarget": {
         "target": "code",
-        "projectRoot": "${workspaceFolder}/python-microservices/deploy",
+        "projectRoot": "${workspaceFolder}/packages/python-lambdas/deploy",
         "lambdaHandler": "index.handler"
       },
       "lambda": {
