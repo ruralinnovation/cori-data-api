@@ -150,7 +150,7 @@ For more infomration [READ THE DOCS](https://awslabs.github.io/aws-lambda-powert
 
 ### Dependency Layer
 
-The dependencies for the Python Microservices are packaged and zipped in the `python-microservices/dependency-layer` directory.
+The dependencies for the Python Microservices are packaged and zipped in the `packages/python-lambdas/dependency-layer` directory.
 
 This zipped filed is then deployed as a labda layer dependency for all python lambdas. This will cut down on container start time by sharing these resources across many lambdas.
 
