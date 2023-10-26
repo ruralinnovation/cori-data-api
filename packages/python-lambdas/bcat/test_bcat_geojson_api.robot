@@ -32,7 +32,7 @@ two geoid_co county_adjacency_crosswalk                       /bcat/county_adjac
 
 Validate JSON
     [Arguments]    ${url}   ${params}
-    ${response}=    GET  ${server}${url}    params=${params}                                     expected_status=200
+    ${response}=    GET  ${server}${url}    params=${params}                            expected_status=200
     Dictionary Should Contain Key   ${response.json()}                                  type
     Dictionary Should Contain Key   ${response.json()}                                  features
     Should Be Equal As Strings      ${response.json()}[type]                            FeatureCollection
