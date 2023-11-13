@@ -184,8 +184,7 @@ report.html
 *.graphqlconfig
 AWS_SAM_CLI_64_PY3.msi
 aws-sam-cli-linux-x86_64.zip
-amplify.yml
-aws-config.js
-fullstack-graphql-book
+aws-sam-cli-src
+install
 sam-beta-installation
 spec
