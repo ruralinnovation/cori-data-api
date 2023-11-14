@@ -45,10 +45,8 @@ export class Cache {
   }
 
   getRawCache() {
-
     if (this.rawCache && this.rawCache.status === "ready") {
       console.log("Redis: use existing connection (" + this.rawCache.status + ")");
-      return this.rawCache;
 
     } else {
       this.rawCache = new Redis({
@@ -60,7 +58,6 @@ export class Cache {
 
       console.log("Redis: new connection (" + this.rawCache.status + ")");
     }
-
     return this.rawCache;
   }
 

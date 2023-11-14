@@ -5,7 +5,7 @@ require('dotenv').config();
 
 export const getTestConfig = async (): Promise<TestEnvConfig> => {
 
-  console.log("CONFIFURING TEST ENVIRONMENT");
+  console.log("CONFIGURING TEST ENVIRONMENT");
   console.log("process.env.GIT_BRANCH: ", process.env.GIT_BRANCH);
   console.log({
     username: process.env.TEST_USER!,
