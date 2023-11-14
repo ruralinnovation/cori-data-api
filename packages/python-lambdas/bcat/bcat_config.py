@@ -33,7 +33,7 @@ CONFIG = {
         "id": "geoid_bl"
     },
     "auction_904_ready": {
-        "table": "data.bcat.bcat_auction_904_ready_to_authorize",
+        "table": "bcat.bcat_auction_904_ready_to_authorize",
         "tile_columns": "geoid_bl, geoid_co, applicant, frn, sac, county, state",
         "api_columns": "geoid_bl, geoid_co, applicant, frn, sac, county, state, geom",
         "params": ["geoid_bl", "geoid_co", "applicant", "county", "state", "geom"],
