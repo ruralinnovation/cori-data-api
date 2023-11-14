@@ -55,46 +55,55 @@ describe('ApiIntegrationTests', () => {
   });
 
   describe("Sanity check test suite configuration", () => {
-    it("Check config", async () => {
-      expect(true).toBeTruthy();
-    })
+    it("Checks config", async () => {
+      const SOME_CONSTANT = true;
+      expect(SOME_CONSTANT).toBeTruthy();
+    });
   });
 
-  // describe('Python API Request 200 Status & Defined Response', () => {
-  //   it('Test', async () => {
-  //     try {
-  //       const response = await apiClient.get('/bcat/auction_904_subsidy_awards/geojson?geoid_co=47001,47003,47011');
+  describe('Python API Request 200 Status & Defined Response', () => {
+    it('Test', async () => {
+      try {
+        const response = await apiClient.get('/bcat/county_summary?limit=0');
 
-  //       // Axios has an extra data wrapper
-  //       const result = response.data;
+        // Axios has an extra data wrapper
+        const result = response.data;
 
-  //       expect(response.status).toEqual(200);
-  //       expect(result).toBeDefined();
-  //     } catch (error) {
-  //       logger.error(error);
-  //       fail(error);
-  //     }
-  //   });
-  // });
-  // describe('Python API Request 200 Status & Defined Response', () => {
-  //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
-  //     it(name, async () => {
-  //       try {
-  //         const response = await apiClient.get(val.geo);
-  //
-  //         // Axios has an extra data wrapper
-  //         const result = response.data;
-  //
-  //         expect(response.status).toEqual(200);
-  //         expect(result).toBeDefined();
-  //       } catch (error) {
-  //         logger.error(error);
-  //         fail(error);
-  //       }
-  //     });
-  //   });
-  // });
-  //
+        // console.log(result);
+
+        expect(response.status).toEqual(200);
+        expect(result).toBeDefined();
+      } catch (error) {
+        logger.error(error);
+        fail(error);
+      }
+    });
+  });
+
+  describe('Python API Request 200 Status & Defined Response', () => {
+    Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
+      it(name, async () => {
+        try {
+          const response = await apiClient.get(val.geo);
+
+          console.log(val.geo);
+
+          // Axios has an extra data wrapper
+          const result = response.data;
+
+          expect(response.status).toEqual(200);
+
+          console.log("OK 200");
+
+          expect(result).toBeDefined();
+        } catch (error) {
+          logger.error(error);
+          fail(error);
+        }
+      });
+    });
+  });
+
   // describe('Python API Response GeoJSON Format', () => {
   //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
   //     it(name, async () => {
@@ -139,7 +148,7 @@ describe('ApiIntegrationTests', () => {
   //     }
   //   });
   // });
-  //
+
   // describe('Apollo GraphQL API Request Status 200 and Defined Response', () => {
   //   Object.entries(apolloIntegrationEndpoints).forEach(([name, val]) => {
   //     it(name, async () => {
