@@ -222,9 +222,12 @@ export const Config: IConfigs = {
     artifactBucketName: "cori-coridataapipipeline-pipelineartifactsbucket2-pre",
     client: 'cori',
     databaseConfig: {
-      ...coriDefaults.databaseConfig,
-      dbname: 'data',
+      dbname: 'api-dev',
       dbuser: 'read_only_user',
+      host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
+      parameterName: '/postgresql/read_only_user_credentials',
+      databaseSecurityGroupId: 'sg-01ddcc192d814136f',
+      vpcId: 'vpc-08f5e17f5b75ccee9',
     },
     stage: 'pre'
   },
