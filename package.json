@@ -55,7 +55,7 @@
     "start:api": "npm run start -w @cori-risi/infrastructure",
     "start:frontend": "npm run start -w @cori-risi/frontend",
     "test": "npm run test:integration -w @cori-risi/infrastructure",
-    "test:robot": "cd packages/python-lambdas && cd acs && ./tests.sh http://localhost:2000 && cd ..",
+    "test:robot": "cd packages/python-lambdas && cd bcat && ./tests.sh http://localhost:2000 && cd ..",
     "test:schema": "npm run play -w @cori-risi/graphql-schemas",
     "ts": "npm run node -- -r ts-node/register"
   },
