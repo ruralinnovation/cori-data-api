@@ -49,12 +49,12 @@ export interface IMixedConfig extends ApiStackProps {
  * [NOTE]: You must have a valid service in the directory noted.
  */
 const microservicesConfiguration: ServiceConfig[] = [
-  {
-    /* Test/Trial of Python REST service */
-    logicalName: 'ACSService',
-    corePath: '/acs',
-    directoryName: 'acs',
-  },
+  // {
+  //   /* Test/Trial of Python REST service */
+  //   logicalName: 'ACSService',
+  //   corePath: '/acs',
+  //   directoryName: 'acs',
+  // },
   {
     /* Used by Broadband County Assessment Tool */
     logicalName: 'BCATService',
@@ -171,9 +171,12 @@ export const Config: IConfigs = {
     ...coriDefaults,
     client: 'cori',
     databaseConfig: {
-      ...coriDefaults.databaseConfig,
-      dbname: 'data',
+      dbname: 'api-dev',
       dbuser: 'read_only_user',
+      host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
+      parameterName: '/postgresql/read_only_user_credentials',
+      databaseSecurityGroupId: 'sg-01ddcc192d814136f',
+      vpcId: 'vpc-08f5e17f5b75ccee9',
     },
     stage: 'dev'
   },
@@ -181,9 +184,12 @@ export const Config: IConfigs = {
     ...coriDefaults,
     client: 'cori',
     databaseConfig: {
-      ...coriDefaults.databaseConfig,
-      dbname: 'data',
+      dbname: 'api-dev',
       dbuser: 'read_only_user',
+      host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
+      parameterName: '/postgresql/read_only_user_credentials',
+      databaseSecurityGroupId: 'sg-01ddcc192d814136f',
+      vpcId: 'vpc-08f5e17f5b75ccee9',
     },
     stage: 'dev'
   },
@@ -191,9 +197,12 @@ export const Config: IConfigs = {
     ...coriDefaults,
     client: 'cori',
     databaseConfig: {
-      ...coriDefaults.databaseConfig,
-      dbname: 'data',
+      dbname: 'api-dev',
       dbuser: 'read_only_user',
+      host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
+      parameterName: '/postgresql/read_only_user_credentials',
+      databaseSecurityGroupId: 'sg-01ddcc192d814136f',
+      vpcId: 'vpc-08f5e17f5b75ccee9',
     },
     stage: 'local',
     testing: {
