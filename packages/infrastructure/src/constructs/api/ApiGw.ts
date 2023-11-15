@@ -16,7 +16,7 @@ import { Function as BASE_FUNCTION } from 'aws-cdk-lib/aws-lambda';
 import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { toPascal, toKebab } from '../../naming';
 import { Mutable, HttpMethod } from '../../models/interfaces';
-import { Aws } from 'aws-cdk-lib';
+import { Aws, Size } from "aws-cdk-lib";
 
 interface GatewayResponse {
   type: ResponseType;
@@ -52,8 +52,8 @@ export class ApiGw extends Construct {
       },
       cloudWatchRole: props.cloudWatchRole,
       binaryMediaTypes: props.binaryMediaTypes || undefined,
-      minimumCompressionSize: 10485760  // disable compression for any
-                                        // response that is smaller than 10M
+      minCompressionSize: Size.bytes(10485760)  // disable compression for any
+                                                        // response that is smaller than 10M
     });
 
     this.addGatewayResponses();
