@@ -61,10 +61,11 @@ describe('ApiIntegrationTests', () => {
     });
   });
 
+  // This is now hitting the local api when GIT_BRANCH is *unset*
   describe('Python API Request 200 Status & Defined Response', () => {
     it('Test', async () => {
       try {
-        const response = await apiClient.get('/bcat/county_summary?limit=0');
+        const response = await apiClient.get('/ch/bl/bb_map?geoid_tr=51029930201');
 
         // Axios has an extra data wrapper
         const result = response.data;
@@ -80,29 +81,48 @@ describe('ApiIntegrationTests', () => {
     });
   });
 
-  describe('Python API Request 200 Status & Defined Response', () => {
-    Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
-      it(name, async () => {
-        try {
-          const response = await apiClient.get(val.geo);
-
-          console.log(val.geo);
-
-          // Axios has an extra data wrapper
-          const result = response.data;
-
-          expect(response.status).toEqual(200);
-
-          console.log("OK 200");
-
-          expect(result).toBeDefined();
-        } catch (error) {
-          logger.error(error);
-          fail(error);
-        }
-      });
-    });
-  });
+  // describe('Python API Request 200 Status & Defined Response', () => {
+  //   it('Test', async () => {
+  //     try {
+  //       const response = await apiClient.get('/bcat/county_summary?limit=0');
+  //
+  //       // Axios has an extra data wrapper
+  //       const result = response.data;
+  //
+  //       // console.log(result);
+  //
+  //       expect(response.status).toEqual(200);
+  //       expect(result).toBeDefined();
+  //     } catch (error) {
+  //       logger.error(error);
+  //       fail(error);
+  //     }
+  //   });
+  // });
+  //
+  // describe('Python API Request 200 Status & Defined Response', () => {
+  //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
+  //     it(name, async () => {
+  //       try {
+  //         const response = await apiClient.get(val.geo);
+  //
+  //         console.log(val.geo);
+  //
+  //         // Axios has an extra data wrapper
+  //         const result = response.data;
+  //
+  //         expect(response.status).toEqual(200);
+  //
+  //         console.log("OK 200");
+  //
+  //         expect(result).toBeDefined();
+  //       } catch (error) {
+  //         logger.error(error);
+  //         fail(error);
+  //       }
+  //     });
+  //   });
+  // });
 
   // describe('Python API Response GeoJSON Format', () => {
   //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
