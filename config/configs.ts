@@ -231,6 +231,7 @@ export const Config: IConfigs = {
     },
     stage: 'pre'
   },
+  // Update config on 11/17/2023
   'prod': {
     ...coriDefaults,
     client: 'cori',
