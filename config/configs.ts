@@ -231,7 +231,6 @@ export const Config: IConfigs = {
     },
     stage: 'pre'
   },
-  // Update config on 11/17/2023
   'prod': {
     ...coriDefaults,
     client: 'cori',
@@ -245,6 +244,7 @@ export const Config: IConfigs = {
     },
     stage: 'prod'
   },
+  // Deploy pipeline with "production" config on 11/17/2023
   'production': {
     ...coriDefaults,
     client: 'cori',
