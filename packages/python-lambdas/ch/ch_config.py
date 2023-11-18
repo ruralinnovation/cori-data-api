@@ -83,7 +83,7 @@ CONFIG = {
         "limit": 1000 # some counties have a *lot* of tracts
     },
     "bb_map_bl": {
-        "table": "sch_broadband.bb_map_bl_2022decareav3",
+        "table": "sch_broadband.bb_map_bl_2022decareav3e",
         "api_columns": "geoid_bl, geoid_tr, geoid_co, bl_25_3_area, bl_100_20_area, category, cnt_total_locations, cnt_fiber_locations, cnt_100_20, pct_100_20, cnt_25_3, pct_25_3, geom",
         "params": ["geoid_tr" ],
         "geoid": "geoid_tr",
