@@ -5,7 +5,7 @@ require('dotenv').config();
 
 export const getTestConfig = async (): Promise<TestEnvConfig> => {
 
-  console.log("CONFIFURING TEST ENVIRONMENT");
+  console.log("CONFIGURING TEST ENVIRONMENT");
   console.log("process.env.GIT_BRANCH: ", process.env.GIT_BRANCH);
   console.log({
     username: process.env.TEST_USER!,
@@ -27,7 +27,6 @@ export const getTestConfig = async (): Promise<TestEnvConfig> => {
       apiUrl: process.env.API_URL!,
       cognitoClientId: process.env.COGNITO_CLIENT_ID!,
     };
-    console.log('Test Config', cfg);
 
     // Check config values before returning
     if (((c) => {
@@ -44,7 +43,10 @@ export const getTestConfig = async (): Promise<TestEnvConfig> => {
   }
 
   const branch = await getLocalGitBranch();
-  const config = getConfig(branch);
+  const config = (!!branch) ?
+    getConfig(branch) :
+    getConfig("local")
+  ;
 
   console.log('config', {
     ...config.testing,
