@@ -3,7 +3,7 @@ CORI Data API
 
 # Overview
 
-The [`cori-data-api`](https://github.com/ruralinnovation/cori-data-api/) repository (as distinct from the `cori.data.api` R package) houses all the code to:
+The [`cori-data-api`](https://github.com/ruralinnovation/cori-data-api/) repository (as distinct from the `cori.data.api` package) houses all the code to:
 
 1. Create a RestApi with Python Lambdas connecting to a PostgreSQL Database.
 2. Create a GraphQL Api with Typescript Lambdas connecting to the Python RestAPI (as a DataSource).
