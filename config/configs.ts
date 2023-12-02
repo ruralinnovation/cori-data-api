@@ -55,17 +55,23 @@ const microservicesConfiguration: ServiceConfig[] = [
   //   corePath: '/acs',
   //   directoryName: 'acs',
   // },
-  {
-    /* Used by Broadband County Assessment Tool */
-    logicalName: 'BCATService',
-    corePath: '/bcat',
-    directoryName: 'bcat',
-  },
+  // {
+  //   /* Used by Broadband County Assessment Tool */
+  //   logicalName: 'BCATService',
+  //   corePath: '/bcat',
+  //   directoryName: 'bcat',
+  // },
+  // {
+  //   /* Used by Broadband Climate Risk Mitigation Tool */
+  //   logicalName: 'ConnectHumanityService',
+  //   corePath: '/ch',
+  //   directoryName: 'ch',
+  // },
   {
     /* Used by Broadband Climate Risk Mitigation Tool */
-    logicalName: 'ConnectHumanityService',
-    corePath: '/ch',
-    directoryName: 'ch',
+    logicalName: 'CORIDataAPIRestService',
+    corePath: '/rest',
+    directoryName: 'rest',
   }
 ];
 /**
