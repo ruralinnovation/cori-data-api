@@ -68,7 +68,7 @@ const microservicesConfiguration: ServiceConfig[] = [
   //   directoryName: 'ch',
   // },
   {
-    /* Used by Broadband Climate Risk Mitigation Tool */
+    /* One RESTful endpoint to rule them all */
     logicalName: 'CORIDataAPIRestService',
     corePath: '/rest',
     directoryName: 'rest',
