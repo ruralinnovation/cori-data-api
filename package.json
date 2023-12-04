@@ -43,6 +43,7 @@
     "build:frontend": "npm run build -w @cori-risi/frontend",
     "clean": "npm run clean -w @cori-risi/graphql-schemas && npm run clean -w @cori-risi/infrastructure",
     "dev:api": "npm run build:api && npm run build:dev -w @cori-risi/graphql-schemas & npm run dev -w @cori-risi/infrastructure",
+    "dev:python-lambdas": "npm run dev -w @cori-risi/python-lambdas",
     "deploy": "npm run deploy:pipeline -w @cori-risi/infrastructure",
     "diff": "npm run diff --w packages/infrastructure",
     "synth": "npm run clean && npm run build && npm run synth:pipeline -w @cori-risi/infrastructure",
@@ -63,6 +64,7 @@
     "packages/cori.data.api",
     "packages/frontend",
     "packages/graphql-schemas",
-    "packages/infrastructure"
+    "packages/infrastructure",
+    "packages/python-lambdas"
   ]
 }

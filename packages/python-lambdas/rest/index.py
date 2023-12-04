@@ -2,11 +2,11 @@
 from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools import Logger, Tracer
 import awsgi
-from flask import Flask, jsonify, make_response, url_for
+from flask import Flask, jsonify, url_for
 from flask_cors import CORS
 
-import acs.index as acs
-import bcat.index as bcat
+import acs as acs
+import bcat as bcat
 
 # app = APIGatewayRestResolver(strip_prefixes=["/rest"])
 app = Flask(__name__)
@@ -21,11 +21,12 @@ tracer = Tracer(service="CORIDataAPIRestService")
 @app.route("/rest/index")
 def index():
     greet_url = url_for('greet')
-    test_url = url_for('test')
     acs_url = url_for('acs_get')
     return "<a href={}>Click to greet</a>".format(greet_url) + \
         "<br />" + \
-        "<a href={}>Click to test</a>".format(acs_url)
+        "<a href={}>Click to test acs</a>".format(acs_url) + \
+        "<br />" + \
+        "<a href={}>Click to test bcat</a>".format("bcat/county_summary/count")
 
 
 # @app.get("/hello")
@@ -36,17 +37,8 @@ def greet():
     )
 
 
-# @app.get("/test")
-@app.route("/rest/test")
-def test():
-    print("testing root route")
-
-    return {
-        "message": "success"
-    }
-
-
 app.add_url_rule('/rest/acs/testing', 'acs_get', acs.get)
+
 app.add_url_rule('/rest/bcat/<table>/count', 'bcat_count',  bcat.get_bcat_count)
 
 
