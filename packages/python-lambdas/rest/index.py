@@ -26,7 +26,7 @@ def index():
         "<br />" + \
         "<a href={}>Click to test acs</a>".format(acs_url) + \
         "<br />" + \
-        "<a href={}>Click to test bcat</a>".format("bcat/county_summary/count")
+        "<a href={}>Click to test bcat</a>".format("/rest/bcat/county_summary/count")
 
 
 # @app.get("/hello")
