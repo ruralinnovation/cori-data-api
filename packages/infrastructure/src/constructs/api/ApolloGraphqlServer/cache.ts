@@ -137,20 +137,24 @@ export class Cache {
   // eslint-disable-next-line @typescript-eslint/ban-types
   checkCache(key: string, cb: Function, maxAge: number = globalTTL): Promise<unknown> {
     return new Promise((resolve, reject) => {
-      if (!!this.getRawCache()) try {
-        this.getCacheValue(key).then(cacheRes => {
-          if (!cacheRes) {
-            cb().then(dbValue => {
-              if (!dbValue) {
-                dbValue = null;
-              }
-              this.getRawCache().setex(key, maxAge, JSON.stringify(dbValue));
-              resolve(dbValue);
-            });
-          } else {
-            resolve(cacheRes);
-          }
-        });
+      try {
+        // if (!!this.getRawCache()) {
+        //   this.getCacheValue(key).then(cacheRes => {
+        //     if (!cacheRes) {
+              cb().then(dbValue => {
+                if (!dbValue) {
+                  dbValue = null;
+                }
+                // @TODO: Check this!
+                console.log("Redis is not available");
+                // this.getRawCache().setex(key, maxAge, JSON.stringify(dbValue));
+                resolve(dbValue);
+              });
+        //     } else {
+        //       resolve(cacheRes);
+        //     }
+        //   });
+        // }
       } catch (err) {
         reject(err);
       }

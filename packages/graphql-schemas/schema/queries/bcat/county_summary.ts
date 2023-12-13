@@ -71,13 +71,11 @@ const county_summary = {
 
         console.log("Query pythonApi: ", rest_uri);
 
-        //     const featureCollection = await fc;
+        // const featureCollection = await fc;
         const res: any = (geoids === "all") ? await (async () => {
             const fc = (skipCache)
               ? await pythonApi.getItem(`bcat/county_summary?limit=0`)
               : await redisClient.checkCache(`county_summary-0`, async () => {
-
-
                 // TODO: Remove after testing call to local Python REST API
                 fetch(rest_uri)
                   .catch((err) => console.log("Test Python REST error: ", err))
@@ -110,6 +108,8 @@ const county_summary = {
             });
           })():
           (skipCache)
+            // @TODO: Fix this so that we send individual requests for *each* geoid
+            // and then merge the results into single feature collection
             ? await pythonApi.getItem(`bcat/county_summary`
               + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`)
             : await redisClient.checkCache(`county_summary-`

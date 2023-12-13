@@ -3,9 +3,9 @@
  *
  * Integration tests for the API gateway.
  */
+// import { Amplify } from 'aws-amplify';
 // import { Auth } from "aws-amplify";
 import { Auth } from '@aws-amplify/auth';
-// import { Amplify } from 'aws-amplify';
 import axios, { AxiosInstance } from 'axios';
 import { getTestConfig } from './testUtils';
 import { apolloIntegrationEndpoints, pythonIntegrationEndpoints } from './integrationConfigurations';
@@ -53,9 +53,9 @@ import { apolloIntegrationEndpoints, pythonIntegrationEndpoints } from './integr
 //   });
 // }
 
-jest.setTimeout(30000);
-
 const logger = console;
+
+jest.setTimeout(30000);
 
 describe('ApiIntegrationTests', () => {
   let apiClient: AxiosInstance;
