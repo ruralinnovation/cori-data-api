@@ -1,12 +1,18 @@
 {
   "name": "@cori-risi/graphql-schemas",
-  "version": "0.0.1",
-  "description": "Data schemas for APIs",
+  "version": "0.0.2",
+  "author": "Rural Innovation Strategies, Inc.",
+  "description": "CORI Data API GraphQL schemas",
+  "bin": {
+    "infrastructure": "bin/infrastructure.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/mergingfuturesprojects/cori-api.git"
+  },
   "files": [
     "dist"
   ],
-  "author": "Merging Futures LLC.",
-  "license": "ISC",
   "dependencies": {
     "@graphql-hive/cli": "^0.12.0",
     "@graphql-tools/graphql-file-loader": "^7.3.10",
@@ -16,21 +22,22 @@
     "graphql": "^16.3.0",
     "graphql-tools": "^8.2.7",
     "nodemon": "^2.0.22",
-    "npm": "^8.7.0",
-    "ts-node": "^10.9.1"
+    "npm": "^8.7.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^16.18.68",
+    "ts-node": "^10.9.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && npm run build:merge-schemas",
     "build:dev": "tsc --watch & npm run dev:merge-schemas",
     "build:schemas": "npm run build:merge-schemas",
-    "build:merge-schemas": "ts-node merge-schemas.ts",
+    "build:merge-schemas": "ts-node index.ts",
     "clean": "rimraf dist",
     "dev:merge-schemas": "npm run ts ./merge-schemas.ts",
     "hive-publish": "npx hive schema:publish dist/schema.graphql --service api --force",
     "ts": "npm install cross-env nodemon ts-node && cross-env nodemon '--watch' schema "
-  },
-  "devDependencies": {
-    "@types/node": "^20.5.7"
   }
 }
