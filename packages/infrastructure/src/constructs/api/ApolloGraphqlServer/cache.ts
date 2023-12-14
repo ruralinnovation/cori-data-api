@@ -2,6 +2,12 @@ import { EnvConfig } from './EnvConfig';
 import Redis, { RedisOptions } from 'ioredis';
 import { BaseRedisCache, RedisClient } from 'apollo-server-cache-redis';
 
+/* @TODO:
+ * I've disabled this Redis Cache feature (see the checkCache function) because
+ * of a variety of connection issues that impact the reliability of the graphql
+ * response functions (in AWS Lambda).
+ */
+
 export interface CacheOptions {
   /**
    * @description Flag which indicate if the cache should be enabled. Default is true.
@@ -138,6 +144,7 @@ export class Cache {
   checkCache(key: string, cb: Function, maxAge: number = globalTTL): Promise<unknown> {
     return new Promise((resolve, reject) => {
       try {
+        console.log("Redis is not available");
         // if (!!this.getRawCache()) {
         //   this.getCacheValue(key).then(cacheRes => {
         //     if (!cacheRes) {
@@ -145,8 +152,6 @@ export class Cache {
                 if (!dbValue) {
                   dbValue = null;
                 }
-                // @TODO: Check this!
-                console.log("Redis is not available");
                 // this.getRawCache().setex(key, maxAge, JSON.stringify(dbValue));
                 resolve(dbValue);
               });
