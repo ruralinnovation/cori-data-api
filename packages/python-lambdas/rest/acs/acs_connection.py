@@ -25,4 +25,3 @@ def execute(query):
             print(error)
             cur.execute("ROLLBACK")
             conn.commit()
-
