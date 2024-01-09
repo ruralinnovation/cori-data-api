@@ -5,8 +5,9 @@ from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver, Response
 from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 
-from acs_config import CONFIG
-from acs_connection import execute
+
+from .acs_config import CONFIG
+from .acs_connection import execute
 
 logger = Logger(service="ACSService")
 tracer = Tracer(service="ACSService")

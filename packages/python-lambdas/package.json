@@ -1,0 +1,8 @@
+{
+  "name": "@cori-risi/python-lambdas",
+  "version": "0.0.2",
+  "description": "Python lambda code for REST endpoints in CORI Data API",
+  "scripts": {
+    "dev": "FLASK_APP=rest/index.py flask run"
+  }
+}
