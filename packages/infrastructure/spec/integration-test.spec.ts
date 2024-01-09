@@ -3,13 +3,59 @@
  *
  * Integration tests for the API gateway.
  */
-import { Auth } from 'aws-amplify';
+// import { Amplify } from 'aws-amplify';
+// import { Auth } from "aws-amplify";
+import { Auth } from '@aws-amplify/auth';
 import axios, { AxiosInstance } from 'axios';
 import { getTestConfig } from './testUtils';
 import { apolloIntegrationEndpoints, pythonIntegrationEndpoints } from './integrationConfigurations';
-jest.setTimeout(30000);
+
+// // import config from '@cori-risi/frontend/amplifyconfiguration.json';
+// try {
+//   const amplifyconfiguration = require('../../frontend/amplifyconfiguration.json') || null;
+//   Amplify.configure(amplifyconfiguration);
+// } catch (e) {
+//   console.log('../../frontend/amplifyconfiguration.json is not available');
+//   Amplify.configure({
+//     Auth: {
+//       Cognito: {
+//         userPoolClientId: "5eusi16g0o2q1g1rr5ehgudodm",
+//         userPoolId: "us-east-1_QeA4600FA",
+//         userPoolEndpoint: "authcori.auth.us-east-1.amazoncognito.com",
+//         identityPoolId: "us-east-1:2194a76a-fa3d-4c33-999e-e3c4b2b049ee",
+//         loginWith: { // Optional
+//           oauth: {
+//             domain: 'authcori.auth.us-east-1.amazoncognito.com',
+//             scopes: ['email', 'openid', 'profile'],
+//             redirectSignIn: ["http://localhost:3000", "http://localhost:5173", "http://localhost:5174"],
+//             redirectSignOut: ["http://localhost:3000/", "http://localhost:5173/", "http://localhost:5174/"],
+//             responseType: 'code',
+//           },
+//           username: true,
+//           email: true, // Optional
+//           phone: false, // Optional
+//
+//         },
+//         // signUpVerificationMethod: "",
+//         // userAttributes: "",
+//         // mfa: "",
+//         // passwordFormat: "",
+//       },
+//       // region: config.region,
+//       // oauth: {
+//       //   scope: ['email', 'openid', 'profile'],
+//       //   redirectSignIn: '',
+//       //   redirectSignOut: '',
+//       //   responseType: 'code',
+//       //   mandatorySignIn: true,
+//       // },
+//     },
+//   });
+// }
 
 const logger = console;
+
+jest.setTimeout(30000);
 
 describe('ApiIntegrationTests', () => {
   let apiClient: AxiosInstance;
@@ -23,20 +69,52 @@ describe('ApiIntegrationTests', () => {
     logger.info('User: ', config.username);
     logger.info('PW: ', config.password);
 
-    Auth.configure({
-      Auth: {
-        region: config.region,
-        userPoolId: config.userPoolId,
-        userPoolWebClientId: config.cognitoClientId,
-        oauth: {
-          scope: ['email', 'openid', 'profile'],
-          redirectSignIn: '',
-          redirectSignOut: '',
-          responseType: 'code',
-          mandatorySignIn: true,
+    // const amplify_config = Amplify.getConfig() || null;
+    //
+    // if (!!amplify_config && amplify_config.hasOwnProperty("Auth") && !!amplify_config.Auth) {
+    //   console.log("Amplify.getConfig():", amplify_config);
+    //   let region = "us-east-1";
+    //   if (!!amplify_config.Auth.Cognito.userPoolId) {
+    //     const get_region =  amplify_config.Auth.Cognito.userPoolId.match(/(^us-.*)_.*/);
+    //     region = (get_region !== null) ?
+    //       get_region[1] :
+    //       region;
+    //   }
+    //   Auth.configure({
+    //     Auth: {
+    //       region,
+    //       userPoolId: amplify_config.Auth.Cognito.userPoolId,
+    //       userPoolWebClientId: amplify_config.Auth.Cognito.userPoolClientId,
+    //       oauth: (!!amplify_config.Auth.Cognito.loginWith) ?
+    //         {
+    //           ...amplify_config.Auth.Cognito.loginWith.oauth,
+    //           mandatorySignIn: true
+    //         } :
+    //         {
+    //           scope: ['email', 'openid', 'profile'],
+    //           redirectSignIn: '',
+    //           redirectSignOut: '',
+    //           responseType: 'code',
+    //           mandatorySignIn: true
+    //         },
+    //     },
+    //   });
+    // } else {
+      Auth.configure({
+        Auth: {
+          region: config.region,
+          userPoolId: config.userPoolId,
+          userPoolWebClientId: config.cognitoClientId,
+          oauth: {
+            scope: ['email', 'openid', 'profile'],
+            redirectSignIn: '',
+            redirectSignOut: '',
+            responseType: 'code',
+            mandatorySignIn: true,
+          },
         },
-      },
-    });
+      });
+    // }
 
     const response = await Auth.signIn(config.username, config.password);
     const accessToken = response?.signInUserSession?.idToken?.jwtToken;
@@ -44,6 +122,7 @@ describe('ApiIntegrationTests', () => {
       logger.info(`Response from amplify: ${JSON.stringify(response)}`);
       fail('Test user was not authenticated.');
     }
+    // const accessToken = null;
 
     apiClient = axios.create({
       baseURL: config.apiUrl,
