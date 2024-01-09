@@ -1,7 +1,7 @@
-import type { InitialOptionsTsJest } from 'ts-jest/dist/types';
+import type { JestConfigWithTsJest } from 'ts-jest';
 import baseJest from '../../jest.config';
 
-const config: InitialOptionsTsJest = {
+const config: JestConfigWithTsJest = {
   ...baseJest,
   roots: ['<rootDir>/spec'],
 };

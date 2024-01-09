@@ -1,14 +1,20 @@
-import type { InitialOptionsTsJest } from 'ts-jest/dist/types';
+import type { JestConfigWithTsJest } from 'ts-jest';
 
-const config: InitialOptionsTsJest = {
+const config: JestConfigWithTsJest = {
+  // globals: {
+  //   'ts-jest': {
+  //     diagnostics: true
+  //   }
+  // },
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
-  globals: {
-    'ts-jest': {
+  transform: {
+    "^.+\\.tsx?$": ['ts-jest', {
       diagnostics: true
-    }
+    }]
   },
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
+
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node']
   // collectCoverage: true,
   // coverageDirectory: 'coverage',

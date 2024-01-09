@@ -1,0 +1,23 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-amplify": "^6.0.10"
+  },
+  "devDependencies": {
+    "@aws-amplify/backend": "^0.8.0",
+    "@aws-amplify/backend-cli": "^0.9.3",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write .",
+    "type-check": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
