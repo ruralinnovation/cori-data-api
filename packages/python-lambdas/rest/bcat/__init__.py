@@ -1,5 +1,5 @@
 # from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver, Response
-from aws_lambda_powertools.logging import correlation_paths
+# from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools import Logger, Tracer
 from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 from flask import jsonify, request, Response
@@ -21,10 +21,12 @@ global_params = CONFIG['global']['params']
 
 
 def get_bcat_count(table):
-    print(os.environ)
-    print(types.BuiltinFunctionType)
+    print("requesting bcat table count endpoint /<table>/count")
 
     print(request.args)
+
+    # print(os.environ)
+    # print(types.BuiltinFunctionType)
 
     # check that the table, parameters, and filter values are all acceptable.
     #   - allowed tables are top level keys in CONFIG.
@@ -154,8 +156,8 @@ def get_bcat_count(table):
     features = execute(query)
 
     result = {
-        "type": "FeatureCollection",
-        "features": [f[0] for f in features],
+        "type": "Count",
+        "count": features[0][0],
     }
 
     return Response(

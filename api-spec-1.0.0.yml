@@ -1,11 +1,11 @@
 openapi: '3.0.2'
 info:
-  version: '0.0.1'
+  version: '0.0.2'
   title: 'CORI Data API Specification'
   license:
     name: MIT
 servers:
-  - url: 'localhost:2000'
+  - url: 'http://localhost:8080/rest'
     description: Local Development Server and Port
   - url: https://8bpqgqz68e.execute-api.us-east-1.amazonaws.com/dev/
     description: Development API url
@@ -14,6 +14,76 @@ servers:
 externalDocs:
   url: https://www.fcc.gov/auction/904
 paths:
+  /bcat/county_summary/count:
+    get:
+      description: 'TODO'
+      summary: 'TODO'
+      tags:
+        - bcat
+        - county_summary
+#      parameters:
+#        - name: state_abbr
+#          in: path
+#          description: State abbreviation
+#          required: true
+#          schema:
+#            type: string
+#        - name: 'geoids'
+#          in: query
+#          description: County geoids to filter on
+#          required: false
+#          schema:
+#            type: array
+#            items:
+#              type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Count'
+        default:
+          description: 'Unexpected error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /bcat/county_summary/geojson/{state_abbr}:
+    get:
+      description: 'TODO'
+      summary: 'TODO'
+      tags:
+        - bcat
+        - county_summary
+      parameters:
+        - name: state_abbr
+          in: path
+          description: State abbreviation
+          required: true
+          schema:
+            type: string
+        - name: 'geoids'
+          in: query
+          description: County geoids to filter on
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureCollection'
+        default:
+          description: 'Unexpected error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /bcat/auction_904_subsidy_awards/geojson/{state_abbr}:
     get:
       description: 'TODO'
@@ -200,41 +270,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /bcat/county_summary/geojson/{state_abbr}:
-    get:
-      description: 'TODO'
-      summary: 'TODO'
-      tags:
-        - bcat
-        - county_summary
-      parameters:
-        - name: state_abbr
-          in: path
-          description: State abbreviation
-          required: true
-          schema:
-            type: string
-        - name: 'geoids'
-          in: query
-          description: County geoids to filter on
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        '200':
-          description: 'Successful response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FeatureCollection'
-        default:
-          description: 'Unexpected error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
   /bcat/fiber_cable_unserved_blocks/geojson/{state_abbr}:
     get:
       description: 'TODO'
@@ -345,6 +380,22 @@ components:
           format: int32
         message:
           type: string
+    #---------------------------------------------------------------------------
+    Count:
+      type: object
+      properties:
+        'type':
+          type: string
+          enum:
+            - Count
+        'count':
+          type: integer
+          format: int32
+      required:
+        - type
+        - count
+      discriminator:
+        propertyName: type
     #---------------------------------------------------------------------------
     'GeoJsonObject':
       description: >
@@ -655,10 +706,23 @@ components:
     CognitoAuth:
       name: Authorization
       type: oauth2
-      description: Authenication through AWS Cognito User Pools
+      description: Authentication through AWS Cognito User Pools
       scheme: basic
       bearerFormat: bearer
-      flows:
+#      flows:
+#        authorizationCode:
+#          authorizationUrl: 'https://authcori.auth.us-east-1.amazoncognito.com/oauth2/authorize'
+#          tokenUrl: 'https://authcori.auth.us-east-1.amazoncognito.com/oauth2/token'
+#          refreshUrl: 'https://authcori.auth.us-east-1.amazoncognito.com/oauth2/token'
+#          scopes:
+#            openid: 'openid'
+##            email: 'Email access'
+##            username: 'User access'
+##        authorizationCode:
+##          authorizationUrl: https://authcori.auth.us-east-1.amazoncognito.com/oauth2/authorize
+##          tokenUrl: https://authcori.auth.us-east-1.amazoncognito.com/oauth2/token
+##          scopes:
+##            openid: openid token
 
 security:
   - CognitoAuth: []

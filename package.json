@@ -39,6 +39,7 @@
   "scripts": {
     "build": "npm run build --ws",
     "build:api": "npm run build:schemas && npm run build:infra",
+    "build:docs": "redocly build-docs api-spec-1.0.0.yml --output=docs/rest/index.html",
     "build:infra": "npm run build -w @cori-risi/infrastructure",
     "build:dependency-layer": "bash ./buildPythonDependencyLayer.sh",
     "build:schemas": "npm run build -w @cori-risi/graphql-schemas",
