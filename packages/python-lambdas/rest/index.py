@@ -45,7 +45,7 @@ app.add_url_rule('/rest/bcat/<table>/count', 'bcat_count',  bcat.get_bcat_count)
 @tracer.capture_lambda_handler
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST, log_event=True)
 def handler(event, context):
-    print(event)
+    # print(event)
 
     # return app.resolve(event, context)
     return awsgi.response(app, event, context)

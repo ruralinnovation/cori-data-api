@@ -1,5 +1,5 @@
 # from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver, Response
-from aws_lambda_powertools.logging import correlation_paths
+# from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools import Logger, Tracer
 import os
 import types
@@ -16,7 +16,7 @@ tracer = Tracer(service="ACSService")
 acs testing endpoints
 """
 def get():
-    print("testing acs endpoint /testing")
+    print("requesting acs endpoint /testing")
 
     logger.info("testing acs endpoint /testing on system:")
     print(os.environ)

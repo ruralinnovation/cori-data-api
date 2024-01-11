@@ -7,6 +7,3 @@
 [submodule "graphql-schemas"]
 	path = packages/graphql-schemas
 	url = git@github.com:ruralinnovation/graphql-schemas.git
-[submodule "packages/graphql-schemas"]
-	path = packages/graphql-schemas
-	url = git@github.com:ruralinnovation/graphql-schemas.git
