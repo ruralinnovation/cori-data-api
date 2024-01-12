@@ -42,6 +42,8 @@ def get_bcat_count(table):
     limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
     if 'limit' in CONFIG[table]:
         limit = f"LIMIT {CONFIG[table]['limit']}"
+    else:
+        limit = LIMIT
     offset = OFFSET
     page = PAGE
     params = CONFIG[table]['params']
@@ -195,6 +197,8 @@ def get_bcat_props(table):
     limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
     if 'limit' in CONFIG[table]:
         limit = f"LIMIT {CONFIG[table]['limit']}"
+    else:
+        limit = LIMIT
     offset = OFFSET
     page = PAGE
     params = CONFIG[table]['params']
@@ -395,7 +399,7 @@ def get_bcat_geojson(table):
     if 'limit' in CONFIG[table]:
         limit = f"LIMIT {CONFIG[table]['limit']}"
     else:
-        limit = 10
+        limit = LIMIT
     offset = OFFSET
     page = PAGE
     params = CONFIG[table]['params']
