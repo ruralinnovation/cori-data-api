@@ -47,7 +47,15 @@ export async function getLocalGitBranch(): Promise<string> {
   console.log(`$ git status
 ${output}
 `)
-  const [, branch] = /On\sbranch\s((?:dev|local|prod)).*/.exec(output.toString()) || [];
+  const [, branch] = /On\sbranch\s((?:dev|local|pre|prod|test).*).*/.exec(output.toString()) || [];
   console.log("git branch: ", branch);
-  return branch;
+  if (branch.match(/^dev/) !== null) {
+    return "dev"
+  } else if (branch.match(/^pre/) !== null) {
+    return "pre"
+  } else if (branch.match(/^prod/) !== null) {
+    return "prod"
+  } else {
+    return "local";
+  }
 }
