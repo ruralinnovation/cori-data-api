@@ -6,8 +6,8 @@ from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver, Response
 from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 
-from bcat_config import CONFIG
-from bcat_connection import execute
+from .bcat_config import CONFIG
+from .bcat_connection import execute
 
 LIMIT = 10
 OFFSET = 0
@@ -594,4 +594,3 @@ def get_tile(table, z, x, y):
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST, log_event=True)
 def handler(event, context):
     return app.resolve(event, context)
-
