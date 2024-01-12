@@ -1,7 +1,7 @@
 # from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver, Response
+import awsgi
 from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools import Logger, Tracer
-import awsgi
 from flask import Flask, jsonify, url_for
 from flask_cors import CORS
 
@@ -15,6 +15,9 @@ CORS(app)
 logger = Logger(service="CORIDataAPIRestService")
 tracer = Tracer(service="CORIDataAPIRestService")
 
+"""
+Basic Flask capability testing...
+"""
 
 @app.route("/")
 @app.route("/rest/")
@@ -28,18 +31,28 @@ def index():
         "<br />" + \
         "<a href={}>Click to test bcat</a>".format("/rest/bcat/county_summary/count")
 
-
-# @app.get("/hello")
 @app.route("/rest/hello")
 def greet():
     return jsonify(
         message='Hello from Lambda!'
     )
 
-
 app.add_url_rule('/rest/acs/testing', 'acs_get', acs.get)
 
+"""
+bcat layer feature count
+"""
 app.add_url_rule('/rest/bcat/<table>/count', 'bcat_count',  bcat.get_bcat_count)
+
+"""
+bcat layer properties
+"""
+app.add_url_rule('/rest/bcat/<table>', 'bcat_properties',  bcat.get_bcat_props)
+
+"""
+bcat layer geojson
+"""
+app.add_url_rule('/rest/bcat/<table>/geojson', 'bcat_geojson',  bcat.get_bcat_geojson)
 
 
 @tracer.capture_lambda_handler
