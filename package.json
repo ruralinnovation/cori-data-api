@@ -1,11 +1,15 @@
 {
   "name": "cori-data-api",
-  "version": "1.0.3",
+  "version": "0.0.2",
   "author": "Rural Innovation Strategies, Inc",
   "description": "CORI Data API",
   "license": "ISC",
   "main": "index.js",
   "private": true,
+  "dependencies": {
+    "@cori-risi/cori.data.api": "^0.0.1",
+    "@cori-risi/graphql-schemas": "^0.0.2"
+  },
   "devDependencies": {
     "@types/jest": "^26.0.24",
     "@types/ncp": "^2.0.8",
