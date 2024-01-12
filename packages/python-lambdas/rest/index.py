@@ -19,24 +19,6 @@ tracer = Tracer(service="CORIDataAPIRestService")
 Basic Flask capability testing...
 """
 
-@app.route("/")
-@app.route("/rest/")
-@app.route("/rest/index")
-def index():
-    greet_url = url_for('greet')
-    acs_url = url_for('acs_get')
-    return "<a href={}>Click to greet</a>".format(greet_url) + \
-        "<br />" + \
-        "<a href={}>Click to test acs</a>".format(acs_url) + \
-        "<br />" + \
-        "<a href={}>Click to test bcat</a>".format("/rest/bcat/county_summary/count")
-
-@app.route("/rest/hello")
-def greet():
-    return jsonify(
-        message='Hello from Lambda!'
-    )
-
 app.add_url_rule('/rest/acs/testing', 'acs_get', acs.get)
 
 """

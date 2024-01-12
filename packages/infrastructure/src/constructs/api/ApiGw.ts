@@ -17,6 +17,7 @@ import { ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { toPascal, toKebab } from '../../naming';
 import { Mutable, HttpMethod } from '../../models/interfaces';
 import { Aws, Size } from "aws-cdk-lib";
+import * as ip from 'ip';
 
 interface GatewayResponse {
   type: ResponseType;
@@ -64,11 +65,13 @@ export class ApiGw extends Construct {
 
     if (props.stage === 'local') {
       console.log("props.stage===" + props.stage);
-      this.apiDomain = `localhost`;
-      this.apiEndpoint = `https://d6q5pgqgx5oy5.cloudfront.net/`; // `http://localhost:2000/`;
+      const ip_address: string = ip.address(); // 'localhost', 10.0.0.2, 192.168.0.2, etc.
+      console.log("private ip address:", ip_address);
+      this.apiDomain = ip_address;
+      this.apiEndpoint = `http://${ip_address}:8080/rest/`; // `http://localhost:2000/`;
     } else {
       this.apiDomain = `${this.api.restApiId}.execute-api.${Aws.REGION}.amazonaws.com`;
-      this.apiEndpoint = `https://${this.apiDomain}/${props.stage}/`;
+      this.apiEndpoint = `https://${this.apiDomain}/${props.stage}/rest/`;
     }
   }
 

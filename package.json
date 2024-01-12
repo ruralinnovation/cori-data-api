@@ -29,6 +29,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "jest": "^29.7.0",
     "ncp": "^2.0.0",
+    "node-ip": "^0.1.2",
     "prettier": "^2.8.8",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.1.1",
@@ -45,7 +46,7 @@
     "build:schemas": "npm run build -w @cori-risi/graphql-schemas",
     "build:frontend": "npm run build -w @cori-risi/frontend",
     "clean": "npm run clean -w @cori-risi/graphql-schemas && npm run clean -w @cori-risi/infrastructure",
-    "dev:api": "npm run build:api && npm run build:dev -w @cori-risi/graphql-schemas & npm run dev -w @cori-risi/infrastructure",
+    "dev:api": "npm run build:api && npm run build:dev -w @cori-risi/graphql-schemas & npm run dev:python-lambdas & npm run start -w @cori-risi/infrastructure",
     "dev:python-lambdas": "npm run dev -w @cori-risi/python-lambdas",
     "deploy": "npm run deploy:pipeline -w @cori-risi/infrastructure",
     "diff": "npm run diff --w packages/infrastructure",
@@ -64,9 +65,7 @@
     "ts": "npm run node -- -r ts-node/register"
   },
   "workspaces": [
-    "packages/backend",
     "packages/cori.data.api",
-    "packages/frontend",
     "packages/graphql-schemas",
     "packages/infrastructure",
     "packages/python-lambdas"
