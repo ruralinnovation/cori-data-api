@@ -6,10 +6,6 @@
   "license": "ISC",
   "main": "index.js",
   "private": true,
-  "dependencies": {
-    "@cori-risi/cori.data.api": "^0.0.1",
-    "@cori-risi/graphql-schemas": "^0.0.2"
-  },
   "devDependencies": {
     "@types/jest": "^26.0.24",
     "@types/ncp": "^2.0.8",
@@ -60,7 +56,7 @@
     "lint:fix": "eslint --fix ./packages ./config",
     "format": "prettier --write ./packages ./config",
     "prep": "aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/l2v0f2h3 && docker pull public.ecr.aws/sam/build-python3.11",
-    "start:api": "npm run start -w @cori-risi/infrastructure",
+    "start:api": "echo 'For local GraphQL lambda function support, remember to first start the local Python REST api with Flask (npm run dev:python-lambdas)' & npm run start -w @cori-risi/infrastructure",
     "start:frontend": "npm run start -w @cori-risi/frontend",
     "test": "npm run test:integration -w @cori-risi/infrastructure",
     "test:robot": "cd packages/python-lambdas && cd bcat && ./tests.sh http://localhost:2000 && cd ..",
