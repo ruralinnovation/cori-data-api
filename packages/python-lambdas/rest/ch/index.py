@@ -6,9 +6,9 @@ from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver, Response
 from aws_lambda_powertools.event_handler.exceptions import BadRequestError
 
-from ch_config import CONFIG
-from ch_connection import execute
-from ch_connection import execute_with_cols
+from .ch_config import CONFIG
+from .ch_connection import execute
+from .ch_connection import execute_with_cols
 
 LIMIT = 100 # Texas has 254 counties... https://simple.wikipedia.org/wiki/List_of_counties_in_Texas
 OFFSET = 0
