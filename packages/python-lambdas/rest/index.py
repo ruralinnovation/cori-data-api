@@ -19,6 +19,12 @@ tracer = Tracer(service="CORIDataAPIRestService")
 Basic Flask capability testing...
 """
 
+@app.route("/rest/hello")
+def greet():
+    return jsonify(
+        message='Hello from Lambda!'
+    )
+
 app.add_url_rule('/rest/acs/testing', 'acs_get', acs.get)
 
 """
