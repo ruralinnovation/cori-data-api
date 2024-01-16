@@ -159,24 +159,24 @@ describe('ApiIntegrationTests', () => {
     });
   });
 
-  // describe('Python API Request 200 Status & Defined Response', () => {
-  //   it('county_summary', async () => {
-  //     try {
-  //       const response = await apiClient.get('/bcat/county_summary?limit=0');
-  //
-  //       // Axios has an extra data wrapper
-  //       const result = response.data;
-  //
-  //       // console.log(result);
-  //
-  //       expect(response.status).toEqual(200);
-  //       expect(result).toBeDefined();
-  //     } catch (error) {
-  //       logger.error(error);
-  //       fail(error);
-  //     }
-  //   });
-  // });
+  describe('Python API Request 200 Status & Defined Response', () => {
+    it('county_summary', async () => {
+      try {
+        const response = await apiClient.get('/rest/bcat/county_summary?limit=0');
+
+        // Axios has an extra data wrapper
+        const result = response.data;
+
+        // console.log(result);
+
+        expect(response.status).toEqual(200);
+        expect(result).toBeDefined();
+      } catch (error) {
+        logger.error(error);
+        fail(error);
+      }
+    });
+  });
 
   // describe('Python API Request 200 Status & Defined Response', () => {
   //   it('bb_map', async () => {
