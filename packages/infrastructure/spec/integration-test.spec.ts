@@ -3,9 +3,8 @@
  *
  * Integration tests for the API gateway.
  */
-// import { Amplify } from 'aws-amplify';
+
 import { Auth } from "aws-amplify";
-// import { Auth } from '@aws-amplify/auth';
 import axios, { AxiosInstance } from 'axios';
 import { getTestConfig } from './testUtils';
 import { apolloIntegrationEndpoints, pythonIntegrationEndpoints } from './integrationConfigurations';
