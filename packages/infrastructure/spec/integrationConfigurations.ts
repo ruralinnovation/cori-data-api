@@ -1,7 +1,7 @@
 export const pythonIntegrationEndpoints = {
   auction_904_authorized: {
-    geo: '/bcat/auction_904_authorized/geojson?limit=11',
-    mvt: '/bcat/auction_904_authorized/tiles/10/278/408.pbf',
+    geo: '/rest/bcat/auction_904_authorized/geojson?limit=11',
+    mvt: '/rest/bcat/auction_904_authorized/tiles/10/278/408.pbf',
   }
 };
 
