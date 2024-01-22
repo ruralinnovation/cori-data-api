@@ -8,29 +8,30 @@ export const pythonIntegrationEndpoints = {
 
 export const apolloIntegrationEndpoints = {
     "responds to GraphQL query for auction_904_authorized": {
-    request: {
-      query: `query ($geoid_co: [String]!, $limit: Int, $offset: Int, $skipCache: Boolean) {
-                  auction_904_authorized (
-                      geoid_co: $geoid_co,
-                      limit: $limit,
-                      offset: $offset,
-                      skipCache: $skipCache) {
-                      type
-                      features {
+        type: "auction_904_authorized",
+        request: {
+          query: `query ($geoid_co: [String]!, $limit: Int, $offset: Int, $skipCache: Boolean) {
+                      auction_904_authorized (
+                          geoid_co: $geoid_co,
+                          limit: $limit,
+                          offset: $offset,
+                          skipCache: $skipCache) {
                           type
-                          id
-                          properties
+                          features {
+                              type
+                              id
+                              properties
+                          }
                       }
-                  }
-              }`,
-      variables: `{
-                      "geoid_co": [ 
-                          "47167"
-                      ],
-                      "limit": 11,
-                      "offset": 0,
-                      "skipCache": true
                   }`,
-    },
+          variables: `{
+                          "geoid_co": [ 
+                              "47167"
+                          ],
+                          "limit": 11,
+                          "offset": 0,
+                          "skipCache": true
+                      }`,
+        },
   },
 };
