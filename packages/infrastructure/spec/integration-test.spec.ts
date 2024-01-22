@@ -3,9 +3,8 @@
  *
  * Integration tests for the API gateway.
  */
-// import { Amplify } from 'aws-amplify';
+
 import { Auth } from "aws-amplify";
-// import { Auth } from '@aws-amplify/auth';
 import axios, { AxiosInstance } from 'axios';
 import { getTestConfig } from './testUtils';
 import { apolloIntegrationEndpoints, pythonIntegrationEndpoints } from './integrationConfigurations';
@@ -119,7 +118,7 @@ describe('ApiIntegrationTests', () => {
     const response = await Auth.signIn(config.username, config.password);
     const accessToken = response?.signInUserSession?.idToken?.jwtToken;
     if (!accessToken) {
-      logger.info(`Response from amplify: ${JSON.stringify(response)}`);
+      logger.info(`Response to Amplify/Cognito Auth request: ${JSON.stringify(response)}`);
       /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
       // fail('Test user was not authenticated.');
     }
@@ -142,7 +141,7 @@ describe('ApiIntegrationTests', () => {
   });
 
   describe('Python API Request 200 Status & Defined Response', () => {
-    it('responds with a greeting', async () => {
+    it('responds to RESTful request for a greeting', async () => {
       try {
         const response = await apiClient.get('/rest/hello');
 
@@ -153,6 +152,7 @@ describe('ApiIntegrationTests', () => {
 
         expect(response.status).toEqual(200);
         expect(result).toBeDefined();
+
       } catch (error) {
         logger.error(error);
         /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
@@ -162,7 +162,7 @@ describe('ApiIntegrationTests', () => {
   });
 
   describe('Python API Request 200 Status & Defined Response', () => {
-    it('county_summary', async () => {
+    it('responds to RESTful request for a county_summary for all US counties', async () => {
       try {
         const response = await apiClient.get('/rest/bcat/county_summary?limit=0');
 
@@ -173,6 +173,7 @@ describe('ApiIntegrationTests', () => {
 
         expect(response.status).toEqual(200);
         expect(result).toBeDefined();
+
       } catch (error) {
         logger.error(error);
         /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
@@ -197,6 +198,7 @@ describe('ApiIntegrationTests', () => {
           console.log("OK 200");
 
           expect(result).toBeDefined();
+
         } catch (error) {
           logger.error(error);
           /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
@@ -207,7 +209,7 @@ describe('ApiIntegrationTests', () => {
   });
 
   describe('Python API Request 200 Status & Defined Response', () => {
-    it('bb_map', async () => {
+    it('responds to RESTful request for blocks in given tract id', async () => {
       try {
         const response = await apiClient.get('/rest/ch/bl/bb_map?geoid_tr=51029930201');
 
@@ -218,6 +220,7 @@ describe('ApiIntegrationTests', () => {
 
         expect(response.status).toEqual(200);
         expect(result).toBeDefined();
+
       } catch (error) {
         logger.error(error);
         /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
@@ -226,32 +229,33 @@ describe('ApiIntegrationTests', () => {
     });
   });
 
-  // describe('Python API Response GeoJSON Format', () => {
-  //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
-  //     it(name, async () => {
-  //       try {
-  //         const response = await apiClient.get(val.geo);
-  //
-  //         // Axios has an extra data wrapper
-  //         const result = response.data;
-  //
-  //         expect(result.type).toBeDefined();
-  //         expect(result.type).toEqual('FeatureCollection');
-  //         expect(result.features).toBeDefined();
-  //         expect(Array.isArray(result.features)).toEqual(true);
-  //         expect(result.features[0].type).toBeDefined();
-  //         expect(result.features[0].type).toEqual('Feature');
-  //         expect(result.features[0].geometry).toBeDefined();
-  //         expect(result.features[0].geometry.type).toBeDefined();
-  //         expect(result.features[0].geometry.coordinates).toBeDefined();
-  //         expect(Array.isArray(result.features[0].geometry.coordinates)).toEqual(true);
-  //       } catch (error) {
-  //         logger.error(error);
-  //         fail(error);
-  //       }
-  //     });
-  //   });
-  // });
+  describe('Python API Response GeoJSON Format', () => {
+    Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
+      it(name, async () => {
+        try {
+          const response = await apiClient.get(val.geo);
+
+          // Axios has an extra data wrapper
+          const result = response.data;
+
+          expect(result.type).toBeDefined();
+          expect(result.type).toEqual('FeatureCollection');
+          expect(result.features).toBeDefined();
+          expect(Array.isArray(result.features)).toEqual(true);
+          expect(result.features[0].type).toBeDefined();
+          expect(result.features[0].type).toEqual('Feature');
+          expect(result.features[0].geometry).toBeDefined();
+          expect(result.features[0].geometry.type).toBeDefined();
+          expect(result.features[0].geometry.coordinates).toBeDefined();
+          expect(Array.isArray(result.features[0].geometry.coordinates)).toEqual(true);
+
+        } catch (error) {
+          logger.error(error);
+          fail(error);
+        }
+      });
+    });
+  });
 
   // describe('Python API Response MVT Tiles', () => {
   //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
@@ -272,65 +276,73 @@ describe('ApiIntegrationTests', () => {
   //   });
   // });
 
-  // describe('Apollo GraphQL API Request Status 200 and Defined Response', () => {
-  //   it('county_summary', async () => {
-  //     try {
-  //       const response = await apiClient.post('/graphql', {
-  //         query: `query ($skipCache: Boolean) {
-  //                 county_summary (skipCache: $skipCache) {
-  //                     type
-  //                     features {
-  //                         type
-  //                         id
-  //                         properties
-  //                     }
-  //                 }
-  //             }`,
-  //         variables: `{
-  //                     "skipCache": true
-  //                 }`,
-  //       });
-  //
-  //       // Axios has an extra data wrapper
-  //       const result = response.data?.data?.['county_summary'];
-  //
-  //       expect(response.status).toEqual(200);
-  //       expect(result).toBeDefined();
-  //
-  //       logger.info({
-  //         type: result.type,
-  //         features: result.features?.length,
-  //       });
-  //     } catch (error) {
-  //       logger.error(error);
-  //       /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-  //       // fail(error);
-  //     }
-  //   });
-  // });
+  describe('Apollo GraphQL API Request Status 200 and Defined Response', () => {
+    it('responds to GraphQL query for county_summary', async () => {
+      try {
+        const data_type = "county_summary";
+        const response = await apiClient.post('/graphql', {
+          query: `query ($skipCache: Boolean) {
+                  county_summary (skipCache: $skipCache) {
+                      type
+                      features {
+                          type
+                          id
+                          properties
+                      }
+                  }
+              }`,
+          variables: `{
+                      "skipCache": true
+                  }`,
+        });
 
-  // describe('Apollo GraphQL API Request Status 200 and Defined Response', () => {
-  //   Object.entries(apolloIntegrationEndpoints).forEach(([name, val]) => {
-  //     it(name, async () => {
-  //       try {
-  //         const response = await apiClient.post('/graphql', val.request);
-  //
-  //         // Axios has an extra data wrapper
-  //         const result = response.data?.data?.[name];
-  //
-  //         expect(response.status).toEqual(200);
-  //         expect(result).toBeDefined();
-  //
-  //         logger.info({
-  //           type: result.type,
-  //           features: result.features?.length,
-  //         });
-  //       } catch (error) {
-  //         logger.error(error);
-  //       /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-  //       // fail(error);
-  //       }
-  //     });
-  //   });
-  // });
+        // Axios has an extra data wrapper
+        const result = response.data?.data;
+
+        // console.log(response.data);
+
+        expect(response.status).toEqual(200);
+        expect(result).toBeDefined();
+
+        logger.info({
+          type: result[data_type].type,
+          features: result[data_type].features?.length,
+        });
+
+      } catch (error) {
+        logger.error(error);
+        /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
+        // fail(error);
+      }
+    });
+  });
+
+  describe('Apollo GraphQL API Request Status 200 and Defined Response', () => {
+    Object.entries(apolloIntegrationEndpoints).forEach(([name, val]) => {
+      it(name, async () => {
+        try {
+          const data_type = val.type;
+          const response = await apiClient.post('/graphql', val.request);
+
+          // Axios has an extra data wrapper
+          const result = response.data?.data;
+
+          // console.log(response.data);
+
+          expect(response.status).toEqual(200);
+          expect(result).toBeDefined();
+
+          logger.info({
+            type: result[data_type].type,
+            features: result[data_type].features?.length,
+          });
+
+        } catch (error) {
+          logger.error(error);
+          /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
+          // fail(error);
+        }
+      });
+    });
+  });
 });
