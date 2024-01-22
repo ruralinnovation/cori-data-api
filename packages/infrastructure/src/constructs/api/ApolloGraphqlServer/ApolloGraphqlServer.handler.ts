@@ -7,7 +7,13 @@ import * as plugins from './plugins';
 // Using "import * as express from 'express';" results in "express is not a function" once deployed
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const express = require('express');
-const compression = require('compression');
+// const compression = require('compression');  // Disable compression because:
+                                                // AxiosError {
+                                                //   code: 'Z_DATA_ERROR',
+                                                //   errno: -3,
+                                                //   message: 'incorrect header check',
+                                                //   ...
+                                                // }
 
 const cache = new Cache();
 
@@ -51,7 +57,7 @@ export const handler = server.createHandler({
   expressAppFromMiddleware(middleware) {
     console.log('Setting up express middleware');
     const app = express();
-    app.use(compression());
+    // app.use(compression());
     app.use(middleware);
     return app;
   },

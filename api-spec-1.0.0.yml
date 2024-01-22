@@ -11,21 +11,6 @@ paths:
     get:
       description: 'Count the number of BCAT county summary features'
       summary: 'BCAT county summary feature count'
-#      parameters:
-#        - name: state_abbr
-#          in: path
-#          description: State abbreviation
-#          required: true
-#          schema:
-#            type: string
-#        - name: 'geoids'
-#          in: query
-#          description: County geoids to filter on
-#          required: false
-#          schema:
-#            type: array
-#            items:
-#              type: string
       responses:
         '200':
           description: 'Successful response'
@@ -33,6 +18,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Count'
+        default:
+          description: 'Unexpected error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - bcat
+  /bcat/county_summary:
+    get:
+      description: 'Return properties (without geometry) of BCAT county summary features'
+      summary: 'BCAT county summary feature properties'
+      parameters:
+        - name: 'geoid_co'
+          in: query
+          description: 'County GEOID(s) to filter on; comma seperated list'
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureCollection'
         default:
           description: 'Unexpected error'
           content:

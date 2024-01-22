@@ -9,7 +9,7 @@ import types
 from .bcat_config import CONFIG
 from .bcat_connection import execute
 
-LIMIT = 10
+LIMIT = 500
 OFFSET = 0
 PAGE = 0
 
@@ -20,7 +20,8 @@ global_params = CONFIG['global']['params']
 
 
 def get_bcat_count(table):
-    print("requesting bcat table count endpoint /<table>/count")
+
+    print(f'requesting bcat table count for /{table}')
 
     print(request.args)
 
@@ -179,7 +180,7 @@ def get_bcat_count(table):
 
 def get_bcat_props(table):
 
-    print("requesting bcat table count endpoint /<table>")
+    print(f'requesting bcat layer properties for /{table}')
 
     print(request.args)
 
@@ -379,7 +380,7 @@ def get_bcat_props(table):
 
 def get_bcat_geojson(table):
 
-    print("requesting bcat table count endpoint /<table>")
+    print(f'requesting bcat layer geojson for /{table}')
 
     print(request.args)
 
