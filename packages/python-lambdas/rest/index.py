@@ -44,19 +44,24 @@ bcat layer geojson
 app.add_url_rule('/rest/bcat/<table>/geojson', 'bcat_geojson',  bcat.get_bcat_geojson)
 
 """
-cd list available variables in <table>
+cd list available county or tract variables
 """
 app.add_url_rule('/rest/ch/<tab>/vars', 'ch_vars',  ch.get_ch_vars)
 
 """
-ch county/tract geos
+ch get values for county or tract variables
+"""
+app.add_url_rule('/rest/ch/<tab>', 'ch_values',  ch.get_ch_values)
+
+"""
+ch county/tract geojson
 """
 app.add_url_rule('/rest/ch/<tab>/geo', 'ch_geo',  ch.get_ch_geo)
 
 """
 ch neighboring geos (same state/county)
 """
-app.add_url_rule('/rest/ch/<tab>/overall_neighbor_geos', 'ch_overall_neighbor_geo',  ch.get_ch_overall_neighbor_geo)
+app.add_url_rule('/rest/ch/<tab>/overall_neighbor_geos', 'ch_overall_neighbor_geos',  ch.get_ch_overall_neighbor_geos)
 
 """
 ch geo bbox at location

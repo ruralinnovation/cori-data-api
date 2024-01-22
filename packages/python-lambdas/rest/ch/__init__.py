@@ -9,7 +9,7 @@ import types
 from .ch_config import CONFIG
 from .ch_connection import execute, execute_with_cols
 
-LIMIT = 10
+LIMIT = 500
 OFFSET = 0
 PAGE = 0
 
@@ -138,6 +138,168 @@ def get_ch_vars(tab):
 
     return Response(
         response=json.dumps(list_ch_vars(tab), indent=None),
+        status=200,
+        content_type='application/json',
+        headers={
+            'access-control-allow-origin': '*',
+            'access-control-allow-headers': 'Authorization,Content-Type,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent',
+            'access-control-allow-methods': 'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD',
+            'access-control-allow-credentials': 'true'
+        }
+    )
+
+
+def get_ch_values(tab):
+
+    table = f'ch_app_wide_{tab}'
+
+    print(f'requesting ch values for /{table}')
+
+    print(request.args)
+
+    # print(types.BuiltinFunctionType)
+
+    if table not in CONFIG:
+        raise BadRequestError(f'invalid table {table}')
+
+    webmercator_srid = 4326
+    attr_table = CONFIG[table]['table']
+    db_table = CONFIG[table].get('table', table)
+    geom_table = CONFIG[f'{table}_geo']['table']
+    columns = CONFIG[table].get('api_columns', '*')
+    geom = CONFIG[table].get('geom', None)
+    epsg = CONFIG[table].get('epsg', None)
+    limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
+    if 'limit' in CONFIG[table]:
+        limit = CONFIG[table].get('limit', LIMIT)
+    else:
+        limit = LIMIT
+    offset = OFFSET
+    page = PAGE
+    id = CONFIG[table].get('id', None)
+    id_in_result = ""
+    geoid = CONFIG[table].get('geoid', None)
+    order_by = f'{geoid}'
+    params = CONFIG[table]['params']
+
+    print(columns)
+
+    # criteria is a list of where clauses for the query.
+    criteria = []
+
+    if type(request.args.keys) is types.BuiltinFunctionType and len(request.args.keys()) > 0:
+        print("URL query params is not empty")
+        invalid_params = [k for k in request.args.keys() if k not in (global_params + params)]
+        if invalid_params:
+            raise BadRequestError(f'invalid parameter {invalid_params}')
+
+        query_params = {k: [v, ] for k, v in request.args.items()}
+
+        logger.info(query_params)
+        print(query_params)
+
+        # Get list of available vars for this geoid
+        if f'{geoid}' not in query_params.keys():
+            raise BadRequestError(f'missing {geoid}')
+        else:
+            for k, v in list_ch_vars(tab).items():
+                # print(f'{k}')
+                if k == 'variables':
+                    variables = v
+                    for var in variables:
+                        print(var)
+
+        print(f'geoid is {geoid}: {query_params[geoid]}')
+
+        # Add geoid label ('geoid_co' | 'geoid_tr') to list of variables
+        variables.insert(0, geoid)
+
+        query_fields = ", ".join(variables)
+
+        print(f'with query_fields: {query_fields}')
+
+        if ';' in str(query_params):
+            raise BadRequestError(f'invalid parameter')
+
+        # since we want to handle one or more parameter values coerce all to list
+        # construct "any" style array literal predicates like: where geoid = any('{123, 456}')
+        for k, v in query_params.items():
+            # capture geoid literal value
+            if k == geoid:
+                geoid_value = f'{v[0]}'
+        query_params.update({k: [v, ] for k, v in query_params.items() if type(v) != list})
+        query_params.update({k: "ANY('{" + ",".join(v) + "}')" for k, v in query_params.items()})
+        for k, v in query_params.items():
+            # if k == geoid:
+            #     criteria += [f'{tab}.{geoid} = {v}', ]
+            # else:
+                criteria += [f'{k} = {v}', ]
+
+    else:
+        print("URL query params is empty")
+
+    print('criteria:')
+    print(criteria)
+
+    if criteria:
+        where = 'WHERE ' + ' AND '.join(criteria)
+        # build the query statement
+        query = f"""
+            SELECT {query_fields}
+                FROM {db_table}
+                {where}
+                ORDER BY {order_by}
+            """
+    else:
+        query = f"""
+            SELECT {query_fields}
+                FROM {db_table}
+                ORDER BY {order_by}
+        """
+
+    print(query)
+
+    # execute the query string.
+    values = execute_with_cols(query)
+    values = [ v for dict in values for k, v in dict.items() ]
+
+    query_values = []
+
+    for i in range(1, len(variables)): # skip geoid when looping through variables/values
+        variable = variables[i]
+        value = values[i]
+        value_literal = f"""
+                              ('{variable}', {value})"""
+        query_values.append(value_literal)
+
+    query = f"""
+        SELECT '{geoid_value}' as {geoid}, cw.*, v.value
+            FROM sch_proj_climate.ch_app_crosswalk cw
+                INNER JOIN (
+                    SELECT *
+                        FROM (VALUES
+                              {",".join(query_values)}
+                             ) as v ("variable",  "value")
+                ) v
+                ON cw.name = v.variable
+    """
+
+    print(query)
+
+    # execute the query string.
+    values_with_attributes = execute_with_cols(query)
+
+    #     for dict in values_with_attributes:
+    #         for k, v in dict.items():
+    #             print(f'{k}: {v} ({type(v)})')
+
+    result = {
+        'type': 'Values',
+        'values': values_with_attributes
+    }
+
+    return Response(
+        response=json.dumps(result, indent=None),
         status=200,
         content_type='application/json',
         headers={
@@ -350,7 +512,7 @@ def get_ch_geo(tab):
     )
 
 
-def get_ch_overall_neighbor_geo(tab):
+def get_ch_overall_neighbor_geos(tab):
     table = f'ch_app_wide_{tab}'
 
     print(f'requesting ch neighboring geos for /{table}')
@@ -494,11 +656,6 @@ def get_ch_overall_neighbor_geo(tab):
 
     print('criteria:')
     print(criteria)
-
-    # join the criteria so that we get the right syntax for any number of clauses
-    where = ''
-    if criteria:
-        where = 'WHERE ' + ' AND '.join(criteria)
 
     # build the first query statement
     query = f"""
