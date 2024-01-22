@@ -1,12 +1,13 @@
 export const pythonIntegrationEndpoints = {
-  auction_904_authorized: {
+  "responds to RESTful request for auction_904_authorized": {
     geo: '/rest/bcat/auction_904_authorized/geojson?limit=11',
-    mvt: '/rest/bcat/auction_904_authorized/tiles/10/278/408.pbf',
+    // mvt: '/rest/bcat/auction_904_authorized/tiles/10/278/408.pbf', // MVT is unavailable from CORI Data API
+                                                                      // Can we redirect request to Mapbox?
   }
 };
 
 export const apolloIntegrationEndpoints = {
-  auction_904_authorized: {
+    "responds to GraphQL query for auction_904_authorized": {
     request: {
       query: `query ($geoid_co: [String]!, $limit: Int, $offset: Int, $skipCache: Boolean) {
                   auction_904_authorized (

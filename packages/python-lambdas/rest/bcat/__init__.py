@@ -9,7 +9,7 @@ import types
 from .bcat_config import CONFIG
 from .bcat_connection import execute
 
-LIMIT = 10
+LIMIT = 500
 OFFSET = 0
 PAGE = 0
 
