@@ -41,6 +41,34 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - bcat
+  /bcat/county_summary:
+    get:
+      description: 'Return properties (without geometry) of BCAT county summary features'
+      summary: 'BCAT county summary feature properties'
+      parameters:
+        - name: 'geoid_co'
+          in: query
+          description: 'County GEOID(s) to filter on; comma seperated list'
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: 'Successful response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureCollection'
+        default:
+          description: 'Unexpected error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - bcat
   /bcat/county_summary/geojson:
     get:
       description: 'Return GeoJSON representation of BCAT county summary features'
