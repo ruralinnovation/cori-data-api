@@ -44,6 +44,16 @@ bcat layer geojson
 app.add_url_rule('/rest/bcat/<table>/geojson', 'bcat_geojson',  bcat.get_bcat_geojson)
 
 """
+cd list available variables in <table>
+"""
+app.add_url_rule('/rest/ch/<tab>/vars', 'ch_vars',  ch.get_ch_vars)
+
+"""
+ch county/tract geos
+"""
+app.add_url_rule('/rest/ch/<tab>/geo', 'ch_geo',  ch.get_ch_geo)
+
+"""
 ch neighboring geos (same state/county)
 """
 app.add_url_rule('/rest/ch/<tab>/overall_neighbor_geos', 'ch_overall_neighbor_geo',  ch.get_ch_overall_neighbor_geo)
