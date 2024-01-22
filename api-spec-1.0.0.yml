@@ -11,21 +11,6 @@ paths:
     get:
       description: 'Count the number of BCAT county summary features'
       summary: 'BCAT county summary feature count'
-#      parameters:
-#        - name: state_abbr
-#          in: path
-#          description: State abbreviation
-#          required: true
-#          schema:
-#            type: string
-#        - name: 'geoids'
-#          in: query
-#          description: County geoids to filter on
-#          required: false
-#          schema:
-#            type: array
-#            items:
-#              type: string
       responses:
         '200':
           description: 'Successful response'
