@@ -71,7 +71,7 @@ app.add_url_rule('/rest/ch/<tab>/at_location', 'ch_bbox_at_location',  ch.get_bb
 """
 ch bb map (block -> FeatureCollection)
 """
-app.add_url_rule('/rest/ch/<tab>/bb_map', 'ch_bb_map',  ch.get_bb_map)
+app.add_url_rule('/rest/ch/ch_bb_map/<tab>', 'ch_bb_map',  ch.get_bb_map)
 
 
 @tracer.capture_lambda_handler

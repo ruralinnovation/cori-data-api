@@ -274,7 +274,7 @@ def get_ch_values(tab):
 
     query = f"""
         SELECT '{geoid_value}' as {geoid}, cw.*, v.value
-            FROM sch_proj_climate.ch_app_crosswalk cw
+            FROM proj_climate.ch_app_crosswalk cw
                 INNER JOIN (
                     SELECT *
                         FROM (VALUES
@@ -877,7 +877,7 @@ def get_bbox_at_location(tab):
 
 
 def get_bb_map(tab):
-    table = f'bb_map_{tab}'
+    table = f'ch_bb_map_{tab}'
 
     print(f'requesting ch bb map for /{table}')
 

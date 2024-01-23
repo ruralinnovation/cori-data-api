@@ -308,7 +308,7 @@ def get_ch_values(tab):
 
     query = f"""
         SELECT '{query_params[geoid]}' as {geoid}, cw.*, v.value
-            FROM sch_proj_climate.ch_app_crosswalk cw
+            FROM proj_climate.ch_app_crosswalk cw
                 INNER JOIN (
                     SELECT *
                         FROM (VALUES
