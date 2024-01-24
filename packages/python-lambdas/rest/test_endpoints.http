@@ -1,0 +1,21 @@
+# Test your endpoints
+
+GET http://127.0.0.1:8080/
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8080/rest
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8080/rest/index
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8080/rest/hello
+Accept: application/json
+
+###

@@ -1,0 +1,10 @@
+*.idea
+*.run
+**/.idea
+**/node_modules
+**/swagger/dist
+
+# amplify
+node_modules
+.amplify
+amplifyconfiguration*

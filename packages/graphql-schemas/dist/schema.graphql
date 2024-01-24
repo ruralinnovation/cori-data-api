@@ -1,0 +1,149 @@
+schema {
+  query: RootQueryType
+}
+
+type RootQueryType {
+  setup: GeoJSONGeometryTypes
+  county_summary(geoid_co: [String], limit: Int, offset: Int, page: Int, skipCache: Boolean): GeoJSONFeatureCollection
+  county_summary_geojson(geoid_co: String, skipCache: Boolean): GeoJSONFeatureCollection
+  auction_904_authorized(geoid_co: [String], limit: Int, offset: Int, page: Int, skipCache: Boolean): GeoJSONFeatureCollection
+  auction_904_authorized_geojson(geoid_co: String, geoid_bl: [String], limit: Int, offset: Int, page: Int, skipCache: Boolean): GeoJSONFeatureCollection
+  auction_904_ready(geoid_co: [String], limit: Int, offset: Int, page: Int, skipCache: Boolean): GeoJSONFeatureCollection
+  auction_904_ready_geojson(geoid_co: String, geoid_bl: [String], limit: Int, offset: Int, page: Int, skipCache: Boolean): GeoJSONFeatureCollection
+  auction_904_defaults(geoid_co: [String], limit: Int, offset: Int, page: Int, skipCache: Boolean): GeoJSONFeatureCollection
+  auction_904_defaults_geojson(geoid_co: String, geoid_bl: [String], limit: Int, offset: Int, page: Int, skipCache: Boolean): GeoJSONFeatureCollection
+  auction_904_subsidy_awards_geojson(geoid_co: String, limit: Int, offset: Int, page: Int, skipCache: Boolean): GeoJSONFeatureCollection
+}
+
+"""Geometry Types"""
+union GeoJSONGeometryTypes = GeoJSONPoint | GeoJSONMultiLineString | GeoJSONLineString | GeoJSONPolygon | GeoJSONMultiPoint | GeoJSONMultiPolygon
+
+"""Object describing a single geographical point."""
+type GeoJSONPoint implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: GeoJSONCoordinates
+}
+
+interface GeoJSONInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+}
+
+"""Enumeration of all GeoJSON object types."""
+enum GeoJSONType {
+  Point
+  MultiPoint
+  LineString
+  MultiLineString
+  Polygon
+  MultiPolygon
+  GeometryCollection
+  Feature
+  FeatureCollection
+}
+
+"""Coordinate Reference System (CRS) object."""
+type GeoJSONCoordinateReferenceSystem {
+  type: GeoJSONCRSType!
+  properties: GeoJSONCRSProperties!
+}
+
+"""Enumeration of all GeoJSON CRS object types."""
+enum GeoJSONCRSType {
+  name
+  link
+}
+
+"""CRS object properties."""
+union GeoJSONCRSProperties = GeoJSONNamedCRSProperties | GeoJSONLinkedCRSProperties
+
+"""Properties for name based CRS object."""
+type GeoJSONNamedCRSProperties {
+  name: String!
+}
+
+"""Properties for link based CRS object."""
+type GeoJSONLinkedCRSProperties {
+  href: String!
+  type: String
+}
+
+interface GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: GeoJSONCoordinates
+}
+
+"""A (multidimensional) set of coordinates following x, y, z order."""
+scalar GeoJSONCoordinates
+
+"""Object describing multiple connected sequences of geographical points."""
+type GeoJSONMultiLineString implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: GeoJSONCoordinates
+}
+
+"""Object describing a single connected sequence of geographical points."""
+type GeoJSONLineString implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: GeoJSONCoordinates
+}
+
+"""
+Object describing a single shape formed by a set of geographical points.
+"""
+type GeoJSONPolygon implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: GeoJSONCoordinates
+}
+
+"""Object describing multiple geographical points."""
+type GeoJSONMultiPoint implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: GeoJSONCoordinates
+}
+
+"""
+Object describing multiple shapes formed by sets of geographical points.
+"""
+type GeoJSONMultiPolygon implements GeoJSONInterface & GeoJSONGeometryInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  coordinates: GeoJSONCoordinates
+}
+
+"""A set of multiple features."""
+type GeoJSONFeatureCollection implements GeoJSONInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  features: [GeoJSONFeature!]!
+}
+
+"""
+An object that links a geometry to properties in order to provide context.
+"""
+type GeoJSONFeature implements GeoJSONInterface {
+  type: GeoJSONType!
+  crs: GeoJSONCoordinateReferenceSystem
+  bbox: [Float]
+  geometry: GeoJSONGeometryInterface
+  properties: JSONObject
+  id: String
+}
+
+"""Arbitrary JSON value"""
+scalar JSONObject
