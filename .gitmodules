@@ -4,6 +4,6 @@
 [submodule "frontend"]
 	path = packages/frontend
 	url = git@github.com:ruralinnovation/cdk-amplify-frontend.git
-[submodule "graphql-schemas"]
+[submodule "packages/graphql-schemas"]
 	path = packages/graphql-schemas
 	url = git@github.com:ruralinnovation/graphql-schemas.git
