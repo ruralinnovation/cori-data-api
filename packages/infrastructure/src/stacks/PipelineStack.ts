@@ -125,12 +125,13 @@ export class PipelineStack extends Stack {
           },
         },
       },
-      synth: new ShellStep('Synth', {
+      synth: new ShellStep('Synth', { // <= "Build" stage in CodePipeline
         input: CodePipelineSource.gitHub(source.repo, source.branch, {
           authentication: source.authentication,
           trigger: source.trigger,
         }),
         commands: [
+          'git submodule update',
           'npm --version',
           'npm install -g npm@9.6.6',
           'npm install',
@@ -174,6 +175,7 @@ export class PipelineStack extends Stack {
           'echo $COGNITO_CLIENT_ID',
           'echo $COGNITO_DOMAIN',
           'ls',
+          'git submodule update',
           'npm --version',
           'npm install -g npm@9.6.6',
           'npm install',
