@@ -36,8 +36,6 @@ const auction_904_authorized = {
     info: any
   ) => {
 
-    const table = "auction_904_authorized";
-
     const geoids = (typeof geoid_co !== 'undefined' && geoid_co !== null && geoid_co.length > 0) ?
       geoid_co.map(c => c.toString()).join(",") :
       "all";
@@ -57,10 +55,10 @@ const auction_904_authorized = {
     if (!!skipCache && typeof redisClient.disconnect === 'function') {
       // Disconnect from redis when ever skipCache == true
       console.log("Disconnect from redis when ever skipCache == true")
-      // redisClient.disconnect();
+      redisClient.disconnect();
     }
 
-    const rest_uri = `${pythonApi.baseURL}bcat/${table}${
+    const rest_uri = `${pythonApi.baseURL}bcat/auction_904_authorized${
       (geoids === "all") ?
         `?limit=${page_size}&offset=${count_offset}&page=${page_number}` : 
         `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`
@@ -75,30 +73,31 @@ const auction_904_authorized = {
 
         //     const featureCollection = await fc;
         const res: any = (geoids === "all") ? await (async () => {
-            const fc = // (skipCache) ?
-                await pythonApi.getItem(`bcat/${table}?limit=${page_size}&offset=${count_offset}&page=${page_number}`)
-            //   : await redisClient.checkCache(`${table}-`
-            //     + `${page_size}-${count_offset}-${page_number}`, async () => {
-            //
-            //     // TODO: Remove after testing call to local Python REST API
-            //     fetch(rest_uri)
-            //       .catch((err) => console.log("Test Python REST error: ", err))
-            //       .then((res) => {
-            //         console.log("Test Python REST response: ", res);
-            //         const tc = (<any>(<Response>res));
-            //         console.log("FeatureCollection: ",
-            //           (tc.hasOwnProperty("features")) ?
-            //             (<Array<any>>tc.features)
-            //               .map(f => ({
-            //                 ...f,
-            //                 "id": f.properties.geoid_co
-            //               })) :
-            //             tc.features
-            //         );
-            //       });
-            //
-            //     return await pythonApi.getItem(`bcat/${table}?limit=${page_size}&offset=${count_offset}&page=${page_number}`);
-            //   });
+            const fc = (skipCache)
+              ? await pythonApi.getItem(`bcat/auction_904_authorized?limit=${page_size}&offset=${count_offset}&page=${page_number}`)
+              : await redisClient.checkCache(`auction_904_authorized-`
+                + `${page_size}-${count_offset}-${page_number}`, async () => {
+
+
+                // TODO: Remove after testing call to local Python REST API
+                fetch(rest_uri)
+                  .catch((err) => console.log("Test Python REST error: ", err))
+                  .then((res) => {
+                    console.log("Test Python REST response: ", res);
+                    const tc = (<any>(<Response>res));
+                    console.log("FeatureCollection: ",
+                      (tc.hasOwnProperty("features")) ?
+                        (<Array<any>>tc.features)
+                          .map(f => ({
+                            ...f,
+                            "id": f.properties.geoid_co
+                          })) :
+                        tc.features
+                    );
+                  });
+
+                return await pythonApi.getItem(`bcat/auction_904_authorized?limit=${page_size}&offset=${count_offset}&page=${page_number}`);
+              });
 
             return ({
               type: 'FeatureCollection',
@@ -111,20 +110,20 @@ const auction_904_authorized = {
                 fc.features
             });
           })():
-          // (skipCache) ?
-            await pythonApi.getItem(`bcat/${table}`
+          (skipCache)
+            ? await pythonApi.getItem(`bcat/auction_904_authorized`
               + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`)
-          //   : await redisClient.checkCache(`${table}-`
-          //     + `${geoids}-${page_size}-${count_offset}-${page_number}`, async () => {
-          //
-          //     // TODO: Remove after testing call to local Python REST API
-          //     fetch(rest_uri)
-          //       .catch((err) => console.log("Test Python REST error: ", err))
-          //       .then((res) => console.log("Test Python REST response: ", res));
-          //
-          //     return await pythonApi.getItem(`bcat/${table}`
-          //       + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
-          //   });
+            : await redisClient.checkCache(`auction_904_authorized-`
+              + `${geoids}-${page_size}-${count_offset}-${page_number}`, async () => {
+
+              // TODO: Remove after testing call to local Python REST API
+              fetch(rest_uri)
+                .catch((err) => console.log("Test Python REST error: ", err))
+                .then((res) => console.log("Test Python REST response: ", res));
+
+              return await pythonApi.getItem(`bcat/auction_904_authorized`
+                + `?geoid_co=${geoids}&limit=${page_size}&offset=${count_offset}&page=${page_number}`);
+            });
 
         // console.log("res: ", await res);
 

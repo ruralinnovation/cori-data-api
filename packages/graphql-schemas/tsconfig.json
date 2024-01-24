@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "declaration": true,
     "target": "ES2020",
     "module": "commonjs",
     "lib": [
@@ -23,6 +24,7 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "typeRoots": ["./node_modules/@types"],
+    "types": [ "node" ],
     "outDir": "dist"
   },
   "exclude": ["./dist/**/*", "cdk.out", "dist", "node_modules"]
