@@ -229,7 +229,7 @@ export const Config: IConfigs = {
     artifactBucketName: "cori-coridataapipipeline-pipelineartifactsbucket2-pre",
     client: 'cori',
     databaseConfig: {
-      dbname: 'api-dev',
+      dbname: 'data',
       dbuser: 'read_only_user',
       host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
       parameterName: '/postgresql/read_only_user_credentials',
