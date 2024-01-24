@@ -131,7 +131,6 @@ export class PipelineStack extends Stack {
           trigger: source.trigger,
         }),
         commands: [
-          'git submodule update',
           'npm --version',
           'npm install -g npm@9.6.6',
           'npm install',
@@ -175,23 +174,11 @@ export class PipelineStack extends Stack {
           'echo $COGNITO_CLIENT_ID',
           'echo $COGNITO_DOMAIN',
           'ls',
-          'git submodule update',
           'npm --version',
           'npm install -g npm@9.6.6',
           'npm install',
           // Execute Jest Integration Tests
-          'npm run test:integration --w packages/infrastructure',
-          // TODO: Test python lambda functions for rest endpoints?
-          /**
-           * The below will run Python Robot Framework Integration tests
-           * We will need to hook up an authentication mechanism to pass in a token to these tests
-           * For now only run them locally
-           */
-          // Execute Python Integration Tests
-          // 'pip install robotframework',
-          // 'pip install robotframework-requests',
-          // 'export PATH="$HOME/.local/bin:$PATH"',
-          // '. ./packages/python-lambdas/bcat/tests.sh',
+          'npm run test:integration --w packages/infrastructure'
         ],
       })
     );
