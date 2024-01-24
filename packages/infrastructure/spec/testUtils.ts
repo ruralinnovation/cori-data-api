@@ -34,7 +34,7 @@ export const getTestConfig = async (): Promise<TestEnvConfig> => {
       for (let k in c) {
         if (c.hasOwnProperty(k) && typeof c[k] === 'undefined') {
           console.log(k + " is undefined");
-          return false
+          return false;
         }
       }
       return true;
