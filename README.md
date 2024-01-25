@@ -565,8 +565,9 @@ cp -r ./.env/lib/python3.8/site-packages ./dist/python
     directory
 2.  Rename service directory and the name in the `pyproject.toml` file
 3.  Create `__init__.py` with custom functions and logic.
-4.  
-5.  
+4.  *OPTIONAL*: Update `___.robot` testing files with testing logic.
+5.  *OPTIONAL*: Add new integration tests in
+    `./packages/infrastructure/spec/integration-test.spec.ts`.
 6.  The RESTful component uses a single ApiEndpoint, so import functions
     from the new Python module into `rest/index.py` and add relevant
     endpoints with Flask’s `app.add_url_rule(...)` syntax. ~~Create a

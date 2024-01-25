@@ -21,7 +21,7 @@ global_params = CONFIG['global']['params']
 
 def get_bcat_count(table):
 
-    print(f'requesting bcat table count for /{table}')
+    print(f'requesting bcat table count from {table}')
 
     print(request.args)
 
@@ -180,7 +180,7 @@ def get_bcat_count(table):
 
 def get_bcat_props(table):
 
-    print(f'requesting bcat layer properties for /{table}')
+    print(f'requesting bcat layer properties from {table}')
 
     print(request.args)
 
@@ -380,7 +380,7 @@ def get_bcat_props(table):
 
 def get_bcat_geojson(table):
 
-    print(f'requesting bcat layer geojson for /{table}')
+    print(f'requesting bcat layer geojson from {table}')
 
     print(request.args)
 
