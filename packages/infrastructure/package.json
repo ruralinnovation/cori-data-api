@@ -12,7 +12,7 @@
   "files": [
     "dist"
   ],
-  "author": "Merging Futures LLC.",
+  "author": "Rural Innovation Strategies, Inc",
   "homepage": "https://bitbucket.org/mergingfuturesprojects/cori-api#readme",
   "dependencies": {
     "@apollo/client": "^3.8.8",

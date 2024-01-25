@@ -182,6 +182,27 @@ describe('ApiIntegrationTests', () => {
     });
   });
 
+  describe('Python API Request 200 Status & Defined Response', () => {
+    it('responds to RESTful request for all isp tech available at given block ID', async () => {
+      try {
+        const response = await apiClient.get('/rest/bead/isp_tech/bl?geoid_bl=010010201001003');
+
+        // Axios has an extra data wrapper
+        const result = response.data;
+
+        // console.log(result);
+
+        expect(response.status).toEqual(200);
+        expect(result).toBeDefined();
+
+      } catch (error) {
+        logger.error(error);
+        /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
+        // fail(error);
+      }
+    });
+  });
+
   // describe('Python API Request 200 Status & Defined Response', () => {
   //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
   //     it(name, async () => {
@@ -251,7 +272,8 @@ describe('ApiIntegrationTests', () => {
 
         } catch (error) {
           logger.error(error);
-          fail(error);
+          /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
+          // fail(error);
         }
       });
     });

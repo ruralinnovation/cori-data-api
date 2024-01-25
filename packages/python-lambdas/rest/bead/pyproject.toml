@@ -1,14 +1,11 @@
 [tool.poetry]
-name = "ch"
+name = "bead"
 version = "0.1.0"
 description = ""
 authors = ["Rural Innovation Strategies, Inc"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
-psycopg = "^3.1.12"
-psycopg-binary = "^3.1.12"
-aws-lambda-powertools = "2.25.1"
+python = "^3.8"
 
 [tool.poetry.dev-dependencies]
 
