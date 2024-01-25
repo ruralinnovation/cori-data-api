@@ -153,7 +153,7 @@ def get_ch_values(tab):
 
     table = f'ch_app_wide_{tab}'
 
-    print(f'requesting ch values for /{table}')
+    print(f'requesting ch values from {table}')
 
     print(request.args)
 
@@ -352,7 +352,7 @@ def get_ch_geojson(tab, geoid, attr_table, geom_table, query_fields, simplify,
 def get_ch_geo(tab):
     table = f'ch_app_wide_{tab}'
 
-    print(f'requesting ch geos for /{table}')
+    print(f'requesting ch geos from {table}')
 
     print(request.args)
 
@@ -515,7 +515,7 @@ def get_ch_geo(tab):
 def get_ch_overall_neighbor_geos(tab):
     table = f'ch_app_wide_{tab}'
 
-    print(f'requesting ch neighboring geos for /{table}')
+    print(f'requesting ch neighboring geos from {table}')
 
     print(request.args)
 
@@ -690,7 +690,7 @@ def get_ch_overall_neighbor_geos(tab):
 def get_bbox_at_location(tab):
     table = f'ch_app_wide_{tab}_geo'
 
-    print(f'requesting ch geo bbox at location for /{table}')
+    print(f'requesting ch geo bbox at location from {table}')
 
     print(request.args)
 
@@ -879,7 +879,7 @@ def get_bbox_at_location(tab):
 def get_bb_map(tab):
     table = f'ch_bb_map_{tab}'
 
-    print(f'requesting ch bb map for /{table}')
+    print(f'requesting ch bb map from {table}')
 
     print(request.args)
 

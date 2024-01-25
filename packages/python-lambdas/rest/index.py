@@ -7,6 +7,7 @@ from flask_cors import CORS
 
 import acs as acs
 import bcat as bcat
+import bead as bead
 import ch as ch
 
 # app = APIGatewayRestResolver(strip_prefixes=["/rest"])
@@ -42,6 +43,11 @@ app.add_url_rule('/rest/bcat/<table>', 'bcat_properties',  bcat.get_bcat_props)
 bcat layer geojson
 """
 app.add_url_rule('/rest/bcat/<table>/geojson', 'bcat_geojson',  bcat.get_bcat_geojson)
+
+"""
+bead isp tech
+"""
+app.add_url_rule('/rest/bead/isp_tech/<tab>', 'bead_isp_tech',  bead.get_bead_isp_tech)
 
 """
 cd list available county or tract variables
