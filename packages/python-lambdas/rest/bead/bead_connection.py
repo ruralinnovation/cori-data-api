@@ -14,7 +14,7 @@ conn = None
 
 def replace_decimals(obj):
     if isinstance(obj, list):
-        for i in xrange(len(obj)):
+        for i in range(len(obj)):
             obj[i] = replace_decimals(obj[i])
         return obj
     elif isinstance(obj, dict):

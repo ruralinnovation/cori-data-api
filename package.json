@@ -71,5 +71,8 @@
     "packages/infrastructure",
     "packages/python-lambdas",
     "wiki"
-  ]
+  ],
+  "dependencies": {
+    "@aws-amplify/core": "^6.0.13"
+  }
 }
