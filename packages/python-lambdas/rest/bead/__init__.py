@@ -45,7 +45,7 @@ def get_bead_isp_tech(tab):
 
     # if no id then use somewhat hacky ctid to bigint method.
     # WARNING: only works if there are no changes to table rows!!
-    columns += ", ((ctid::text::point)[0]::bigint<<32 | (ctid::text::point)[1]::bigint) as x_id"
+    columns += ", 'isp_tech' as type, ((ctid::text::point)[0]::bigint<<32 | (ctid::text::point)[1]::bigint) as x_id"
 
     print(columns)
 
