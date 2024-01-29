@@ -12,7 +12,7 @@ import ch as ch
 
 # app = APIGatewayRestResolver(strip_prefixes=["/rest"])
 app = Flask(__name__)
-#CORS(app)
+# CORS(app)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Apply CORS only to /api routes
 
 logger = Logger(service="CORIDataAPIRestService")
