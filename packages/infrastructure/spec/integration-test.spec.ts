@@ -185,10 +185,10 @@ describe('ApiIntegrationTests', () => {
   describe('Python API Request 200 Status & Defined Response', () => {
     it('responds to RESTful request for all isp tech available at given block ID', async () => {
       try {
-        const response = await apiClient.get('/rest/bead/isp_tech/bl?geoid_bl=010010201001003');
+        const response = await apiClient.get('/rest/bead/all?geoid_bl=010010201001003');
 
         // Axios has an extra data wrapper
-        const result = response.data;
+        const result = response.data.code;
 
         // console.log(result);
 

@@ -22,8 +22,8 @@ CONFIG = {
         "simplify": 0.0001,
         "precision": 6
     },
-    "cross_tab": {
-        "table": "proj_bead.cross_tab1020",
+    "award_bl": {
+        "table": "award_bl",
         "api_columns": "state_2010, geoid_bl_2010, block_part_flag_o, arealand_2010, areawater_2010, state_2020, geoid_bl_2020, block_part_flag_r, arealand_2020, areawater_2020, arealand_int, areawater_int",
         "params": [ "geoid_bl_2020" ],
         "geoid": "geoid_bl_2020",
@@ -31,8 +31,8 @@ CONFIG = {
         "epsg": None,
         "id": None
     },
-    "isp_tech_geoid_bl": {
-        "table": "proj_bead.isp_tech_geoid_bl",
+    "isp_tech_bl": {
+        "table": "proj_bead.isp_tech_bl",
         "api_columns": "geoid_bl, new_alias, isp_id, technology, max_down, max_up",
         "params": [ "geoid_bl", "isp_id", "technology" ],
         "geoid": "geoid_bl",
@@ -40,9 +40,10 @@ CONFIG = {
         "epsg": None,
         "id": None
     },
-    "rdof": {
-        "table": "proj_bead.big_rdof",
-        "api_columns": "applicant, winning_bi, state, county, geoid_bl, da_numbers, geoid_co, id, tier, latency, frn, sac, winning_bidder, winning_bid_total_in_state, number_of_locations_in_state, authorized, \"default\", version",
+    "rdof_bl": {
+        "table": "proj_bead.rdof_bl",
+        "alias": "rdof",
+        "api_columns": "rdof.applicant, rdof.winning_bi, rdof.state, county, rdof.geoid_bl, rdof.da_numbers, rdof.geoid_co, rdof.tier, rdof.latency, rdof.frn, rdof.sac, rdof.winning_bidder, rdof.winning_bid_total_in_state, rdof.number_of_locations_in_state, rdof.authorized, rdof.\"default\", rdof.version",
         "params": [ "applicant", "geoid_bl", "geoid_co", "version" ],
         "geoid": "geoid_bl",
         "geom": None,
