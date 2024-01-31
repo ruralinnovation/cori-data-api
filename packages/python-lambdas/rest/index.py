@@ -49,9 +49,9 @@ bcat layer geojson
 app.add_url_rule('/rest/bcat/<table>/geojson', 'bcat_geojson', bcat.get_bcat_geojson)
 
 """
-bead isp tech
+bead isp tech, rdof awards
 """
-app.add_url_rule('/rest/bead/isp_tech/<tab>', 'bead_isp_tech', bead.get_bead_isp_tech)
+app.add_url_rule('/rest/bead/<tab>', 'bead_isp_tech', bead.get_bead_isp_tech)
 
 """
 ch list available county or tract variables

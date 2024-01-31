@@ -17,8 +17,30 @@ tracer = Tracer(service="BEAD")
 global_params = CONFIG['global']['params']
 
 
+
+"""
+SELECT geoid_bl, new_alias, isp_id, technology, max_down, max_up, 'isp_tech' as type
+    FROM proj_bead.isp_tech_geoid_bl
+    WHERE geoid_bl = ANY('{010539698023012}')
+    ORDER BY geoid_bl
+    LIMIT 500
+    OFFSET 0;
+        
+SELECT award_bl.award_geoid_bl, rdof.*, 'award' as type
+	FROM (
+		SELECT geoid_bl, award_geoid_bl
+			FROM proj_bead.award_bl
+			WHERE geoid_bl = ANY('{010539698023012}') --  == 010539698003009
+	) award_bl, proj_bead.big_rdof rdof
+	WHERE award_bl.award_geoid_bl = rdof.geoid_bl
+	ORDER BY geoid_bl
+	LIMIT 500
+	OFFSET 0;
+"""
+
+
 def get_bead_isp_tech(tab):
-    table = f'isp_tech_geoid_{tab}'
+    table = f'{tab}_bl'
 
     print(f'requesting bead isp tech from {table}')
 
