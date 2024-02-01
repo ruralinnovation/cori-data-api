@@ -30,8 +30,8 @@ def list_ch_vars(tab):
     # get some short names of parameters used to construct the query
     db_table = CONFIG[table].get('table', table)
     columns = CONFIG[table].get('api_columns', '*')
-    params = CONFIG[table]['params']
     id = CONFIG[table].get('id', None)
+    params = CONFIG[table]['params']
     order_by = f'variable'
 
     print(columns)
@@ -165,10 +165,13 @@ def get_ch_values(tab):
     webmercator_srid = 4326
     attr_table = CONFIG[table]['table']
     db_table = CONFIG[table].get('table', table)
-    geom_table = CONFIG[f'{table}_geo']['table']
     columns = CONFIG[table].get('api_columns', '*')
+    id = CONFIG[table].get('id', None)
+    id_in_result = ""
+    geoid = CONFIG[table].get('geoid', None)
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
+    geom_table = CONFIG[f'{table}_geo']['table']
     limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
     if 'limit' in CONFIG[table]:
         limit = CONFIG[table].get('limit', LIMIT)
@@ -176,9 +179,6 @@ def get_ch_values(tab):
         limit = LIMIT
     offset = OFFSET
     page = PAGE
-    id = CONFIG[table].get('id', None)
-    id_in_result = ""
-    geoid = CONFIG[table].get('geoid', None)
     order_by = f'{geoid}'
     params = CONFIG[table]['params']
 
@@ -364,10 +364,13 @@ def get_ch_geo(tab):
     webmercator_srid = 4326
     attr_table = CONFIG[table]['table']
     db_table = CONFIG[table].get('table', table)
-    geom_table = CONFIG[f'{table}_geo']['table']
     columns = CONFIG[table].get('api_columns', '*')
+    id = CONFIG[table].get('id', None)
+    id_in_result = ""
+    geoid = CONFIG[table].get('geoid', None)
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
+    geom_table = CONFIG[f'{table}_geo']['table']
     limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
     if 'limit' in CONFIG[table]:
         limit = CONFIG[table].get('limit', LIMIT)
@@ -375,9 +378,6 @@ def get_ch_geo(tab):
         limit = LIMIT
     offset = OFFSET
     page = PAGE
-    id = CONFIG[table].get('id', None)
-    id_in_result = ""
-    geoid = CONFIG[table].get('geoid', None)
     order_by = f'{geoid}'
     params = CONFIG[table]['params']
     simplify = CONFIG[table].get('simplify', 0.0001)
@@ -527,10 +527,13 @@ def get_ch_overall_neighbor_geos(tab):
     webmercator_srid = 4326
     attr_table = CONFIG[table]['table']
     db_table = CONFIG[table].get('table', table)
-    geom_table = CONFIG[f'{table}_geo']['table']
     columns = CONFIG[table].get('api_columns', '*')
+    id = CONFIG[table].get('id', None)
+    id_in_result = ""
+    geoid = CONFIG[table].get('geoid', None)
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
+    geom_table = CONFIG[f'{table}_geo']['table']
     limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
     if 'limit' in CONFIG[table]:
         limit = CONFIG[table].get('limit', LIMIT)
@@ -538,9 +541,6 @@ def get_ch_overall_neighbor_geos(tab):
         limit = LIMIT
     offset = OFFSET
     page = PAGE
-    id = CONFIG[table].get('id', None)
-    id_in_result = ""
-    geoid = CONFIG[table].get('geoid', None)
     order_by = f'{geoid}'
     params = CONFIG[table]['params']
     simplify = CONFIG[table].get('simplify', 0.0001)
@@ -702,6 +702,9 @@ def get_bbox_at_location(tab):
     webmercator_srid = 4326
     db_table = CONFIG[table].get('table', table)
     columns = CONFIG[table].get('api_columns', '*')
+    id = CONFIG[table].get('id', None)
+    id_in_result = ""
+    geoid = CONFIG[table].get('geoid', None)
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
     limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
@@ -711,9 +714,6 @@ def get_bbox_at_location(tab):
         limit = LIMIT
     offset = OFFSET
     page = PAGE
-    id = CONFIG[table].get('id', None)
-    id_in_result = ""
-    geoid = CONFIG[table].get('geoid', None)
     order_by = f'{geoid}'
     params = CONFIG[table]['params']
     simplify = CONFIG[table].get('simplify', 0.0001)
@@ -891,6 +891,8 @@ def get_bb_map(tab):
     webmercator_srid = 4326
     db_table = CONFIG[table].get('table', table)
     columns = CONFIG[table].get('api_columns', '*')
+    id = CONFIG[table].get('id', None)
+    id_in_result = ""
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
     limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
@@ -901,8 +903,6 @@ def get_bb_map(tab):
     offset = OFFSET
     page = PAGE
     params = CONFIG[table]['params']
-    id = CONFIG[table].get('id', None)
-    id_in_result = ""
     order_by = ', '.join([x for x in params if x != 'geom'])
     simplify = CONFIG[table].get('simplify', 0.0001)
 
