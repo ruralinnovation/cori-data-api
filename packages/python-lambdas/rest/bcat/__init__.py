@@ -38,6 +38,8 @@ def get_bcat_count(table):
     webmercator_srid = 4326
     db_table = CONFIG[table].get('table', table)
     columns = CONFIG[table].get('api_columns', '*')
+    id = CONFIG[table].get('id', None)
+    id_in_result = ""
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
     limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
@@ -48,8 +50,6 @@ def get_bcat_count(table):
     offset = OFFSET
     page = PAGE
     params = CONFIG[table]['params']
-    id = CONFIG[table].get('id', None)
-    id_in_result = ""
     order_by = ', '.join([x for x in params if x != 'geom'])
     simplify = CONFIG[table].get('simplify', 0.0)
 
@@ -192,6 +192,8 @@ def get_bcat_props(table):
     webmercator_srid = 4326
     db_table = CONFIG[table].get('table', table)
     columns = CONFIG[table].get('api_columns', '*')
+    id = CONFIG[table].get('id', None)
+    id_in_result = ""
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
     limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
@@ -202,8 +204,6 @@ def get_bcat_props(table):
     offset = OFFSET
     page = PAGE
     params = CONFIG[table]['params']
-    id = CONFIG[table].get('id', None)
-    id_in_result = ""
     order_by = ', '.join([x for x in params if x != 'geom'])
     simplify = CONFIG[table].get('simplify', 0.0)
 
@@ -392,6 +392,8 @@ def get_bcat_geojson(table):
     webmercator_srid = 4326
     db_table = CONFIG[table].get('table', table)
     columns = CONFIG[table].get('api_columns', '*')
+    id = CONFIG[table].get('id', None)
+    id_in_result = ""
     geom = CONFIG[table].get('geom', None)
     epsg = CONFIG[table].get('epsg', None)
     limit = ''  # Option to limit the total number of records returned. Don't include this key in the config to disable
@@ -402,8 +404,6 @@ def get_bcat_geojson(table):
     offset = OFFSET
     page = PAGE
     params = CONFIG[table]['params']
-    id = CONFIG[table].get('id', None)
-    id_in_result = ""
     order_by = ', '.join([x for x in params if x != 'geom'])
     simplify = CONFIG[table].get('simplify', 0.0)
 
