@@ -7,7 +7,7 @@ import types
 from .bead_config import CONFIG
 from .bead_connection import execute, execute_with_cols
 
-LIMIT = 500
+LIMIT = 5000
 OFFSET = 0
 PAGE = 0
 
@@ -196,7 +196,7 @@ def get_bead_isp_tech():
     else:
         limit = LIMIT
     offset = OFFSET
-    order_by = f'{geoid}'
+    order_by = f'new_alias, isp_id'
     params = CONFIG[table]['params']
 
     columns += ", 'isp_tech' as type"
@@ -269,34 +269,46 @@ def get_bead_isp_tech():
     print('criteria:')
     print(criteria)
 
-    # join the criteria so that we get the right syntax for any number of clauses
-    where = ''
-    if criteria:
-        where = 'WHERE ' + ' AND '.join(criteria)
-
     # build the query statement
-    query = f"""
-        SELECT
-            json_build_object(
-                'type',       'Feature',
-                'properties', to_jsonb(t.*) - 'x_id'
-            )
-            FROM (
-                SELECT {columns}
-                    FROM {db_table}
-                    {where}
-                    ORDER BY {order_by}
-                    LIMIT {limit}
-                    OFFSET {offset}
-                ) t
-
+    if criteria:
+        # join the criteria so that we get the right syntax for any number of clauses
+        where = 'WHERE ' + ' AND '.join(criteria)
+        query = f"""
+            SELECT
+                json_build_object(
+                    'type',       'Feature',
+                    'properties', to_jsonb(t.*) - 'x_id'
+                )
+                FROM (
+                    SELECT {columns}
+                        FROM {db_table}
+                        {where}
+                        ORDER BY {order_by}
+                        LIMIT {limit}
+                        OFFSET {offset}
+                    ) t
         """
-
+    else:
+        query = f"""
+            SELECT
+                json_build_object(
+                    'type',       'Feature',
+                    'properties', to_jsonb(t.*)
+                )
+                FROM (
+                    SELECT DISTINCT {order_by}, 'isp_id' as type
+                        FROM {db_table}
+                        ORDER BY {order_by}
+                        LIMIT {limit}
+                        OFFSET {offset}
+                    ) t
+        """
+        
     print(query)
-
+    
     # execute the query string.
     features = execute(query)
-
+    
     return features
 
 
@@ -478,6 +490,7 @@ def get_bead_detailed_info(tab):
 
     result = {
         "type": "FeatureCollection",
+        "count": len(features),
         "features": [f[0] for f in features]
     }
 
