@@ -3,9 +3,13 @@
  *
  * Integration tests for the API gateway.
  */
-
 import { Auth } from "aws-amplify";
 import axios, { AxiosInstance } from 'axios';
+/* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698
+ * ... but is available with testRunner: "jest-jasmine2" or the following import:
+// import fail from "jest-jasmine2";
+ * (from https://stackoverflow.com/a/73922010/1396477):
+ */
 import { getTestConfig } from './testUtils';
 import { apolloIntegrationEndpoints, pythonIntegrationEndpoints } from './integrationConfigurations';
 
@@ -119,8 +123,7 @@ describe('ApiIntegrationTests', () => {
     const accessToken = response?.signInUserSession?.idToken?.jwtToken;
     if (!accessToken) {
       logger.info(`Response to Amplify/Cognito Auth request: ${JSON.stringify(response)}`);
-      /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-      // fail('Test user was not authenticated.');
+      fail('Test user was not authenticated.');
     }
     // const accessToken = null;
 
@@ -134,9 +137,9 @@ describe('ApiIntegrationTests', () => {
   });
 
   describe("Sanity check test suite configuration", () => {
-    it("checks the config", async () => {
+    it("checks the config", () => {
       const SOME_CONSTANT = true;
-      expect(SOME_CONSTANT).toBeTruthy();
+      return expect(SOME_CONSTANT).toBeTruthy();
     });
   });
 
@@ -155,8 +158,7 @@ describe('ApiIntegrationTests', () => {
 
       } catch (error) {
         logger.error(error);
-        /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-        // fail(error);
+        fail(error);
       }
     });
   });
@@ -176,8 +178,7 @@ describe('ApiIntegrationTests', () => {
 
       } catch (error) {
         logger.error(error);
-        /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-        // fail(error);
+        fail(error);
       }
     });
   });
@@ -185,7 +186,7 @@ describe('ApiIntegrationTests', () => {
   describe('Python API Request 200 Status & Defined Response', () => {
     it('responds to RESTful request for all isp tech available at given block ID', async () => {
       try {
-        const response = await apiClient.get('/rest/bead/all?geoid_bl=010010201001003');
+        const response = await apiClient.get('/rest/bead/isp_combo');
 
         // Axios has an extra data wrapper
         const result = response.data.code;
@@ -197,8 +198,7 @@ describe('ApiIntegrationTests', () => {
 
       } catch (error) {
         logger.error(error);
-        /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-        // fail(error);
+        fail(error);
       }
     });
   });
@@ -222,8 +222,7 @@ describe('ApiIntegrationTests', () => {
   //
   //       } catch (error) {
   //         logger.error(error);
-  //         /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-  //         // fail(error);
+  //         fail(error);
   //       }
   //     });
   //   });
@@ -244,8 +243,7 @@ describe('ApiIntegrationTests', () => {
   //
   //     } catch (error) {
   //       logger.error(error);
-  //       /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-  //       // fail(error);
+  //       fail(error);
   //     }
   //   });
   // });
@@ -272,8 +270,7 @@ describe('ApiIntegrationTests', () => {
 
         } catch (error) {
           logger.error(error);
-          /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-          // fail(error);
+          fail(error);
         }
       });
     });
@@ -332,8 +329,7 @@ describe('ApiIntegrationTests', () => {
 
       } catch (error) {
         logger.error(error);
-        /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-        // fail(error);
+        fail(error);
       }
     });
   });
@@ -361,8 +357,7 @@ describe('ApiIntegrationTests', () => {
 
         } catch (error) {
           logger.error(error);
-          /* fail() has been removed from jest: https://github.com/jestjs/jest/issues/11698 */
-          // fail(error);
+          fail(error);
         }
       });
     });
