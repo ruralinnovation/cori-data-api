@@ -1,24 +1,24 @@
-import type { JestConfigWithTsJest } from 'ts-jest';
+import type { JestConfigWithTsJest } from "ts-jest";
 
 const config: JestConfigWithTsJest = {
   // globals: {
-  //   'ts-jest': {
+  //   "ts-jest": {
   //     diagnostics: true
   //   }
   // },
-  preset: 'ts-jest',
-  testEnvironment: 'node',
+  moduleFileExtensions: [ "cjs", "js", "jsx", "json", "mjs", "node", "ts", "tsx" ],
+  preset: "ts-jest",
   transform: {
-    "^.+\\.tsx?$": ['ts-jest', {
+    "^.+\\.tsx?$": ["ts-jest", {
       diagnostics: true
     }]
   },
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
-
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node']
+  testEnvironment: "node",
+  testRunner: "jest-jasmine2",
+  testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$"
   // collectCoverage: true,
-  // coverageDirectory: 'coverage',
-  // coverageReporters: ['lcov', 'html']
+  // coverageDirectory: "coverage",
+  // coverageReporters: ["lcov", "html"]
 };
 
 export default config;
