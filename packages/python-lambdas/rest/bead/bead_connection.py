@@ -8,6 +8,8 @@ DB_ARGS = {
     'password': os.environ['DB_SECRET'],
     'host': os.environ['DB_HOST'],
     'dbname': os.environ['DB_NAME'],
+    'connect_timeout': 10,
+    'options': '-c statement_timeout=10000'
     }
 # ideally this allows us to reuse a connection
 conn = None
