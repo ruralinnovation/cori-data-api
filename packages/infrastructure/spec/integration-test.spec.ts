@@ -164,7 +164,7 @@ describe('ApiIntegrationTests', () => {
   });
 
   describe('Python API Request 200 Status & Defined Response', () => {
-    it('responds to RESTful request for a county_summary for all US counties', async () => {
+    it('responds to RESTful request for a BCAT county_summary for all US counties', async () => {
       try {
         const response = await apiClient.get('/rest/bcat/county_summary?limit=0');
 
@@ -184,12 +184,12 @@ describe('ApiIntegrationTests', () => {
   });
 
   describe('Python API Request 200 Status & Defined Response', () => {
-    it('responds to RESTful request for all isp tech available at given block ID', async () => {
+    it('responds to RESTful request for all isp combo ID(s)', async () => {
       try {
         const response = await apiClient.get('/rest/bead/isp_combo');
 
         // Axios has an extra data wrapper
-        const result = response.data.code;
+        const result = response.data;
 
         // console.log(result);
 
@@ -202,51 +202,6 @@ describe('ApiIntegrationTests', () => {
       }
     });
   });
-
-  // describe('Python API Request 200 Status & Defined Response', () => {
-  //   Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
-  //     it(name, async () => {
-  //       try {
-  //         const response = await apiClient.get(val.geo);
-  //
-  //         console.log(val.geo);
-  //
-  //         // Axios has an extra data wrapper
-  //         const result = response.data;
-  //
-  //         expect(response.status).toEqual(200);
-  //
-  //         console.log("OK 200");
-  //
-  //         expect(result).toBeDefined();
-  //
-  //       } catch (error) {
-  //         logger.error(error);
-  //         fail(error);
-  //       }
-  //     });
-  //   });
-  // });
-
-  // describe('Python API Request 200 Status & Defined Response', () => {
-  //   it('responds to RESTful request for blocks in given tract id', async () => {
-  //     try {
-  //       const response = await apiClient.get('/rest/ch/bl/bb_map?geoid_tr=51029930201');
-  //
-  //       // Axios has an extra data wrapper
-  //       const result = response.data;
-  //
-  //       // console.log(result);
-  //
-  //       expect(response.status).toEqual(200);
-  //       expect(result).toBeDefined();
-  //
-  //     } catch (error) {
-  //       logger.error(error);
-  //       fail(error);
-  //     }
-  //   });
-  // });
 
   describe('Python API Request 200 Status & Defined Response', () => {
     Object.entries(pythonIntegrationEndpoints).forEach(([name, val]) => {
@@ -263,10 +218,11 @@ describe('ApiIntegrationTests', () => {
           expect(Array.isArray(result.features)).toEqual(true);
           expect(result.features[0].type).toBeDefined();
           expect(result.features[0].type).toEqual('Feature');
-          expect(result.features[0].geometry).toBeDefined();
-          expect(result.features[0].geometry.type).toBeDefined();
-          expect(result.features[0].geometry.coordinates).toBeDefined();
-          expect(Array.isArray(result.features[0].geometry.coordinates)).toEqual(true);
+          /* Features do not necessarily have geometry (see endpoints for bead) */
+          // expect(result.features[0].geometry).toBeDefined();
+          // expect(result.features[0].geometry.type).toBeDefined();
+          // expect(result.features[0].geometry.coordinates).toBeDefined();
+          // expect(Array.isArray(result.features[0].geometry.coordinates)).toEqual(true);
 
         } catch (error) {
           logger.error(error);
