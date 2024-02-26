@@ -383,7 +383,7 @@ def get_ch_geo(tab):
     simplify = CONFIG[table].get('simplify', 0.0001)
 
     if id:
-        columns = columns.replace(f'{id},', f'"{id}" as x_id, {id},')
+        columns = columns.replace(f'{id},', f'{id}, "{id}" as x_id,')
         id_in_result = "'id',         x_id,"
     else:
         # if no id then use somewhat hacky ctid to bigint method.
@@ -546,7 +546,7 @@ def get_ch_overall_neighbor_geos(tab):
     simplify = CONFIG[table].get('simplify', 0.0001)
 
     if id:
-        columns = columns.replace(f'{id},', f'"{id}" as x_id, {id},')
+        columns = columns.replace(f'{id},', f'{id}, "{id}" as x_id,')
         id_in_result = "'id',         x_id,"
     else:
         # if no id then use somewhat hacky ctid to bigint method.
@@ -719,7 +719,7 @@ def get_bbox_at_location(tab):
     simplify = CONFIG[table].get('simplify', 0.0001)
 
     if id:
-        columns = columns.replace(f'{id},', f'"{id}" as x_id, {id},')
+        columns = columns.replace(f'{id},', f'{id}, "{id}" as x_id,')
         id_in_result = "'id',         x_id,"
     else:
         # if no id then use somewhat hacky ctid to bigint method.
@@ -907,7 +907,7 @@ def get_bb_map(tab):
     simplify = CONFIG[table].get('simplify', 0.0001)
 
     if id:
-        columns = columns.replace(f'{id},', f'"{id}" as x_id, {id},')
+        columns = columns.replace(f'{id},', f'{id}, "{id}" as x_id,')
         id_in_result = "'id',         x_id,"
     else:
         # if no id then use somewhat hacky ctid to bigint method.

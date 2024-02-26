@@ -205,7 +205,7 @@ def get_bcat_props(table):
 #         order_by = columns
 
     if id:
-        columns = columns.replace(f'{id},', f'"{id}" as x_id, {id},')
+        columns = columns.replace(f'{id},', f'{id}, "{id}" as x_id,')
         id_in_result = "'id',         x_id,"
     else:
         # if no id then use somewhat hacky ctid to bigint method.
@@ -412,7 +412,7 @@ def get_bcat(table):
     id_in_result = ""
 
     if id:
-        columns = columns.replace(f'{id},', f'"{id}" as x_id, {id},')
+        columns = columns.replace(f'{id},', f'{id}, "{id}" as x_id,')
         id_in_result = "'id',         x_id,"
     else:
         # if no id then use somewhat hacky ctid to bigint method.
