@@ -1,8 +1,11 @@
 export const pythonIntegrationEndpoints = {
   "responds to RESTful request for auction_904_authorized": {
     geo: '/rest/bcat/auction_904_authorized/geojson?limit=11',
-    // mvt: '/rest/bcat/auction_904_authorized/tiles/10/278/408.pbf', // MVT is unavailable from CORI Data API
-                                                                      // Can we redirect request to Mapbox?
+    // MVT is unavailable from CORI Data API // mvt: '/rest/bcat/auction_904_authorized/tiles/10/278/408.pbf',
+    // TODO: Can we redirect request to Mapbox?
+  },
+  "responds to RESTful request for geojson of given block ID": {
+    geo: '/rest/bead/geojson?geoid_bl=010010201001003'
   },
   "responds to RESTful request for blocks in given tract id": {
     geo: '/rest/ch/ch_bb_map/bl?geoid_tr=01003011601'
