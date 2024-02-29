@@ -49,14 +49,14 @@ bcat layer geojson
 app.add_url_rule('/rest/bcat/<table>/geojson', 'bcat_geojson', bcat.get_bcat_geojson)
 
 """
+bead geojson, acs, isp tech, and awards (rdof)
+"""
+app.add_url_rule('/rest/bead/<tab>', 'bead_detailed_info', bead.get_bead_detailed_info)
+
+"""
 bead isp id to combo(s)
 """
 app.add_url_rule('/rest/bead/isp_combo', 'bead_isp_id_to_combo', bead.get_bead_isp_id_to_combo)
-
-"""
-bead isp tech, rdof awards
-"""
-app.add_url_rule('/rest/bead/<tab>', 'bead_detailed_info', bead.get_bead_detailed_info)
 
 """
 ch list available county or tract variables
