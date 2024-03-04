@@ -2,6 +2,12 @@ import { EnvConfig } from './EnvConfig';
 import Redis, { RedisOptions } from 'ioredis';
 import { BaseRedisCache, RedisClient } from 'apollo-server-cache-redis';
 
+/* @TODO:
+ * I've disabled this Redis Cache feature (see the checkCache function) because
+ * of a variety of connection issues that impact the reliability of the graphql
+ * response functions (in AWS Lambda).
+ */
+
 export interface CacheOptions {
   /**
    * @description Flag which indicate if the cache should be enabled. Default is true.
@@ -134,20 +140,23 @@ export class Cache {
   // eslint-disable-next-line @typescript-eslint/ban-types
   checkCache(key: string, cb: Function, maxAge: number = globalTTL): Promise<unknown> {
     return new Promise((resolve, reject) => {
-      if (!!this.getRawCache()) try {
-        this.getCacheValue(key).then(cacheRes => {
-          if (!cacheRes) {
-            cb().then(dbValue => {
-              if (!dbValue) {
-                dbValue = null;
-              }
-              this.getRawCache().setex(key, maxAge, JSON.stringify(dbValue));
-              resolve(dbValue);
-            });
-          } else {
-            resolve(cacheRes);
-          }
-        });
+      try {
+        console.log("Redis is not available");
+        // if (!!this.getRawCache()) {
+        //   this.getCacheValue(key).then(cacheRes => {
+        //     if (!cacheRes) {
+              cb().then(dbValue => {
+                if (!dbValue) {
+                  dbValue = null;
+                }
+                // this.getRawCache().setex(key, maxAge, JSON.stringify(dbValue));
+                resolve(dbValue);
+              });
+        //     } else {
+        //       resolve(cacheRes);
+        //     }
+        //   });
+        // }
       } catch (err) {
         reject(err);
       }

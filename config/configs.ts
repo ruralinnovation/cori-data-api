@@ -40,7 +40,7 @@ export interface IMixedConfig extends ApiStackProps {
   /**
    * Used for integration testing or running API locally
    */
-  testing?: TestEnvConfig;
+  testing: TestEnvConfig;
 }
 
 /**
@@ -55,17 +55,23 @@ const microservicesConfiguration: ServiceConfig[] = [
   //   corePath: '/acs',
   //   directoryName: 'acs',
   // },
+  // {
+  //   /* Used by Broadband County Assessment Tool */
+  //   logicalName: 'BCATService',
+  //   corePath: '/bcat',
+  //   directoryName: 'bcat',
+  // },
+  // {
+  //   /* Used by Broadband Climate Risk Mitigation Tool */
+  //   logicalName: 'ConnectHumanityService',
+  //   corePath: '/ch',
+  //   directoryName: 'ch',
+  // },
   {
-    /* Used by Broadband County Assessment Tool */
-    logicalName: 'BCATService',
-    corePath: '/bcat',
-    directoryName: 'bcat',
-  },
-  {
-    /* Used by Broadband Climate Risk Mitigation Tool */
-    logicalName: 'ConnectHumanityService',
-    corePath: '/ch',
-    directoryName: 'ch',
+    /* One RESTful endpoint to rule them all */
+    logicalName: 'CORIDataAPIRestService',
+    corePath: '/rest',
+    directoryName: 'rest',
   }
 ];
 /**
@@ -150,7 +156,7 @@ const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
     password: '/cori/api/integration-test-password',
     region: 'us-east-1',
     userPoolId: 'us-east-1_QeA4600FA',
-    apiUrl: 'https://d6q5pgqgx5oy5.cloudfront.net',
+    apiUrl: 'http://localhost:2000',
     cognitoClientId: '70o6i77h1orcnvonb9ua3fh58e',
   },
 };
@@ -165,7 +171,11 @@ export const Config: IConfigs = {
       dbname: 'data',
       dbuser: 'read_only_user',
     },
-    stage: 'dev'
+    stage: 'dev',
+    testing: {
+      ...coriDefaults.testing,
+      apiUrl: 'https://d6q5pgqgx5oy5.cloudfront.net',
+    }
   },
   'dev': {
     ...coriDefaults,
@@ -178,7 +188,11 @@ export const Config: IConfigs = {
       databaseSecurityGroupId: 'sg-01ddcc192d814136f',
       vpcId: 'vpc-08f5e17f5b75ccee9',
     },
-    stage: 'dev'
+    stage: 'dev',
+    testing: {
+      ...coriDefaults.testing,
+      apiUrl: 'https://d6q5pgqgx5oy5.cloudfront.net',
+    }
   },
   'development': {
     ...coriDefaults,
@@ -191,15 +205,20 @@ export const Config: IConfigs = {
       databaseSecurityGroupId: 'sg-01ddcc192d814136f',
       vpcId: 'vpc-08f5e17f5b75ccee9',
     },
-    stage: 'dev'
+    stage: 'dev',
+    testing: {
+      ...coriDefaults.testing,
+      apiUrl: 'https://d6q5pgqgx5oy5.cloudfront.net',
+    }
   },
   'local': {
     ...coriDefaults,
     client: 'cori',
     databaseConfig: {
-      dbname: 'api-dev',
+      dbname: 'data',
       dbuser: 'read_only_user',
-      host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
+      host: '172.30.5.83', // <= using AWS Client VPN
+      // host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
       parameterName: '/postgresql/read_only_user_credentials',
       databaseSecurityGroupId: 'sg-01ddcc192d814136f',
       vpcId: 'vpc-08f5e17f5b75ccee9',
@@ -229,35 +248,52 @@ export const Config: IConfigs = {
       databaseSecurityGroupId: 'sg-01ddcc192d814136f',
       vpcId: 'vpc-08f5e17f5b75ccee9',
     },
-    stage: 'pre'
+    stage: 'pre',
+    testing: {
+      ...coriDefaults.testing,
+      apiUrl: 'https://d77x8w58i0tpm.cloudfront.net',
+    }
   },
   'prod': {
     ...coriDefaults,
     client: 'cori',
     databaseConfig: {
-      ...coriDefaults.databaseConfig,
-      dbname: 'data',
+      dbname: 'api-prod',
       dbuser: 'read_only_user',
+      host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
+      parameterName: '/postgresql/read_only_user_credentials',
+      databaseSecurityGroupId: 'sg-01ddcc192d814136f',
+      vpcId: 'vpc-08f5e17f5b75ccee9',
     },
-    stage: 'prod'
+    stage: 'prod',
+    testing: {
+      ...coriDefaults.testing,
+      apiUrl: 'https://d10ydh0ufk9njy.cloudfront.net',
+    }
   },
   'production': {
     ...coriDefaults,
     client: 'cori',
     databaseConfig: {
-      ...coriDefaults.databaseConfig,
-      dbname: 'data',
+      dbname: 'api-prod',
       dbuser: 'read_only_user',
+      host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
+      parameterName: '/postgresql/read_only_user_credentials',
+      databaseSecurityGroupId: 'sg-01ddcc192d814136f',
+      vpcId: 'vpc-08f5e17f5b75ccee9',
     },
-    stage: 'prod'
+    stage: 'prod',
+    testing: {
+      ...coriDefaults.testing,
+      apiUrl: 'https://d10ydh0ufk9njy.cloudfront.net',
+    }
   }
 };
 
 export const getConfig = (name: string): IMixedConfig => {
   const config = Config[name];
 
-  console.log("Get config:")
-  console.log(name);
+  console.log("Get config:", name);
   console.log(config);
 
   if (!config) {

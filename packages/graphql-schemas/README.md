@@ -1,1 +1,0 @@
-# CORI Data API Schemas
