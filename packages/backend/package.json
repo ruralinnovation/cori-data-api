@@ -31,14 +31,19 @@
     "typescript": "^5.3.3"
   },
   "scripts": {
+    "amplify": "amplify --profile default --app-id d2jy9aud0s7fjl",
     "bootstrap": "cdk bootstrap",
     "build": "tsc",
-    "watch": "tsc -w",
     "cdk": "cdk",
+    "configure": "npm run amplify configure",
     "deploy": "cdk deploy",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write .",
+    "generate": "npm run amplify generate -- --branch test/pre-amplify-code-first-gen2",
+    "generate:config": "npm run amplify generate config -- --branch test/pre-amplify-code-first-gen2",
+    "help": "npm run amplify help",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "test": "jest",
-    "type-check": "tsc --noEmit"
+    "type:check": "tsc --noEmit",
+    "watch": "tsc -w"
   }
 }
