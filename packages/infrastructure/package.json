@@ -77,7 +77,7 @@
     "clean": "rimraf dist && rimraf cdk.out/*",
     "clean:modules": "rimraf node_modules",
     "deploy": "npx cdk deploy --all --require-approval never",
-    "deploy:pipeline": "npm run cdk:pipeline -- deploy --all",
+    "deploy:pipeline": "GIT_BRANCH=prod npm run cdk:pipeline -- deploy --all",
     "dev": "npm run build && npm run cdk:start -- synth && cd cdk.out && sam-beta-cdk --debug local start-api -p 2000 -n env.json",
     "diff": "tsc && npx cdk diff --profile mf-cori",
     "build:orig": "tsc && npm run build:assets",
