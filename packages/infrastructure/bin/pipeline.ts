@@ -15,7 +15,7 @@ const main = async () => {
   const branch = (local_branch.match(/^dev/) !== null) ?
     "development" :
     (local_branch.match(/^prod/) !== null) ?
-    "prod" :
+    "production" :
       local_branch;
   const config = getConfig(branch);
   const { client, stage, artifactBucketName, repo, testing } = config;
