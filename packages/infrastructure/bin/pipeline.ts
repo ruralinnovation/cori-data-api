@@ -11,7 +11,12 @@ const app = new cdk.App();
  */
 
 const main = async () => {
-  const branch = await getLocalGitBranch();
+  let local_branch = (await getLocalGitBranch()).toString();
+  const branch = (local_branch.match(/^dev/) !== null) ?
+    "development" :
+    (local_branch.match(/^prod/) !== null) ?
+    "production" :
+      local_branch;
   const config = getConfig(branch);
   const { client, stage, artifactBucketName, repo, testing } = config;
 
@@ -19,6 +24,8 @@ const main = async () => {
     repo,
     authentication: cdk.SecretValue.secretsManager('github-token'),
   };
+
+  console.log("Deploy pipeline from git branch:", branch);
 
   new PipelineStack(app, `${client}-CoriDataApiPipeline-${stage}`, {
     /**
