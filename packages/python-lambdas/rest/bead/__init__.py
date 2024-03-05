@@ -744,7 +744,7 @@ def get_bead_award_rdof():
             FROM (
                 SELECT {columns}
                     FROM (
-                        SELECT geoid_bl, award_geoid_bl
+                        SELECT DISTINCT geoid_bl, award_geoid_bl
                             FROM proj_bead.award_bl
                             {where}
                     ) award_bl, {db_table} {db_alias}
