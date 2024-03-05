@@ -85,7 +85,7 @@ CONFIG = {
     "ch_bb_map_bl": {
         "table": "proj_climate.ch_bb_map_bl_2022decareav3e",
         "api_columns": "geoid_bl, geoid_tr, geoid_co, bl_25_3_area, bl_100_20_area, category, cnt_total_locations, cnt_fiber_locations, cnt_100_20, pct_100_20, cnt_25_3, pct_25_3, geom",
-        "params": ["geoid_tr" ],
+        "params": ["geoid_bl", "geoid_tr"],
         "geoid": "geoid_tr",
         "geom": "geom",
         "epsg": 4269,
