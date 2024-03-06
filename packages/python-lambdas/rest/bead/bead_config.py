@@ -74,7 +74,7 @@ CONFIG = {
     "rdof_bl": {
         "table": "proj_bead.rdof_bl",
         "alias": "rdof",
-        "api_columns": "rdof.applicant, rdof.winning_bi, rdof.state, county, rdof.geoid_bl, rdof.da_numbers, rdof.geoid_co, rdof.tier, rdof.latency, rdof.frn, rdof.sac, rdof.winning_bidder, rdof.winning_bid_total_in_state, rdof.number_of_locations_in_state, rdof.authorized, rdof.\"default\", rdof.version",
+        "api_columns": "rdof.applicant, rdof.winning_bi, rdof.state, county, rdof.geoid_bl as geoid_bl_2010, rdof.da_numbers, rdof.geoid_co, rdof.tier, rdof.latency, rdof.frn, rdof.sac, rdof.winning_bidder, rdof.winning_bid_total_in_state, rdof.number_of_locations_in_state, rdof.authorized, rdof.\"default\", rdof.version",
         "params": ["applicant", "geoid_bl", "geoid_co", "version"],
         "geoid": "geoid_bl",
         "geom": None,
