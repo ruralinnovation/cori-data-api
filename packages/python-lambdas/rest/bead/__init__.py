@@ -761,12 +761,12 @@ def get_bead_isp_tech():
                         OFFSET {offset}
                     ) t
         """
-        
+
     print(query)
-    
+
     # execute the query string.
     features = execute(query)
-    
+
     return features
 
 
