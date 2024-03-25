@@ -22,6 +22,15 @@ CONFIG = {
         "simplify": 0.0001,
         "precision": 6
     },
+    "acs_wide_co": {
+        "table": "proj_bead.acs_wide_co",
+        "api_columns": "geoid as geoid_co, year, total_population, total_households, total_housing_units, hh_w_computer, hh_w_smartphone_only, hh_wo_device, hh_using_broadband, geoid_bl",
+        "params": ["geoid_co", "geoid_bl"],
+        "geoid": "geoid_co",
+        "geom": None,
+        "epsg": None,
+        "id": "geoid_co"
+    },
     "acs_wide_tr": {
         "table": "proj_bead.acs_wide_tr",
         "api_columns": "geoid as geoid_tr, geoid_bl, year, total_population, total_households, total_housing_units, hh_w_computer, hh_w_smartphone_only, hh_wo_device, hh_using_broadband, share_w_computer, share_w_smartphone_only, share_wo_device, broadband_usage",
