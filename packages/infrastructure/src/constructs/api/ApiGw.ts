@@ -68,7 +68,7 @@ export class ApiGw extends Construct {
       const ip_address: string = ip.address(); // 'localhost', 10.0.0.2, 192.168.0.2, etc.
       console.log("private ip address:", ip_address);
       this.apiDomain = ip_address;
-      this.apiEndpoint = `http://${ip_address}:8080/rest/`; // `http://localhost:2000/`;
+      this.apiEndpoint = `http://${ip_address}:8000/rest/`; // `http://localhost:2000/`;
     } else {
       this.apiDomain = `${this.api.restApiId}.execute-api.${Aws.REGION}.amazonaws.com`;
       this.apiEndpoint = `https://${this.apiDomain}/${props.stage}/rest/`;
