@@ -177,9 +177,10 @@ def get_bead_tract_acs():
         raise BadRequestError(f'invalid table {table}')
 
     webmercator_srid = 4326
-    block_table = CONFIG["bead_bl"].get('table', "proj_bead.bead_blockv1b")
+    block_table = CONFIG["bead_bl"].get('table', "proj_bead.bead_block_v3")
     block_columns = "geoid_co, string_agg(geoid_bl, ',') as geoid_bl"
     db_table = CONFIG[table].get('table', table)
+    db_alias = CONFIG[table].get('alias', table)
     columns = CONFIG[table].get('api_columns', '*')
     id = CONFIG[table].get('id', None)
     id_in_result = ""
@@ -196,11 +197,12 @@ def get_bead_tract_acs():
     params = CONFIG[table]['params']
     order_by = ', '.join([x for x in params if x != 'geom'])
     simplify = CONFIG[table].get('simplify', 0.0)
+    query_blocks = False
 
     columns += ", 'acs' as type"
 
     if id:
-        columns = columns.replace(f'{id},', f'{id}, "{id}" as x_id,')
+        columns = columns.replace(f'{id},', f'{id}, {db_alias}."{id}" as x_id,')
         id_in_result = "'id',         x_id,"
     else:
         # if no id then use somewhat hacky ctid to bigint method.
@@ -234,6 +236,11 @@ def get_bead_tract_acs():
 
         for k, v in query_params.items():
             print(f'{k} = {v}')
+
+            if 'geoid_bl' in query_params:
+                query_blocks = True
+            else:
+                order_by = order_by.replace(f', geoid_bl', f'')
 
             if 'limit' in query_params and k == 'limit':
                 limit = int(v[0])
@@ -286,28 +293,47 @@ def get_bead_tract_acs():
         where = 'WHERE ' + ' AND '.join(criteria)
 
     # build the query statement
-    query = f"""
-        SELECT
-            json_build_object(
-                {id_in_result}
-                'type',       'Feature',
-                'properties', to_jsonb(t.*) - 'x_id'
-            )
-            FROM (
-                SELECT {columns}
-                    FROM {db_table} acs_co, (
-                        SELECT {block_columns}
-                            FROM {block_table}
-                            {where}
-                            GROUP BY geoid_co
-                    ) bead_bl
-                    WHERE acs_co.geoid = bead_bl.geoid_co
-                    ORDER BY {order_by}
-                    LIMIT {limit}
-                    OFFSET {offset}
-                ) t
-
-        """
+    if not query_blocks:
+        query = f"""
+            SELECT
+                json_build_object(
+                    {id_in_result}
+                    'type',       'Feature',
+                    'properties', to_jsonb(t.*) - 'x_id'
+                )
+                FROM (
+                    SELECT {columns}
+                        FROM {db_table} {db_alias}
+                        {where}
+                        ORDER BY {order_by}
+                        LIMIT {limit}
+                        OFFSET {offset}
+                    ) t
+    
+            """
+    else:
+        query = f"""
+            SELECT
+                json_build_object(
+                    {id_in_result}
+                    'type',       'Feature',
+                    'properties', to_jsonb(t.*) - 'x_id'
+                )
+                FROM (
+                    SELECT {columns}
+                        FROM {db_table} {db_alias}, (
+                            SELECT {block_columns}
+                                FROM {block_table}
+                                {where}
+                                GROUP BY geoid_co
+                        ) bead_bl
+                        WHERE {db_alias}.geoid_co = bead_bl.geoid_co
+                        ORDER BY {order_by}
+                        LIMIT {limit}
+                        OFFSET {offset}
+                    ) t
+    
+            """
 
     print(query)
 
