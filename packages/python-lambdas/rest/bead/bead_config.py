@@ -25,8 +25,10 @@ CONFIG = {
     "acs_wide_co": {
         "table": "proj_bead.acs_wide_co",
         "alias": "acs_co",
-        "api_columns": "acs_co.geoid_co, acs_co.year, acs_co.total_population, acs_co.total_households, acs_co.total_housing_units, "
-                       "acs_co.hh_w_computer, acs_co.hh_w_smartphone_only, acs_co.hh_wo_device, acs_co.hh_using_broadband",
+        "api_columns": "acs_co.geoid_co, acs_co.year, acs_co.total_population, "
+                       "acs_co.total_households, acs_co.total_housing_units,"
+                       "acs_co.hh_w_computer, acs_co.hh_w_smartphone_only, "
+                       "acs_co.hh_wo_device, acs_co.hh_using_broadband",
         "params": ["geoid_co", "geoid_bl"],
         "geoid": "geoid_co",
         "geom": None,
@@ -44,6 +46,78 @@ CONFIG = {
     #     "epsg": None,
     #     "id": "geoid_tr"
     # },
+    "bead_co": {
+        "table": "proj_bead.bead_county_v3",
+        "alias": "bead_co",
+        "api_columns": "bead_co.cnt_total_locations, bead_co.cnt_25_3, bead_co.cnt_100_20, "
+                       "bead_co.cnt_100_20_dsl_excluded, bead_co.isp_id, bead_co.geom",
+        "params": ["geoid_co", "geoid_bl"],
+        "geoid": "geoid_co",
+        "geom": "geom",
+        "epsg": 4269,
+        "id": "geoid_co",
+        "simplify": 0.0,
+        "precision": 5,
+        "limit": 5000
+    },
+    "bead_bl": {
+        "table": "proj_bead.bead_block_v3",
+        "alias": "bead_bl",
+        "api_columns": "geoid_bl, geoid_tr, geoid_co, geoid_st, bead_category, bl_25_3_area, bl_100_20_area, "
+                       "cnt_25_3, cnt_100_20, cnt_total_locations, cnt_isp, combo_isp_id, isp_id, pct_served, "
+                       "has_previous_funding, has_copperwire, has_coaxial_cable, has_fiber, has_wireless, "
+                       "only_water_flag, geom",
+        "agg_columns": "geoid_co, "
+                       "geoid_st, "
+                       "ARRAY_TO_STRING(ARRAY( "
+                       "    SELECT DISTINCT e FROM UNNEST( "
+                       "        STRING_TO_ARRAY(STRING_AGG(geoid_tr, ','), ',') "
+                       "    ) AS a(e) "
+                       "), ',') geoid_tr, "
+                       "STRING_AGG(geoid_bl, ',') as geoid_bl, "
+                       "ARRAY_TO_STRING(ARRAY( "
+                       "    SELECT DISTINCT e FROM UNNEST( "
+                       "        STRING_TO_ARRAY(STRING_AGG(bead_category, ','), ',') "
+                       "    ) AS a(e) "
+                       "), ',') as bead_category, "
+                       "ARRAY_TO_STRING(ARRAY( "
+                       "    SELECT DISTINCT e FROM UNNEST( "
+                       "        STRING_TO_ARRAY(STRING_AGG(bead_category_dsl_excluded, ','), ',') "
+                       "    ) AS a(e) "
+                       "), ',') as bead_category_dsl_excluded, "
+                       "SUM(cnt_total_locations) as cnt_total_locations, "
+                       "SUM(cnt_25_3) as cnt_25_3, "
+                       "SUM(cnt_100_20) as cnt_100_20, "
+                       "SUM(cnt_100_20_dsl_excluded) as cnt_100_20_dsl_excluded, "
+                       "SUM(cnt_underserved) as cnt_underserved, "
+                       "SUM(cnt_underserved_dsl_excluded) as cnt_underserved_dsl_excluded, "
+                       "coalesce(array_length(ARRAY( "
+                       "    SELECT DISTINCT e FROM UNNEST( "
+                       "        STRING_TO_ARRAY(REPLACE(REPLACE(STRING_AGG(isp_id, ','), '{', ''), '}', ''), ',') "
+                       "    ) AS a(e) "
+                       "), 1), 0) as cnt_isp, "
+                       "ARRAY( "
+                       "    SELECT DISTINCT e FROM UNNEST( "
+                       "        STRING_TO_ARRAY(REPLACE(REPLACE(STRING_AGG(isp_id, ','), '{', ''), '}', ''), ',') "
+                       "    ) AS a(e) "
+                       ") as isp_id, "
+                       "BOOL_OR(has_previous_funding) as has_previous_funding, "
+                       "BOOL_OR(has_copperwire) as has_copperwire, "
+                       "BOOL_OR(has_coaxial_cable) as has_coaxial_cable, "
+                       "BOOL_OR(has_fiber) as has_fiber, "
+                       "BOOL_OR(has_wireless) as has_wireless, "
+                       "ST_SIMPLIFY(ST_TRANSFORM(ST_Multi(ST_Union(ST_MakeValid(geom))), 4326), 0.0) as geom, "
+                       "'geojson' as type ",
+        "params": ["geoid_co", "geoid_tr", "geoid_bl"],
+        "group_by": "geoid_co, geoid_st",
+        "geoid": "geoid_bl",
+        "geom": "geom",
+        "epsg": 4269,
+        "id": "geoid_co",
+        "simplify": 0.0,
+        "precision": 6,
+        "limit": 10000  # some tracts have a *lot* of blocks
+    },
     "bfm_award_bl": {
         "table": "proj_bead.bfm_award_bl_V3",
         "alias": "bfm_award_counties",
@@ -70,21 +144,6 @@ CONFIG = {
         "epsg": None,
         "id": None
     },
-    "bead_bl": {
-        "table": "proj_bead.bead_block_v3",
-        "api_columns": "geoid_bl, geoid_tr, geoid_co, geoid_st, bead_category, bl_25_3_area, bl_100_20_area, "
-                       "cnt_25_3, cnt_100_20, cnt_total_locations, cnt_isp, combo_isp_id, isp_id, pct_served, "
-                       "has_previous_funding, has_copperwire, has_coaxial_cable, has_fiber, has_wireless, "
-                       "only_water_flag, geom",
-        "params": ["geoid_bl", "geoid_tr"],
-        "geoid": "geoid_bl",
-        "geom": "geom",
-        "epsg": 4269,
-        "id": "geoid_bl",
-        "simplify": 0.0,
-        "precision": 6,
-        "limit": 1000  # some tracts have a *lot* of blocks
-    },
     "isp_id_to_combo_isp_id": {
         "table": "proj_bead.isp_id_to_combo_isp_id_v1",
         "api_columns": "isp_id::int, new_alias, array_to_string(ARRAY_AGG(agg_isp_id),',') as agg_isp_id, "
@@ -94,7 +153,7 @@ CONFIG = {
         "geom": None,
         "epsg": None,
         "id": None,
-        "limit": 100000  # some tracts have a *lot* of blocks
+        "limit": 100000
     },
     "isp_tech_bl": {
         "table": "proj_bead.isp_tech_bl_v3",
@@ -103,7 +162,8 @@ CONFIG = {
         "geoid": "geoid_bl",
         "geom": None,
         "epsg": None,
-        "id": None
+        "id": None,
+        "limit": 100000
     },
     # "rdof_bl": {
     #     "table": "proj_bead.rdof_bl",
