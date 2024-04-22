@@ -23,7 +23,7 @@ CONFIG = {
         "precision": 6
     },
     "acs_wide_co": {
-        "table": "proj_bead.acs_wide_co",
+        "table": "proj_bead.acs_wide_co_v3",
         "alias": "acs_co",
         "api_columns": "acs_co.geoid_co, acs_co.year, acs_co.total_population, "
                        "acs_co.total_households, acs_co.total_housing_units,"
@@ -35,17 +35,6 @@ CONFIG = {
         "epsg": None,
         "id": "geoid_co"
     },
-    # "acs_wide_tr": {
-    #     "table": "proj_bead.acs_wide_tr",
-    #     "api_columns": "geoid as geoid_tr, geoid_bl, year, total_population, total_households, total_housing_units, "
-    #                    "hh_w_computer, hh_w_smartphone_only, hh_wo_device, hh_using_broadband, share_w_computer, "
-    #                    "share_w_smartphone_only, share_wo_device, broadband_usage",
-    #     "params": ["geoid_tr", "geoid_bl"],
-    #     "geoid": "geoid_tr",
-    #     "geom": None,
-    #     "epsg": None,
-    #     "id": "geoid_tr"
-    # },
     "bead_co": {
         "table": "proj_bead.bead_county_v3",
         "alias": "bead_co",
@@ -145,7 +134,7 @@ CONFIG = {
         "id": None
     },
     "isp_id_to_combo_isp_id": {
-        "table": "proj_bead.isp_id_to_combo_isp_id_v1",
+        "table": "proj_bead.isp_id_to_combo_isp_id_v3",
         "api_columns": "isp_id::int, new_alias, array_to_string(ARRAY_AGG(agg_isp_id),',') as agg_isp_id, "
                        "array_to_string(ARRAY_AGG(combo_isp_id),',') as combo_isp_id",
         "params": ["isp_id"],
@@ -156,7 +145,7 @@ CONFIG = {
         "limit": 100000
     },
     "isp_tech_bl": {
-        "table": "proj_bead.isp_tech_bl_v3",
+        "table": "proj_bead.isp_tech_bl_v3b",
         "api_columns": "geoid_bl, new_alias, isp_id, cnt_locations, technology, max_down, max_up",
         "params": ["geoid_bl", "isp_id", "technology"],
         "geoid": "geoid_bl",
@@ -164,18 +153,5 @@ CONFIG = {
         "epsg": None,
         "id": None,
         "limit": 100000
-    },
-    # "rdof_bl": {
-    #     "table": "proj_bead.rdof_bl",
-    #     "alias": "rdof",
-    #     "api_columns": "rdof.applicant, rdof.winning_bi, rdof.state, county, rdof.geoid_bl as geoid_bl_2010, "
-    #                    "rdof.da_numbers, rdof.geoid_co, rdof.tier, rdof.latency, rdof.frn, rdof.sac, "
-    #                    "rdof.winning_bidder, rdof.winning_bid_total_in_state, rdof.number_of_locations_in_state, "
-    #                    "rdof.authorized, rdof.\"default\", rdof.version",
-    #     "params": ["applicant", "geoid_bl", "geoid_co", "version"],
-    #     "geoid": "geoid_bl",
-    #     "geom": None,
-    #     "epsg": None,
-    #     "id": None
-    # }
+    }
 }
