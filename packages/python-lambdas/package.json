@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "redocly build-docs ../../api-spec-1.0.0.yml --output=docs/rest/index.html",
-    "dev": "FLASK_APP=rest/index.py python -m flask run --host 0.0.0.0 --port 8080",
+    "dev": "FLASK_APP=rest/index.py python -m flask run --host 0.0.0.0 --port 8000",
     "postinstall": "python -m pip install -r ./rest/requirements.txt"
   }
 }
