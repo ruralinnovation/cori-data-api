@@ -1,4 +1,10 @@
-import { Stack, StackProps, CfnOutput, Tags } from 'aws-cdk-lib';
+import {
+  // aws_s3,
+  CfnOutput,
+  Stack,
+  StackProps,
+  Tags
+} from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Hosting } from '../constructs/Hosting';
 import { Cognito, ExistingCognitoConfig } from '../constructs/Cognito';
@@ -8,14 +14,17 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Networking } from '../constructs/Networking';
 import { PythonDataServer } from '../constructs/api/PythonDataServer';
 
-export interface DatabaseConfig {
-  vpcId: string;
-  databaseSecurityGroupId: string;
-  host: string;
-  dbname?: string;
-  dbuser?: string;
-  parameterName: string;
+interface AppSyncUserPoolConfig {
+  userPoolId: string;
 }
+
+interface AppSyncConfig {
+  /**
+   * Optional: When provided will configure additional user pools in the app sync authorization configuration
+   */
+  additionalUserPools: AppSyncUserPoolConfig[];
+}
+
 export interface CacheConfig {
   host: string;
   port: number;
@@ -24,8 +33,20 @@ export interface CacheConfig {
   globalTTL: string;
 }
 
-interface AppSyncUserPoolConfig {
-  userPoolId: string;
+export interface DatabaseConfig {
+  vpcId: string;
+  databaseSecurityGroupId: string;
+  host: string;
+  dbname?: string;
+  dbuser?: string;
+  parameterName: string;
+}
+
+export interface S3Config {
+  region: string;
+  buckets: string[];
+  parameterAccessKeyId: string;
+  parameterAccessKeySecret: string;
 }
 
 export interface ServiceConfig {
@@ -41,13 +62,6 @@ export interface ServiceConfig {
    * The name of the directory this service is located.  e.g. bcat
    */
   directoryName: string;
-}
-
-interface AppSyncConfig {
-  /**
-   * Optional: When provided will configure additional user pools in the app sync authorization configuration
-   */
-  additionalUserPools: AppSyncUserPoolConfig[];
 }
 
 export interface ApiStackProps extends StackProps {
@@ -73,9 +87,15 @@ export interface ApiStackProps extends StackProps {
    *
    */
   databaseConfig: DatabaseConfig;
+  dbpassword?: string;
 
   /**
-   * TODO
+   * S3 credentials and buckets configuration
+   */
+  s3Config:  S3Config;
+
+  /**
+   * Redis configuration (external)
    */
   cacheEnabled: boolean;
   cacheConfig: CacheConfig;
@@ -114,11 +134,12 @@ export class ApiStack extends Stack {
       client,
       project,
       stage,
-      existingCognito,
-      databaseConfig,
       cacheConfig,
       cacheEnabled,
+      databaseConfig,
+      existingCognito,
       retain,
+      s3Config,
       microservicesConfig,
     } = this.props;
 
@@ -126,6 +147,8 @@ export class ApiStack extends Stack {
 
     const dbPassword = ssm.StringParameter.valueFromLookup(this, databaseConfig.parameterName);
     const cachePassword = ssm.StringParameter.valueFromLookup(this, cacheConfig.parameterName);
+    const s3AccessKeyId = ssm.StringParameter.valueFromLookup(this, s3Config.parameterAccessKeyId);
+    const s3AccessKeySecret = ssm.StringParameter.valueFromLookup(this, s3Config.parameterAccessKeySecret);
 
     const networking = new Networking(this, 'Networking', {
       prefix,
@@ -158,6 +181,8 @@ export class ApiStack extends Stack {
         REGION: props.env.region,
         DB_HOST: databaseConfig.host,
         DB_NAME: databaseConfig.dbname || "postgres",
+        // AWS_ACCESS_KEY_ID: s3AccessKeyId,
+        // AWS_SECRET_ACCESS_KEY: s3AccessKeySecret
       },
     });
 
@@ -204,6 +229,15 @@ export class ApiStack extends Stack {
       ],
       retain,
     });
+
+    // // TODO: Determine if using a CDK construct to access S3 bucket is a good idea
+    // // ... maybe not, as in better to list relevant buckets in a configuration prop
+    // // and then use the basic aws-sdk commands to read/write to S3
+    // const s3_api = new aws_s3.Bucket(this, 'CORIAdminBucket', {
+    //   bucketName: "cori-aws-admin",
+    //   autoDeleteObjects: false,
+    //   versioned: true
+    // });
 
     // Apply Tags
     Tags.of(this).add('client', client);

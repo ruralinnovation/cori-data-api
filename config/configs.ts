@@ -1,4 +1,8 @@
-import { ApiStackProps, DatabaseConfig, ServiceConfig } from '../packages/infrastructure/src/stacks';
+import {
+  ApiStackProps,
+  DatabaseConfig,
+  S3Config,
+  ServiceConfig } from "../packages/infrastructure/src/stacks";
 
 export interface TestEnvConfig {
   region: string;
@@ -19,12 +23,6 @@ export interface IMixedConfig extends ApiStackProps {
    * This allows us to re-use an existing one.
    */
   artifactBucketName?: string;
-
-  /**
-   * DataConfig
-   */
-  databaseConfig: DatabaseConfig;
-  dbpassword?: string;
 
   /**
    * Source Repo Name in GitHub
@@ -51,27 +49,27 @@ export interface IMixedConfig extends ApiStackProps {
 const microservicesConfiguration: ServiceConfig[] = [
   // {
   //   /* Test/Trial of Python REST service */
-  //   logicalName: 'ACSService',
-  //   corePath: '/acs',
-  //   directoryName: 'acs',
+  //   logicalName: "ACSService",
+  //   corePath: "/acs",
+  //   directoryName: "acs",
   // },
   // {
   //   /* Used by Broadband County Assessment Tool */
-  //   logicalName: 'BCATService',
-  //   corePath: '/bcat',
-  //   directoryName: 'bcat',
+  //   logicalName: "BCATService",
+  //   corePath: "/bcat",
+  //   directoryName: "bcat",
   // },
   // {
   //   /* Used by Broadband Climate Risk Mitigation Tool */
-  //   logicalName: 'ConnectHumanityService',
-  //   corePath: '/ch',
-  //   directoryName: 'ch',
+  //   logicalName: "ConnectHumanityService",
+  //   corePath: "/ch",
+  //   directoryName: "ch",
   // },
   {
     /* One RESTful endpoint to rule them all */
-    logicalName: 'CORIDataAPIRestService',
-    corePath: '/rest',
-    directoryName: 'rest',
+    logicalName: "CORIDataAPIRestService",
+    corePath: "/rest",
+    directoryName: "rest",
   }
 ];
 /**
@@ -82,82 +80,90 @@ interface IConfigs {
   [name: string]: IMixedConfig;
 }
 
-// const mfDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
-//   project: 'data-api',
-//   loggingLevel: 'info',
+// const mfDefaults: Omit<IMixedConfig, "client" | "stage"> = {
+//   project: "data-api",
+//   loggingLevel: "info",
 //   retain: false,
 //   env: {
-//     account: '190686435752',
-//     region: 'us-east-1',
+//     account: "190686435752",
+//     region: "us-east-1",
 //   },
-//   repo: 'mergingfutures/cori-data-api',
+//   repo: "mergingfutures/cori-data-api",
 //   databaseConfig: {
-//     vpcId: 'vpc-0499b35a2f5231aae',
-//     databaseSecurityGroupId: 'sg-0be66ca1818bcc0e0',
-//     host: 'cori-database-small-dev.c0no2rvbbm4n.us-east-1.rds.amazonaws.com',
-//     dbname: 'data',
-//     parameterName: '/cori/read_only_user_credentials',
-//     dbuser: 'read_only_user',
+//     vpcId: "vpc-0499b35a2f5231aae",
+//     databaseSecurityGroupId: "sg-0be66ca1818bcc0e0",
+//     host: "cori-database-small-dev.c0no2rvbbm4n.us-east-1.rds.amazonaws.com",
+//     dbname: "data",
+//     parameterName: "/cori/read_only_user_credentials",
+//     dbuser: "read_only_user",
 //   },
 //   cacheEnabled: true,
 //   cacheConfig: {
-//     host: 'redis-17358.c273.us-east-1-2.ec2.cloud.redislabs.com',
+//     host: "redis-17358.c273.us-east-1-2.ec2.cloud.redislabs.com",
 //     port: 17358,
-//     username: 'default',
-//     parameterName: '/cori/redis-cluster-credentials',
-//     globalTTL: '86400',
+//     username: "default",
+//     parameterName: "/cori/redis-cluster-credentials",
+//     globalTTL: "86400",
 //   },
 //   microservicesConfig: microservicesConfiguration,
 //   /**
 //    * @todo: create a bucket with a prettier name
 //    */
-//   //artifactBucketName: 'coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm',
+//   //artifactBucketName: "coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm",
 //   //coridataapicicdstack-devpipelineartifactsbucketfd-1smu59goaufdm
 //   testing: {
-//     username: '/cori/int-test-user-name',
-//     password: '/cori/int-test-user-pw',
-//     region: 'us-east-1',
-//     userPoolId: 'us-east-1_NE91zaapX',
-//     apiUrl: 'https://d25ssrwsq4u9bu.cloudfront.net',
-//     cognitoClientId: '6um99fv2qtb6f7ise3i037vna',
+//     username: "/cori/int-test-user-name",
+//     password: "/cori/int-test-user-pw",
+//     region: "us-east-1",
+//     userPoolId: "us-east-1_NE91zaapX",
+//     apiUrl: "https://d25ssrwsq4u9bu.cloudfront.net",
+//     cognitoClientId: "6um99fv2qtb6f7ise3i037vna",
 //   },
 // };
 
-const coriDefaults: Omit<IMixedConfig, 'client' | 'stage'> = {
-  project: 'data-api',
-  loggingLevel: 'info',
+const coriDefaults: Omit<IMixedConfig, "client" | "stage"> = {
+  project: "data-api",
+  loggingLevel: "info",
   retain: true,
-  repo: 'ruralinnovation/cori-data-api',
+  repo: "ruralinnovation/cori-data-api",
   env: {
-    account: '312512371189',
-    region: 'us-east-1',
+    account: "312512371189",
+    region: "us-east-1",
   },
   databaseConfig: {
-    host: 'cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com',
-    parameterName: '/postgresql/read_only_user_credentials',
-    databaseSecurityGroupId: 'sg-01ddcc192d814136f',
-    vpcId: 'vpc-08f5e17f5b75ccee9',
+    host: "cori-risi-ad-postgresql.c6zaibvi9wyg.us-east-1.rds.amazonaws.com",
+    parameterName: "/postgresql/read_only_user_credentials",
+    databaseSecurityGroupId: "sg-01ddcc192d814136f",
+    vpcId: "vpc-08f5e17f5b75ccee9",
   },
   cacheEnabled: true,
   cacheConfig: {
-    host: 'redis-19416.c283.us-east-1-4.ec2.cloud.redislabs.com',
+    host: "redis-19416.c283.us-east-1-4.ec2.cloud.redislabs.com",
     port: 19416,
-    username: 'default',
-    parameterName: '/redis/default_user_credentials',
-    globalTTL: '86400',
+    username: "default",
+    parameterName: "/redis/default_user_credentials",
+    globalTTL: "86400",
   },
   existingCognito: {
-    userPoolId: 'us-east-1_QeA4600FA',
-    userPoolDomain: 'authcori',
+    userPoolId: "us-east-1_QeA4600FA",
+    userPoolDomain: "authcori",
   },
   microservicesConfig: microservicesConfiguration,
+  s3Config: {
+    region: "us-east-1",
+    parameterAccessKeyId: "/s3/access_key_id",
+    parameterAccessKeySecret: "/s3/access_key_secret",
+    buckets:  [
+      "erc-public"
+    ]
+  },
   testing: {
-    username: '/cori/api/integration-test-username',
-    password: '/cori/api/integration-test-password',
-    region: 'us-east-1',
-    userPoolId: 'us-east-1_QeA4600FA',
-    apiUrl: 'http://localhost:2000',
-    cognitoClientId: '70o6i77h1orcnvonb9ua3fh58e',
+    username: "/cori/api/integration-test-username",
+    password: "/cori/api/integration-test-password",
+    region: "us-east-1",
+    userPoolId: "us-east-1_QeA4600FA",
+    apiUrl: "http://localhost:2000",
+    cognitoClientId: "70o6i77h1orcnvonb9ua3fh58e",
   },
 };
 
