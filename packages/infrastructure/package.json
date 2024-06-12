@@ -7,19 +7,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/mergingfuturesprojects/cori-api.git"
+    "url": "git+ssh://git@github.com:ruralinnovation/cori-data-api.git"
   },
   "files": [
     "dist"
   ],
   "author": "Rural Innovation Strategies, Inc",
-  "homepage": "https://bitbucket.org/mergingfuturesprojects/cori-api#readme",
+  "homepage": "https://github.com/ruralinnovation/cori-data-api",
   "dependencies": {
     "@apollo/client": "^3.8.8",
     "@aws-cdk/aws-appsync-alpha": "^2.18.0-alpha.0",
     "@aws-cdk/aws-lambda-python-alpha": "^2.20.0-alpha.0",
-    "@cori-risi/cori.data.api": "github:ruralinnovation/cori.data.api.git",
-    "@cori-risi/graphql-schemas": "github:ruralinnovation/graphql-schemas",
+    "@cori-risi/graphql-schemas": "^0.0.2",
     "@graphql-tools/stitch": "^8.7.50",
     "adm-zip": "^0.5.10",
     "apollo-datasource-rest": "^3.7.0",
