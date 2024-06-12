@@ -26,6 +26,8 @@ interface PythonDataServerProps {
     REGION: string;
     DB_HOST: string;
     DB_NAME: string;
+    // AWS_ACCESS_KEY_ID: string;
+    // AWS_SECRET_ACCESS_KEY: string;
   };
   microservicesConfig: ServiceConfig[];
 }
