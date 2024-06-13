@@ -46,7 +46,7 @@ export class ApolloGraphqlServer extends Construct {
       ...props,
       // allowPublicSubnet: true,
       memorySize: 256,
-      runtime: Runtime.NODEJS_14_X,
+      runtime: Runtime.NODEJS_LATEST,
       environment,
       functionName,
       // vpc,
