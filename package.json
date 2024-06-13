@@ -1,6 +1,6 @@
 {
   "name": "cori-data-api",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "author": "Rural Innovation Strategies, Inc",
   "description": "CORI Data API",
   "license": "ISC",
@@ -11,7 +11,7 @@
     "url": "git+ssh://git@github.com:ruralinnovation/cori-data-api.git"
   },
   "devDependencies": {
-    "@cori-risi/graphql-schemas": "^0.0.2",
+    "@cori-risi/cori.data.api": "github:ruralinnovation/cori.data.api",
     "@redocly/cli": "^1.7.0",
     "@types/jest": "^26.0.24",
     "@types/ncp": "^2.0.8",
@@ -76,7 +76,6 @@
     "ts": "npm run node -- -r ts-node/register"
   },
   "workspaces": [
-    "packages/cori.data.api",
     "packages/graphql-schemas",
     "packages/infrastructure",
     "packages/python-lambdas",

@@ -1,6 +1,6 @@
 {
   "name": "@cori-risi/python-lambdas",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Python lambda code for REST endpoints in CORI Data API",
   "devDependencies": {
     "@redocly/cli": "^1.6.0"
