@@ -61,5 +61,7 @@
     "allowAllOutbound": false
   },
   "ssm:account=312512371189:parameterName=/cori/api/integration-test-username:region=us-east-1": "cori-risi-public",
-  "ssm:account=312512371189:parameterName=/cori/api/integration-test-password:region=us-east-1": "cori-risi-public"
+  "ssm:account=312512371189:parameterName=/cori/api/integration-test-password:region=us-east-1": "cori-risi-public",
+  "ssm:account=312512371189:parameterName=/s3/access_key_id:region=us-east-1": "AKIAURQZQLH2ZZCTVWPY",
+  "ssm:account=312512371189:parameterName=/s3/access_key_secret:region=us-east-1": "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"
 }
