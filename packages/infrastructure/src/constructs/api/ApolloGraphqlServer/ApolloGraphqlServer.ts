@@ -7,6 +7,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { IUserPool } from 'aws-cdk-lib/aws-cognito';
 import { ApiGw } from '../ApiGw';
 import { IVpc, SecurityGroup, SubnetSelection } from "aws-cdk-lib/aws-ec2";
+import { aws_iam } from "aws-cdk-lib";
 
 interface ApolloGraphqlServerProps {
   prefix: string;
@@ -46,15 +47,22 @@ export class ApolloGraphqlServer extends Construct {
       ...props,
       // allowPublicSubnet: true,
       memorySize: 256,
-      runtime: Runtime.NODEJS_14_X,
+      runtime: Runtime.NODEJS_LATEST,
       environment,
       functionName,
       // vpc,
       // vpcSubnets,
       // securityGroups,
       timeout: Duration.seconds(40),
-      logRetention: logRetention,
+      logRetention: logRetention
     });
+
+    const policy_update = new aws_iam.PolicyStatement();
+    policy_update
+      .addResources("*");
+    policy_update.addActions("s3:*");
+
+    this.function.addToRolePolicy(policy_update);
 
     this.apiGw.addLambda({
       method: 'OPTIONS',

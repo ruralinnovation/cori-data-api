@@ -189,7 +189,13 @@ report.html
 *.graphqlconfig
 AWS_SAM_CLI_64_PY3.msi
 aws-sam-cli-linux-x86_64.zip
+aws-sam-cli-macos-arm64.pkg
 aws-sam-cli-src
+backend
+cognito
 install
+pm.mjs
+pre-request-script.js
+postgresql
 sam-beta-installation
 spec
