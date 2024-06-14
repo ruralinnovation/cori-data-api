@@ -10,10 +10,6 @@
     "type": "git",
     "url": "git+ssh://git@github.com:ruralinnovation/cori-data-api.git"
   },
-  "dependencies": {
-    "@cori-risi/cori.data.api": "github:ruralinnovation/cori.data.api",
-    "@cori-risi/graphql-schemas": "github:ruralinnovation/graphql-schemas"
-  },
   "devDependencies": {
     "@redocly/cli": "^1.7.0",
     "@types/jest": "^26.0.24",
