@@ -131,7 +131,6 @@ export class PipelineStack extends Stack {
           trigger: source.trigger,
         }),
         commands: [
-          'git submodule update',
           'ls',
           'npm --version',
           'npm install -g npm@9.6.6',
@@ -175,7 +174,6 @@ export class PipelineStack extends Stack {
           'echo $USER_POOL_ID',
           'echo $COGNITO_CLIENT_ID',
           'echo $COGNITO_DOMAIN',
-          'git submodule update',
           'ls',
           'npm --version',
           'npm install -g npm@9.6.6',

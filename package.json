@@ -48,10 +48,10 @@
     "vite": "^5.2.11"
   },
   "scripts": {
-    "build": "npm run build --ws",
+    "build": "npm install github:ruralinnovation/graphql-schemas -w @cori-risi/infrastructure && npm run build --ws",
     "build:api": "npm run build:schemas && npm run build:infra",
     "build:docs": "redocly build-docs api-spec-1.0.0.yml --output=docs/rest/index.html",
-    "build:infra": "npm run build -w @cori-risi/infrastructure",
+    "build:infra": "npm install github:ruralinnovation/graphql-schemas -w @cori-risi/infrastructure && npm run build -w @cori-risi/infrastructure",
     "build:dependency-layer": "bash ./buildPythonDependencyLayer.sh",
     "build:readme": "quarto render wiki/CORI-Data-API.qmd --to gfm --output temp.md && cp wiki/temp.md README.md && rm wiki/temp.md",
     "build:schemas": "npm run build -w @cori-risi/graphql-schemas",
@@ -80,5 +80,8 @@
     "packages/infrastructure",
     "packages/python-lambdas",
     "wiki"
-  ]
+  ],
+  "dependencies": {
+    "@cori-risi/graphql-schemas": "^0.0.3"
+  }
 }
