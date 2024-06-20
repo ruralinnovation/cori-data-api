@@ -251,44 +251,44 @@ describe('ApiIntegrationTests', () => {
   //   });
   // });
 
-  describe('Apollo GraphQL API Request Status 200 & Defined Response', () => {
-    it('responds to GraphQL query for county_summary', async () => {
-      try {
-        const response = await apiClient.post('/graphql', {
-          query: `query ($skipCache: Boolean) {
-                  county_summary (skipCache: $skipCache) {
-                      type
-                      features {
-                          type
-                          id
-                          properties
-                      }
-                  }
-              }`,
-          variables: `{
-                      "skipCache": true
-                  }`,
-        });
-
-        // Axios has an extra data wrapper
-        const result = response.data?.data;
-
-        // console.log(response.data);
-
-        expect(response.status).toEqual(200);
-        expect(result).toBeDefined();
-
-        logger.info({
-          type: result["county_summary"].type,
-          features: result["county_summary"].features?.length,
-        });
-
-      } catch (error) {
-        logger.error(error);
-        fail(error);
-      }
-    });
-  });
+  // describe('Apollo GraphQL API Request Status 200 & Defined Response', () => {
+  //   it('responds to GraphQL query for county_summary', async () => {
+  //     try {
+  //       const response = await apiClient.post('/graphql', {
+  //         query: `query ($skipCache: Boolean) {
+  //                 county_summary (skipCache: $skipCache) {
+  //                     type
+  //                     features {
+  //                         type
+  //                         id
+  //                         properties
+  //                     }
+  //                 }
+  //             }`,
+  //         variables: `{
+  //                     "skipCache": true
+  //                 }`,
+  //       });
+  //
+  //       // Axios has an extra data wrapper
+  //       const result = response.data?.data;
+  //
+  //       // console.log(response.data);
+  //
+  //       expect(response.status).toEqual(200);
+  //       expect(result).toBeDefined();
+  //
+  //       logger.info({
+  //         type: result["county_summary"].type,
+  //         features: result["county_summary"].features?.length,
+  //       });
+  //
+  //     } catch (error) {
+  //       logger.error(error);
+  //       fail(error);
+  //     }
+  //   });
+  // });
 
   describe('Apollo GraphQL API Request Status 200 & Defined Response', () => {
     Object.entries(apolloIntegrationEndpoints).forEach(([name, val]) => {
