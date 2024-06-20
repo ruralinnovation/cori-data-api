@@ -79,7 +79,8 @@ export const handler = server.createHandler({
 
     logger.info(`AWS credentials: ${stringify(s3_config)}`);
 
-    const s3 = new S3((s3DataSource as any).config);
+    // const s3 = new S3((s3DataSource as any).config);
+    const s3 = new S3();
 
     // TODO: Try to fetch list of buckets
     s3.listBuckets()
