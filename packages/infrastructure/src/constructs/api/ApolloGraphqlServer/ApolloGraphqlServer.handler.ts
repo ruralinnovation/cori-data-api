@@ -84,6 +84,9 @@ export const handler = server.createHandler({
     // TODO: Try to fetch list of buckets
     s3.listBuckets()
       .then(s3_bucket_list => {
+
+        logger.info(`s3.listBuckets()...`);
+
         if (typeof s3_bucket_list.Buckets !== "object" || s3_bucket_list.Buckets?.length === 0) {
           logger.info(`No S3 buckets found`);
         } else {
