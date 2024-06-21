@@ -18,7 +18,7 @@
     "@apollo/client": "^3.8.8",
     "@aws-cdk/aws-appsync-alpha": "^2.18.0-alpha.0",
     "@aws-cdk/aws-lambda-python-alpha": "^2.20.0-alpha.0",
-    "@cori-risi/graphql-schemas": "^0.0.3",
+    "@cori-risi/graphql-schemas": "github:ruralinnovation/graphql-schemas",
     "@graphql-tools/stitch": "^8.7.50",
     "adm-zip": "^0.5.10",
     "apollo-datasource-rest": "^3.7.0",
