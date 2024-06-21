@@ -11,6 +11,7 @@
     "url": "git+ssh://git@github.com:ruralinnovation/cori-data-api.git"
   },
   "devDependencies": {
+    "@cori-risi/graphql-schemas": "^0.0.3",
     "@redocly/cli": "^1.7.0",
     "@types/jest": "^26.0.24",
     "@types/ncp": "^2.0.8",
