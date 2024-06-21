@@ -13,31 +13,61 @@ export const pythonIntegrationEndpoints = {
 };
 
 export const apolloIntegrationEndpoints = {
-    "responds to GraphQL query for auction_904_authorized": {
-        type: "auction_904_authorized",
+    // "responds to GraphQL query for auction_904_authorized": {
+    //     type: "auction_904_authorized",
+    //     request: {
+    //       query: `query ($geoid_co: [String]!, $limit: Int, $offset: Int, $skipCache: Boolean) {
+    //                   auction_904_authorized (
+    //                       geoid_co: $geoid_co,
+    //                       limit: $limit,
+    //                       offset: $offset,
+    //                       skipCache: $skipCache) {
+    //                       type
+    //                       features {
+    //                           type
+    //                           id
+    //                           properties
+    //                       }
+    //                   }
+    //               }`,
+    //       variables: `{
+    //                       "geoid_co": [
+    //                           "47167"
+    //                       ],
+    //                       "limit": 11,
+    //                       "offset": 0,
+    //                       "skipCache": true
+    //                   }`,
+    //     },
+    // },
+    // "responds to GraphQL query for county_summary": {
+    //     type: "auction_904_authorized",
+    //     request: {
+    //       query: `query ($skipCache: Boolean) {
+    //                 county_summary (skipCache: $skipCache) {
+    //                     type
+    //                     features {
+    //                         type
+    //                         id
+    //                         properties
+    //                     }
+    //                 }
+    //             }`,
+    //       variables: `{
+    //                 "skipCache": true
+    //             }`,
+    //     },
+    // },
+    "responds to GraphQL query for ERCS3TestObject": {
+        type: "erc_test",
         request: {
-          query: `query ($geoid_co: [String]!, $limit: Int, $offset: Int, $skipCache: Boolean) {
-                      auction_904_authorized (
-                          geoid_co: $geoid_co,
-                          limit: $limit,
-                          offset: $offset,
-                          skipCache: $skipCache) {
-                          type
-                          features {
-                              type
-                              id
-                              properties
-                          }
-                      }
-                  }`,
-          variables: `{
-                          "geoid_co": [ 
-                              "47167"
-                          ],
-                          "limit": 11,
-                          "offset": 0,
-                          "skipCache": true
-                      }`,
+          query: `query {
+                    erc_test {
+                        erc_s3_test
+                        message
+                    }
+                }`,
+          variables: `{}`,
         },
-  },
+    },
 };
