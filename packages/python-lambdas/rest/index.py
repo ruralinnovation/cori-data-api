@@ -9,6 +9,7 @@ import acs as acs
 import bcat as bcat
 import bead as bead
 import ch as ch
+import places as pl
 
 # app = APIGatewayRestResolver(strip_prefixes=["/rest"])
 app = Flask(__name__)
@@ -87,6 +88,11 @@ app.add_url_rule('/rest/ch/<tab>/at_location', 'ch_bbox_at_location', ch.get_bbo
 ch bb map (block -> FeatureCollection)
 """
 app.add_url_rule('/rest/ch/ch_bb_map/<tab>', 'ch_bb_map', ch.get_bb_map)
+
+"""
+places geojson
+"""
+app.add_url_rule('/rest/places/<tab>', 'pl_places_info', pl.get_places_info)
 
 
 @tracer.capture_lambda_handler
